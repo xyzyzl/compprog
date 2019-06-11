@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/p11235.dir/main.cpp.o  -o p11235 
