@@ -37,13 +37,21 @@ int bad_arr[100005];
 
 int main() {
     while (cin >> n && n) {
-        cin >> q;
+        fill(arr, arr+100005, 0);
+	freqs.clear();
+	fill(lf, lf+100005, 0);
+	fill(rt, rt+100005, 0);
+	fill(st, st+200005, 0);
+	cin >> q;
         // cout << "m" << endl;
         for (int i = 0; i < n; i++) {
             cin >> bad_arr[i];
             freqs[bad_arr[i]]++;
         }
         for (int i = 0; i < n; i++) arr[i] = freqs[bad_arr[i]];
+	// cout << "array" << endl;
+	// for (int i = 0; i < n; i++) cout << arr[i] << endl;
+	// cout << "array" << endl;
         lf[bad_arr[0]] = 0;
         for (int i = 1; i < n; i++) {
             if (bad_arr[i] != bad_arr[i - 1]) {
@@ -70,9 +78,11 @@ int main() {
 
             int d1 = 0;
             if (l <= rt[bad_arr[l]] && l != lf[bad_arr[l]]) d1 = rt[bad_arr[l]] - l + 1;
+	    // cout << d1 << " d1" << endl;
             int d2 = 0;
             if (r >= lf[bad_arr[r]] && r != rt[bad_arr[r]]) d2 = r - lf[bad_arr[r]] + 1;
-            int better = max(d1, d2);
+            // cout << d2 << " d2" << endl;
+	    int better = max(d1, d2);
             cout << max(better, rmq(1, 0, n - 1, l + d1, r - d2)) << endl;
         }
     }
