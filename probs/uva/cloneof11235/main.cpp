@@ -1,5 +1,4 @@
-// doesn't work : (
-
+// OMG WORKS！!!!!!!!!!!
 #include <bits/stdc++.h>
 #include <stdio.h>
 
@@ -10,7 +9,7 @@ using namespace std;
 
 #define INF 0x7fffffff
 
-int st[200069], arr[100005], n, q;
+int st[400069], arr[100005], n, q;
 
 int lf[200069], rt[200069];
 
