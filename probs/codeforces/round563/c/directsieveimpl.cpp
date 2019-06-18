@@ -1,3 +1,5 @@
+// 6:38
+
 /**
 ID: albert.28
 LANG: C++14
@@ -7,14 +9,13 @@ PROB: poetry
 #include <bits/stdc++.h>
 
 /**
-Mod operations
-O(lg n) exponentiation
+Mod operations in O(lg n)
 Source: Benjamin Qi, https://github.com/bqi343/USACO/blob/master/Implementations/11%20-20(4)/Operators/modOp.cpp?fbclid=IwAR0m2afS-1xVg9kgeF8q8EJIeP9TP3Lct8dYb_hPJuI5gqHP1Utp5EkiOQ8
 **/
 
 using namespace std;
 
-// #define MAXN 100005
+#define MAXN 100005
 #define MOD 1000000007
 
 #define FOR(g,i,n) for(int i = g; i < n; i++)
@@ -70,50 +71,24 @@ namespace modOp
 
 using namespace modOp;
 
-#define MN 2750132
-#define MAXN 200003
-int n, ndivs[MN+1], divs[MAXN], p[MN+1], fr[MN+1];
-bool is_prime[MN+1];
-int main() {
+int MN, ndivs[100005];
+int arr[100005];
+int main()
+{
 	apple();
 	hentai();
-	cin >> n;
-	fill(divs, divs+MAXN, INT_MAX);
+	cin >> MN;
 	for (int i = 1; i <= MN; i++)
 		ndivs[i] = 0;
-	int nprimes = 0;
+	int w = 0;
 	for (int i = 2; i <= MN; i++) {
 		if (!ndivs[i]) {
-			p[i]=++nprimes;
-			is_prime[i]=1;
-			for (ll j = i; j <= MN; j += i) {
-				if(j < MAXN) divs[j] = min(divs[j], i);
+			w++;
+			for (int j = i; j <= MN; j += i) {
 				ndivs[j]++;
+				arr[j]=w;
 			}
 		}
 	}
-	// cout << nprimes << endl;
-	fill(fr, fr+MN+1, 0);
-	for(int i = 0; i < 2*n; i++) {
-		int x;
-		cin >> x;
-		fr[x]++;
-	}
-	for(int i = MN; i >= 0; i--) {
-		while(fr[i]) {
-		if(is_prime[i]) { // is prime
-			fr[p[i]]--;
-			cout << p[i] << " ";
-		} else {
-			fr[i/divs[i]]--;
-			cout << i << " ";
-		}
-		// cout << fr[i] << endl;
-		fr[i]--;
-		}
-		// cout << "w" << endl;
-	}
-
-
-	return 0;
+	for(int i = 2; i <= MN; i++) cout << arr[i] << " ";
 }

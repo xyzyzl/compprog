@@ -7,14 +7,13 @@ PROB: poetry
 #include <bits/stdc++.h>
 
 /**
-Mod operations
-O(lg n) exponentiation
+Mod operations in O(lg n)
 Source: Benjamin Qi, https://github.com/bqi343/USACO/blob/master/Implementations/11%20-20(4)/Operators/modOp.cpp?fbclid=IwAR0m2afS-1xVg9kgeF8q8EJIeP9TP3Lct8dYb_hPJuI5gqHP1Utp5EkiOQ8
 **/
 
 using namespace std;
 
-// #define MAXN 100005
+#define MAXN 100005
 #define MOD 1000000007
 
 #define FOR(g,i,n) for(int i = g; i < n; i++)
@@ -37,7 +36,7 @@ typedef vector<int> vi;
 typedef set<int> si;
 typedef map<int, int> mi;
 #define f first
-#define s second
+// #define s second
 typedef vector<pii> vii;
 typedef set<pii> sii;
 typedef map<pii, pii> mii;
@@ -70,50 +69,33 @@ namespace modOp
 
 using namespace modOp;
 
-#define MN 2750132
-#define MAXN 200003
-int n, ndivs[MN+1], divs[MAXN], p[MN+1], fr[MN+1];
-bool is_prime[MN+1];
-int main() {
-	apple();
-	hentai();
-	cin >> n;
-	fill(divs, divs+MAXN, INT_MAX);
-	for (int i = 1; i <= MN; i++)
-		ndivs[i] = 0;
-	int nprimes = 0;
-	for (int i = 2; i <= MN; i++) {
-		if (!ndivs[i]) {
-			p[i]=++nprimes;
-			is_prime[i]=1;
-			for (ll j = i; j <= MN; j += i) {
-				if(j < MAXN) divs[j] = min(divs[j], i);
-				ndivs[j]++;
+int n;
+ll sum;
+stack<ll> st;
+int main()
+{
+	ll high_num=1;
+	for(int i = 0; i < 32; i++) high_num *= 2;
+	cin>>n;
+	st.push(1);
+	for(int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		if(s=="add") {
+			sum+=st.top();
+			if(sum >= high_num) {
+				cout << "OVERFLOW!!!" << endl;
+				break;
 			}
+		} else if(s=="for") {
+			long long w;
+			cin >> w;
+            w = min(high_num, w*st.top());
+            st.push(w);
+		} else if(s=="end") {
+			st.pop();
 		}
 	}
-	// cout << nprimes << endl;
-	fill(fr, fr+MN+1, 0);
-	for(int i = 0; i < 2*n; i++) {
-		int x;
-		cin >> x;
-		fr[x]++;
-	}
-	for(int i = MN; i >= 0; i--) {
-		while(fr[i]) {
-		if(is_prime[i]) { // is prime
-			fr[p[i]]--;
-			cout << p[i] << " ";
-		} else {
-			fr[i/divs[i]]--;
-			cout << i << " ";
-		}
-		// cout << fr[i] << endl;
-		fr[i]--;
-		}
-		// cout << "w" << endl;
-	}
-
-
-	return 0;
+	if(sum < high_num)
+		cout << sum << endl;
 }
