@@ -2,53 +2,41 @@
 
 using namespace std;
 
-int n, m, color[100005], mark[100005], par[100005];
+int n, m, pp[100005];
 vector<int> adj_lst[100005];
 bool vis[100005];
-
-void dfs_cycle(int u, int p, int& cyclenumber) {
-
-    if (color[u] == 2) {
-        return;
-    }
-
-    if (color[u] == 1) {
-
-        cyclenumber++;
-        int cur = p;
-        mark[cur] = cyclenumber;
-
-        while (cur != u) {
-            cur = par[cur];
-            mark[cur] = cyclenumber;
-        }
-        return;
-    }
-    par[u] = p;
-    color[u] = 1;
-    for (int v : graph[u]) {
-        if (v == par[u]) {
-            continue;
-        }
-        dfs_cycle(v, u, cyclenumber);
-    }
-
-    color[u] = 2;
-}
 
 bool cyclic(int v, int parent) {
 	vis[v]=1;
 	for(int i : adj_lst[v]) {
 		if(!vis[i]) {
+            pp[i] = v;
 			return cyclic(i, v);
 		}
-		else if(i != parent) return 1;
+		else if(i != parent) {
+            int ct=2;
+            int j = v;
+            while(j != i) {
+                ct++;
+                j=pp[j];
+            }
+            cout << ct << endl;
+            cout << i+1 << " ";
+            j = v;
+            while(j != i) {
+                cout << j+1 << " ";
+                j=pp[j];
+            }
+            cout << i+1 << endl;
+            return 1;
+        }
 	}
 	return 0;
 }
 
+vector<int> vals;
 bool cyclic() {
-	for(int i = 0; i < n; i++) {
+	for(int i : vals) {
 		if(!vis[i]) if(cyclic(i, -1)) return 1;
 	}
 	return 0;
@@ -56,17 +44,19 @@ bool cyclic() {
 
 int main()
 {
+    // freopen("in.txt", "r", stdin);
 	cin >> n >> m;
     for(int i = 0; i < m; i++) {
 		int x, y;
 		cin >> x >> y;
 		x--; y--;
+        vals.push_back(x);
+        vals.push_back(y);
 		adj_lst[x].push_back(y);
 		adj_lst[y].push_back(x);
     }
     if(cyclic()) {
-		int cyclenumber = 0;
-		dfs_cycle(0, -1, cyclenumber);
+		// ok belarusian government is slowing down my code
     } else {
 		cout << "IMPOSSIBLE" << endl;
     }
