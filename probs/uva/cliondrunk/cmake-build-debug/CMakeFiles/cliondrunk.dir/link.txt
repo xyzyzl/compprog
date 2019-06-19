@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/cliondrunk.dir/main.cpp.o  -o cliondrunk 

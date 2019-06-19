@@ -1,0 +1,3 @@
+/home/ha/Documents/cp/probs/codeforces/1147/a/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/ha/Documents/cp/probs/codeforces/1147/a/cmake-build-debug/CMakeFiles/a.dir
+/home/ha/Documents/cp/probs/codeforces/1147/a/cmake-build-debug/CMakeFiles/edit_cache.dir
