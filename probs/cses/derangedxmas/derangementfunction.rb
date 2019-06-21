@@ -1,3 +1,5 @@
+# doubly serves as implementation of derangement function
+
 n = gets.chomp.to_i()
 
 j1=0
