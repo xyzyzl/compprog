@@ -2,6 +2,8 @@
  
 using namespace std;
   
+#define int long long
+
 #define MAXN 200005
 #define INF (int)(1e9+7);
 #define FOR(i, n) for(int i = 0; i < n; i++)
@@ -27,7 +29,7 @@ typedef vector<pair<int, int> > vii;
 int n, deg[MAXN], aa;
 vector<int> adj[MAXN];
 bool vis[MAXN];
-int main()
+signed main()
 {
     // tmw orz
     cin >> n;
