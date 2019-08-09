@@ -27,24 +27,13 @@ typedef map<int, int> mii;
 #define RIGHT(x) 2*x+1
 
 #define INF 0x7fffffff
+#define X 17
 
 int N, Q, st[4 * MAXN], arr[MAXN], heads[MAXN], to_tree[MAXN], tops[MAXN], sub[MAXN], 
-    X, p1[MAXN], p2[MAXN], u[MAXN][20], d[MAXN];
+    p1[MAXN], p2[MAXN], u[MAXN][17], d[MAXN];
 vi adj[MAXN];
 
 // SEGMENT TREE
-void build(int node, int a, int b) {
-	if (a > b) return;
-	if (a == b) {
-		st[node] = arr[a];
-		return;
-	}
-	build(LEFT(node), a, (a + b) / 2);
-	build(RIGHT(node), (a + b) / 2 + 1, b);
-
-	st[node] = st[LEFT(node)] ^ st[RIGHT(node)];
-}
-
 int rmq(int node, int a, int b, int i, int j) {
 	if (a > b || a > j || b < i) return 0;
 	if (a >= i && b <= j) return st[node];
@@ -68,19 +57,17 @@ void upd(int node, int a, int b, int x, int value)
 }
 
 // LCA
-int fjfj = 0;
-void pp(int v, int p, int j=0)
+/*
+void pp(int v, int p)
 {
-    d[v] = j;
     p1[v] = ++fjfj;
-    u[v][0] = p;
-    for(int i = 1; i <= X; i++) u[v][i] = u[u[v][i-1]][i-1];
     for(int w : adj[v])
     {
-        if(w != p) pp(w, v, j+1);
+        if(w != p) pp(w, v);
     }
     p2[v] = ++fjfj;
 }
+*/
 
 bool anc(int u, int v)
 {
@@ -91,10 +78,14 @@ int lca(int w, int v)
 {
     if(anc(w, v)) return w;
     if(anc(v, w)) return v;
-    for(int i = X; i >= 0; i--)
+    for(int i = X-1; i >= 0; i--)
     {
-        if(!anc(u[w][i], v)) w = u[w][i];
+        if(!anc(u[w][i], v))
+        {
+            w = u[w][i];
+        }
     }
+    
     return u[w][0];
 }
 
@@ -126,23 +117,36 @@ void hld(int v, int top, int par, int& ind)
     }
 }
 
+int fjfj = 0;
 void subtree_sizes(int i, int par)
 {
+    p1[i] = ++fjfj;
     sub[i]++;
     for(int j : adj[i])
     {
         if(j != par)
         {
+            d[j] = d[i]+1;
+            u[j][0] = i;
             subtree_sizes(j, i);
             sub[i] += sub[j];
         }
     }
+    p2[i] = ++fjfj;
+}
+
+void init()
+{
+    subtree_sizes(0, -1);
+    for(int i = 1; i < X; i++) FOR(v, N) u[v][i] = u[u[v][i-1]][i-1];
+    int manasinternationalairport = 0;
+    hld(0, 0, -1, manasinternationalairport);
 }
 
 int real_rxq(int t, int b)
 {
     int r = 0;
-    while(t != b)
+    while(b != t)
     {
         if(b == tops[b])
         {
@@ -151,7 +155,7 @@ int real_rxq(int t, int b)
         } else if(d[tops[b]] > d[t])
         {
             r ^= rmq(1, 0, N-1, to_tree[tops[b]], to_tree[b]);
-            b = u[b][0];
+            b = u[tops[b]][0];
         } else 
         {
             r ^= rmq(1, 0, N-1, to_tree[t]+1, to_tree[b]);
@@ -164,15 +168,20 @@ int real_rxq(int t, int b)
 int qqqq(int a, int b)
 {
     int c = lca(a, b);
+    /*
+    if(a == 3978) cout << c << endl;
+    if(a == 3978) cout << u[a][0] << " " << u[b][0] << endl;
+    */
     return real_rxq(c, a) ^ real_rxq(c, b) ^ arr[c];
 }
 
 int main()
 {
+    ios_base::sync_with_stdio(0);
+    cin.tie(NULL);
     freopen("cowland.in", "r", stdin);
     freopen("cowland.out", "w", stdout);
     cin >> N >> Q;
-    X = log2(N);
     FOR(i, N) cin >> arr[i];
     FOR(i, N-1)
     {
@@ -183,23 +192,15 @@ int main()
         adj[a].pb(b);
         adj[b].pb(a);
     }
-    // cout << "LinkedListMan orz" << endl;
-    subtree_sizes(0, -1);
-    // cout << "LinkedListMan orz" << endl;
-    pp(0, 0);
-    // cout << "LinkedListMan orz" << endl;
-    int manasinternationalairport = 0;
-    hld(0, 0, -1, manasinternationalairport);
-    // cout << "LinkedListMan orz" << endl;
+    init();
     FOR(bishkek, Q)
     {
-        // cout << "w" << endl;
         int n, a, b;
         cin >> n >> a >> b;
         if(n == 1)
         {
             arr[a-1] = b;
-            upd(1, 0, N-1, a-1, b);
+            upd(1, 0, N-1, to_tree[a-1], b);
         } else 
         {
             cout << (qqqq(a-1, b-1)) << endl;
