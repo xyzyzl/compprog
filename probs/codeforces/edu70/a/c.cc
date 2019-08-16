@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
  
 using namespace std;
-
-#define MAXN 100005 
-
+ 
+#define MAXN 201
+ 
 #define FOR(i, n) for(int i = 0; i < n; i++)
 #define FORD(i, n) for(int i = n-1; i >= 0; i--)
 #define FOBIR(i, n) for(int i = 1; i <= n; i++)
@@ -15,33 +15,11 @@ using namespace std;
 typedef set<int> si;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
+typedef vector<pii> vii;
 typedef priority_queue<int> pqi;
 typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-#define f first
-#define s second
-
-#define LEFT(x) 2*x
-#define RIGHT(x) 2*x+1
-
-#define INF 0x7fffffff
-#define X 17
-
-int main()
-{
-    int t = 1;
-    cin >> t;
-    while(t--)
-    {
-        int n, m;
-        cin >> n >> m;
-        long double askar = 1;
-        FOBIR(i, m-1)
-        {
-            askar *= (long double)(n-(m-1-i))/(long double)i;
-        }
-        cout << (int)askar << endl;
-    }
-}
+#define x first
+#define y second
