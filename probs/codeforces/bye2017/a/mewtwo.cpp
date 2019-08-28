@@ -26,34 +26,23 @@ typedef map<int, int> mii;
 #define f first
 #define s second
 
-int T;
+string a;
+bool vow(char c)
+{
+    return (c=='a'||c=='e'||c=='i'||c=='o'||c=='u');
+}
+bool odd(char c)
+{
+    return (c=='1'||c=='3'||c=='5'||c=='7'||c=='9');
+}
 int main()
 {
-    cin >> T;
-    while(T--)
+    DUEHOANG;
+    cin >> a;
+    int b=0;
+    FOR(i, a.length())
     {
-        string a, b;
-        cin >> a >> b;
-        reverse(a.begin(), a.end());
-        reverse(b.begin(), b.end());
-        int j=0, x=0;
-        FOR(i, b.length())
-        {
-            if(b[i] == '1')
-            {
-                j=i;
-                break;
-            }
-        }
-        for(int i = j; i < a.length(); i++)
-        {
-            if(a[i] == '1')
-            {
-                x = i;
-                break;
-            }
-        }
-        if(x-j < 0) cout << 0 << endl;
-        else cout << x-j << endl;
+        if(vow(a[i]) || odd(a[i])) b++;
     }
+    cout << b << endl;
 }

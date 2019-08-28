@@ -23,37 +23,36 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-#define f first
-#define s second
+#define x first
+#define y second
 
-int T;
+string s, t;
 int main()
 {
-    cin >> T;
-    while(T--)
+    cin >> s >> t;
+    int j = 0;
+    int s1, e1, s2, e2;
+    FOR(i, s.length())
     {
-        string a, b;
-        cin >> a >> b;
-        reverse(a.begin(), a.end());
-        reverse(b.begin(), b.end());
-        int j=0, x=0;
-        FOR(i, b.length())
+        if(s[i] == t[j])
         {
-            if(b[i] == '1')
-            {
-                j=i;
-                break;
-            }
+            if(j == 0) s1 = i;
+            if(j == t.length()-1) e1 = i;
+            j++;
         }
-        for(int i = j; i < a.length(); i++)
-        {
-            if(a[i] == '1')
-            {
-                x = i;
-                break;
-            }
-        }
-        if(x-j < 0) cout << 0 << endl;
-        else cout << x-j << endl;
     }
+    int kazakh = max(s1, (int)s.length()-e1-1);
+    reverse(s.begin(), s.end());
+    reverse(t.begin(), t.end());
+    j = 0;
+    FOR(i, s.length())
+    {
+        if(s[i] == t[j])
+        {
+            if(j == 0) e2 = s.length()-i-1;
+            if(j == t.length()-1) s2 = s.length()-i-1;
+            j++;
+        }
+    }
+    cout << max(kazakh, max(s2, (int)s.length()-e2-1)) << endl;
 }

@@ -4,7 +4,7 @@
  
 using namespace std;
  
-#define MAXN 201
+#define MAXN 1005
  
 #define FOR(i, n) for(int i = 0; i < n; i++)
 #define FORD(i, n) for(int i = n-1; i >= 0; i--)
@@ -26,34 +26,35 @@ typedef map<int, int> mii;
 #define f first
 #define s second
 
-int T;
+int n, r, x[MAXN];
+double a[MAXN];
 int main()
 {
-    cin >> T;
-    while(T--)
+    cin >> n >> r;
+    FOR(i, n)
     {
-        string a, b;
-        cin >> a >> b;
-        reverse(a.begin(), a.end());
-        reverse(b.begin(), b.end());
-        int j=0, x=0;
-        FOR(i, b.length())
+        cin >> x[i];
+    }
+    FOR(i, n)
+    {
+        if(!i)
         {
-            if(b[i] == '1')
+            a[i] = r;
+            continue;
+        }
+        FORD(j, i)
+        {
+            if(abs(x[i]-x[j]) > 2*r)
             {
-                j=i;
-                break;
+                a[i] = max(a[i], (double)(r));
+            } else 
+            {
+                a[i] = max(a[i], a[j] + sqrt(4*r*r-(x[i]-x[j])*(x[i]-x[j])));
             }
         }
-        for(int i = j; i < a.length(); i++)
-        {
-            if(a[i] == '1')
-            {
-                x = i;
-                break;
-            }
-        }
-        if(x-j < 0) cout << 0 << endl;
-        else cout << x-j << endl;
+    }
+    FOR(i, n)
+    {
+        cout << setprecision(15) << fixed << a[i] << endl;
     }
 }

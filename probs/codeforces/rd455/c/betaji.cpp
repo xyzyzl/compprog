@@ -4,7 +4,9 @@
  
 using namespace std;
  
-#define MAXN 201
+#define MAXN 1005
+#define int long long
+#define MOD (int)(1e9+7)
  
 #define FOR(i, n) for(int i = 0; i < n; i++)
 #define FORD(i, n) for(int i = n-1; i >= 0; i--)
@@ -26,34 +28,35 @@ typedef map<int, int> mii;
 #define f first
 #define s second
 
-int T;
-int main()
+int n,dp[5005][5005];
+char c[5005];
+signed main()
 {
-    cin >> T;
-    while(T--)
+    cin >> n;
+    dp[0][0] = 1;
+    FOR(i, n)
     {
-        string a, b;
-        cin >> a >> b;
-        reverse(a.begin(), a.end());
-        reverse(b.begin(), b.end());
-        int j=0, x=0;
-        FOR(i, b.length())
-        {
-            if(b[i] == '1')
-            {
-                j=i;
-                break;
-            }
-        }
-        for(int i = j; i < a.length(); i++)
-        {
-            if(a[i] == '1')
-            {
-                x = i;
-                break;
-            }
-        }
-        if(x-j < 0) cout << 0 << endl;
-        else cout << x-j << endl;
+        // cout << i << endl;
+        cin >> c[i];
     }
+    FOBIR(i, n-1)
+    {
+        if(c[i-1] == 'f')
+        {
+            dp[i+1][0] = 0;
+            FOBIR(j, n-1) dp[i][j] = dp[i-1][j-1];
+        } else 
+        {
+            dp[i+1][n-1] = dp[i][n-1];
+            int b = 0;
+            FORD(j, i) dp[i][j] = (dp[i][j+1] + dp[i-1][j]) % 1000000007;
+        }
+    }
+    int ans = 0;
+    FOR(i, n)
+    {
+        ans += dp[n-1][i];
+        ans %= 1000000007;
+    }
+    cout << ans << endl;
 }
