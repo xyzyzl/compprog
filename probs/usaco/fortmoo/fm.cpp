@@ -72,10 +72,10 @@ int main()
             int last = -1;
             FOR(i, m)
             {
-                bool good = !dc(i, r1, i, r2);
+                bool good = !dc(r1, i, r2, i);
                 if(good) ans = max(ans, (long)(r2-r1+1));
                 if(good && last != -1) ans = max(ans, (long)(i-last+1) * (long)(r2-r1+1));
-                if(dc(i, r1, i, r1) || dc(i, r2, i, r2)) last = -1; // this coordinate won't work
+                if(dc(r1, i, r1, i) || dc(r2, i, r2, i)) last = -1; // this coordinate won't work
                 // because it has hit a swamp place
                 if(good && last == -1) last = i; // if it works then we're good!
             }
