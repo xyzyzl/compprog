@@ -1,0 +1,29 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, k;
+bool vis[100005];
+vector<int> adj[100005];
+int main()
+{
+  cin >> n >> k;
+  for(int i = 0; i < n; i++){
+    int a, b;
+    cin >> a >> b;
+    adj[--a] = --b;
+    adj[b] = a;
+  }
+  queue<int> q;
+  q.push(0);
+  int reached=0;
+  while(!q.empty()) {
+    int x = q.top();
+    q.pop();
+    reached++;
+    if(vis[x]) continue;
+    vis[x] = true;
+    for(int nx : adj[x]) q.push(nx); 
+  }
+  cout << n-reached << endl;
+}
