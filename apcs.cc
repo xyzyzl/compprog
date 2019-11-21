@@ -1,3 +1,5 @@
+// trying to show my class that C++ > java.
+
 #include <bits/stdc++.h>
 
 using namespace std;
