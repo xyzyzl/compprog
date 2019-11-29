@@ -34,3 +34,23 @@ Easier than paintbarn by a large margin. Also DP
 We have a bipartite graph and a bunch of edges and we want to find the maximum value. Thus we can traverse up the graph and find the maximum values for each edge. As we go from one lower edge to one upper edge we simply see if we prefer keeping the current value or going from below and taking the edge up. We'd then find the best sum for all edges. 
 
 At the end we simply loop through every vertex (on each side) and find the max.
+
+**USACO 2018 December USACO Gold - Fine Dining** \
+11/28/2019 \
+Estimated CF Rating: 1700
+
+Dijkstras but with one catch: We must account for the candy.
+
+This is not bad. Simply take the original shortest paths.
+Then, we input the haybales. For each haybale, let it lead to a point N+1 with weight (distance to n) - yumminess. Run Dijkstra again on a different distance array, and compare the distances at the end.
+
+**USACO 2018 December USACO Gold - Teamwork** \
+11/28/2019 \
+Estimated CF Rating: 1600
+
+DP
+
+Let a[i] be the skill for cow i.
+Base case: dp[0] = a[0]
+Transition:
+For each cow, loop through previous indices pre which is nonnegative and fits size constraints. If pre is 0 then we have only one team, and we just take the maximum skill value from the team. Otherwise we just add to the total from pre-1 downwards but keep a similar sum.
