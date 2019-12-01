@@ -31,17 +31,16 @@ int rmq(int node, int a, int b, int i, int j) {
 	return max(q1, q2); // this operation will change if it becomes something else
 }
 
-void upd(int node, int a, int b, int i, int j, int value)
+void upd(int node, int a, int b, int x, int value)
 {
-    if(a > b || a > j || b < i) return;
     if(a == b)
     {
-        st[node] += value;
+        st[node] = value;
         return;
     }
 
-    upd(LEFT(node), a, (a+b)/2, i, j, value);
-    upd(RIGHT(node), (a+b)/2+1, b, i, j, value);
+    if(x <= (a+b)/2) upd(LEFT(node), a, (a+b)/2, x, value);
+    else upd(RIGHT(node), (a+b)/2+1, b, x, value);
     st[node] = max(st[LEFT(node)], st[RIGHT(node)]);
 }
 

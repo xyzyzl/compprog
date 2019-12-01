@@ -17,6 +17,22 @@ We have a bipartite graph and a bunch of edges and we want to find the maximum v
 
 At the end we simply loop through every vertex (on each side) and find the max.
 
+**USACO 2014 December USACO Gold - Marathon** \
+12/1/2019 \
+Estimated CF Rating: 2000
+
+Segment Tree (:rage: :deciduous_tree:)
+
+Let dist(a,b) be the manhattan distance between two checkpoints a,b.
+
+Realize that skipping from a to a+2 is equal to dist(a, a+1) + dist(a+1, a+2) - dist(a, a+2) off of the total distance. With this we can store a segtree with the original lengths (dist(a, a+1) foreach a), and one with the skip length. Then just perform normal queries.
+
+But be sure to update *each* node. I forgot to do this so it took v long for me to realize :sob:
+
+> Bessie realizes that the other cows may not have the stamina to run the full route.
+
+just like how i don't have the stamina to do cp
+
 **USACO 2018 December USACO Gold - Fine Dining** \
 11/28/2019 \
 Estimated CF Rating: 1700
