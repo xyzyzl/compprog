@@ -17,6 +17,18 @@ We have a bipartite graph and a bunch of edges and we want to find the maximum v
 
 At the end we simply loop through every vertex (on each side) and find the max.
 
+**USACO 2014 December USACO Gold - Guard Mark** \
+12/1/2019 \
+Estimated CF Rating: 2100
+
+Greedy (:flag_us:)
+
+Take all the subset sums of the weights.
+
+We see that we simply add each cow from another already visited subset to get the current subset, so we can set up a recursion. I'm too lazy to describe so just look at my code.
+
+Mistakes included refusing to calculate values that didn't stack up to Mark's height, so the whole thing turned into 0. :cry:
+
 **USACO 2014 December USACO Gold - Marathon** \
 12/1/2019 \
 Estimated CF Rating: 2000
