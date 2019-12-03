@@ -17,6 +17,14 @@ We have a bipartite graph and a bunch of edges and we want to find the maximum v
 
 At the end we simply loop through every vertex (on each side) and find the max.
 
+**USACO 2014 March USACO Gold - Sabotage** \
+12/2/2019 \
+Estimated CF Rating: 2400
+
+We are minimizing the average. Thus, it suffices to binary search over the average until we find a working one.
+
+At each mid, we check if mid can be put into a contiguous subarray. As we are taking away an average of mid from each index, we can simply loop through while subtracting mid. If the overall is feasible then mid works, else it does not.
+
 **USACO 2014 December USACO Gold - Guard Mark** \
 12/1/2019 \
 Estimated CF Rating: 2100
