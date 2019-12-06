@@ -40,6 +40,8 @@ typedef map<int, int> mii;
 #define LEFT(x) 2 * x
 #define RIGHT(x) 2 * x + 1
 
+#define bitinc(x) x&-x
+
 int main()
 {
     int t = 1;
