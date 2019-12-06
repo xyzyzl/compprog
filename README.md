@@ -5,7 +5,7 @@ So as of 11/17/19 I have decided to start writing motivations to questions, in p
 
 Additionally it would make it harder for me to copy the editorial mindlessly, which is honestly the only way for me to solve some questions since I suck.
 
-**USACO 2013 February USACO Gold - Route design** \
+**USACO 2013 February Gold - Route design** \
 11/20/2019 \
 Estimated CF Rating: 2000
 
@@ -17,7 +17,7 @@ We have a bipartite graph and a bunch of edges and we want to find the maximum v
 
 At the end we simply loop through every vertex (on each side) and find the max.
 
-**USACO 2014 March USACO Gold - Sabotage** \
+**USACO 2014 March Gold - Sabotage** \
 12/2/2019 \
 Estimated CF Rating: 2400
 
@@ -25,7 +25,7 @@ We are minimizing the average. Thus, it suffices to binary search over the avera
 
 At each mid, we check if mid can be put into a contiguous subarray. As we are taking away an average of mid from each index, we can simply loop through while subtracting mid. If the overall is feasible then mid works, else it does not.
 
-**USACO 2014 December USACO Gold - Guard Mark** \
+**USACO 2014 December Gold - Guard Mark** \
 12/1/2019 \
 Estimated CF Rating: 2100
 
@@ -37,7 +37,7 @@ We see that we simply add each cow from another already visited subset to get th
 
 Mistakes included refusing to calculate values that didn't stack up to Mark's height, so the whole thing turned into 0. :cry:
 
-**USACO 2014 December USACO Gold - Marathon** \
+**USACO 2014 December Gold - Marathon** \
 12/1/2019 \
 Estimated CF Rating: 2000
 
@@ -53,7 +53,22 @@ But be sure to update *each* node. I forgot to do this so it took v long for me 
 
 just like how i don't have the stamina to do cp
 
-**USACO 2018 December USACO Gold - Fine Dining** \
+**USACO 2018 Open - Out of Sorts** \
+12.5.2019 \
+Estimated CF Difficulty: 1800
+
+Greedy + BIT (:pig: :deciduous_tree:)
+
+For each operation, we observe that one lower element (which breaks the sorted condition) moves to the top, and one higher element (which breaks the sorted condition) moves down. So we see that the number of moos is the number of swapped elements.
+
+Take an arbitrary index i. If some value appears on one side of i on the unsorted and another side of i on the sorted, then it suffices that that value must be swapped. So we can simply keep track of which elements in the sorted are not present in the unsorted up to i.
+
+This can be done with a BIT. This functions as a faster visited array; it stores 1 if a number exists at or before i, and 0 otherwise. At each i, we find the amount that is i-sum before i, which finds the number of zeroes in the tree. Over all i, we clearly take the max.
+
+Errors I made:
+1) the answer starts at 1 because we're guaranteed to go through the loop >=1 times.
+
+**USACO 2018 December Gold - Fine Dining** \
 11/28/2019 \
 Estimated CF Rating: 1700
 
@@ -64,7 +79,7 @@ Dijkstras but with one catch: We must account for the candy.
 This is not bad. Simply take the original shortest paths.
 Then, we input the haybales. For each haybale, let it lead to a point N+1 with weight (distance to n) - yumminess. Run Dijkstra again on a different distance array, and compare the distances at the end.
 
-**USACO 2018 December USACO Gold - Cowpatibility**\
+**USACO 2018 December Gold - Cowpatibility**\
 11/28/2019 \
 Estimated CF Rating: 2300
 
@@ -81,7 +96,7 @@ unordered_map is better because it processes adds in O(1), while map may take O(
 
 (btw you is in reference to me, because i want to tell my future self about this new geniosity that i have temporarily acquired)
 
-**USACO 2018 December USACO Gold - Teamwork** \
+**USACO 2018 December Gold - Teamwork** \
 11/28/2019 \
 Estimated CF Rating: 1600
 

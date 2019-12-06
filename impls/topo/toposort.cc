@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> // :rage: :deciduous_tree:
 
 #pragma GCC optimize("O3")
 
@@ -18,17 +18,17 @@ using namespace std;
 	cin.tie(NULL);                \
 	cout.tie(NULL)
 
-#define fileio(in, out) \
+#define fileio(in, out)      \
 	freopen(in, "r", stdin); \
 	freopen(out, "w", stdout);
 
-#define long long long
-
-#define bitinc(x) x&-x
+#define ll long long
 
 typedef set<int> si;
+typedef multiset<int> msi;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
+typedef pair<int, pii> iii;
 typedef vector<pii> vii;
 typedef priority_queue<int> pqi;
 typedef stack<int> sti;
@@ -38,23 +38,40 @@ typedef map<int, int> mii;
 #define f first
 #define s second
 
-int n, arr[MAXN], bit[2*MAXN];
+#define LEFT(x) 2 * x
+#define RIGHT(x) 2 * x + 1
 
-int sum(int ind)
+int n, m;
+vi adj[MAXN];
+
+int indeg[MAXN];
+vi res;
+
+bool topo(int X)
 {
-	int sm = 0;
-	while(ind > 0)
+	// no need to reset the adjacency list and things
+	msi st;
+	FOR(i, n)
 	{
-		sm += bit[ind];
-		ind -= bitinc(ind);
+		if(!indeg[i])
+		{
+			st.insert(i);
+			// cout << i << endl;
+		}
 	}
-	return sm;
-}
-void upd(int ind, int val)
-{
-	while(ind <= n)
+	FOR(i, n)
 	{
-		bit[ind] += val;
-		ind += bitinc(ind);
+		int u = *st.begin();
+		if(st.empty()) return 0;
+		st.erase(st.begin());
+		res.pb(u+1);
+
+		for(int v : adj[u])
+		{
+			indeg[v]--;
+			if(indeg[v] == 0) st.insert(v);
+		}
+		// cout << u << endl;
 	}
+	return 1;
 }

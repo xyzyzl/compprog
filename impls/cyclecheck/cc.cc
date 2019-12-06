@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> // :rage: :deciduous_tree:
 
 #pragma GCC optimize("O3")
 
@@ -18,17 +18,17 @@ using namespace std;
 	cin.tie(NULL);                \
 	cout.tie(NULL)
 
-#define fileio(in, out) \
+#define fileio(in, out)      \
 	freopen(in, "r", stdin); \
 	freopen(out, "w", stdout);
 
-#define long long long
-
-#define bitinc(x) x&-x
+#define ll long long
 
 typedef set<int> si;
+typedef multiset<int> msi;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
+typedef pair<int, pii> iii;
 typedef vector<pii> vii;
 typedef priority_queue<int> pqi;
 typedef stack<int> sti;
@@ -38,23 +38,40 @@ typedef map<int, int> mii;
 #define f first
 #define s second
 
-int n, arr[MAXN], bit[2*MAXN];
+#define LEFT(x) 2 * x
+#define RIGHT(x) 2 * x + 1
 
-int sum(int ind)
+int n, m, color[MAXN];
+vi adj[MAXN];
+bool vis[MAXN];
+bool cyclic(int v, int parent, int col)
 {
-	int sm = 0;
-	while(ind > 0)
+	vis[v] = 1;
+	color[v] = col;
+	for (int i : adj[v])
 	{
-		sm += bit[ind];
-		ind -= bitinc(ind);
+		if (!vis[i])
+		{
+			return cyclic(i, v, col);
+		}
+		else if (i != parent)
+		{
+			if (color[i] != col)
+				continue;
+			return 1;
+		}
 	}
-	return sm;
+	return 0;
 }
-void upd(int ind, int val)
+
+bool cyclic(int x)
 {
-	while(ind <= n)
+	int col = 0;
+	FOR(i, n)
 	{
-		bit[ind] += val;
-		ind += bitinc(ind);
+		if (!vis[i])
+			if (cyclic(i, -1, ++col))
+				return 1;
 	}
+	return 0;
 }
