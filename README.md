@@ -5,6 +5,16 @@ So as of 11/17/19 I have decided to start writing motivations to questions, in p
 
 Additionally it would make it harder for me to copy the editorial mindlessly, which is honestly the only way for me to solve some questions since I suck.
 
+**POI 2014 - Hotels** \
+12/8/2019 \
+Estimated CF Rating: 1900
+
+Tree Algos
+
+Run DFS to find the total number of children that have the same depth from a central node. Maintain all sets of these children and find the number at the end.
+
+(This DFS should have multiple starting points)
+
 **USACO 2013 February Gold - Route design** \
 11/20/2019 \
 Estimated CF Rating: 2000
@@ -53,7 +63,21 @@ But be sure to update *each* node. I forgot to do this so it took v long for me 
 
 just like how i don't have the stamina to do cp
 
-**USACO 2018 Open - Out of Sorts** \
+**USACO 2015 January Gold - Moovie Mooving**
+12.8.2019 \
+Estimated CF Difficulty: 2100
+
+Bitmasks, DP
+
+Note: Folder name is free_punjabi_movie_... 
+
+Let dp[S] be the amount of time taken for the subset S of movies. If this is at least L we are done.
+
+We see that because N < 20, we can run an exponential-time solution. Thus, we use bitmasks. We can add a movie i to our existing subset. If we do, we have to find the latest time that is before dp[existing subset]. This can be done with binary search. Given the best time, we simply add the duration of the movie to our total.
+
+Just take the minimum length of __builtin_popcount(mask).
+
+**USACO 2018 Open Gold - Out of Sorts** \
 12.5.2019 \
 Estimated CF Difficulty: 1800
 
