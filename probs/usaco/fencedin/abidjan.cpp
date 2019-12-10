@@ -8,6 +8,9 @@ typedef pair<int, int> ii;
 #define ff first
 #define ss second
 
+int A, B, n, m;
+int V, E;
+
 class UnionFind
 {
 private:
@@ -28,7 +31,7 @@ public:
     {
         return findSet(i) == findSet(j);
     }
-    void unionSet(int i, int j)
+    bool unionSet(int i, int j)
     {
         if (!isSameSet(i, j))
         {
@@ -38,15 +41,33 @@ public:
                 swap(a, b);
             }
             p[a] = b;
+            return 1;
         }
+        else
+            return 0;
     }
 };
 
-int A, B, n, m;
-int V, E;
+int p[2005 * 2005];
+
+int find_set(int i)
+{
+    return (p[i] == i) ? i : (p[i] = find_set(p[i]));
+}
+
+bool union_set(int i, int j)
+{
+    int x = find_set(i);
+    int y = find_set(j);
+    if (x == y)
+        return false;
+    p[x] = p[y] = p[i] = p[j] = x;
+    return true;
+}
+
 int mv(int r, int c)
 {
-    return r * (n + 1) + c;
+    return r * m + c;
 }
 
 vector<int> a, b, pa, pb;
@@ -57,8 +78,6 @@ main()
     cout.tie(NULL);
     freopen("fencedin.in", "r", stdin);
     freopen("fencedin.out", "w", stdout);
-    vector<pair<int, ii>> edges;
-
     cin >> A >> B >> n >> m;
     for (int i = 0; i < n; i++)
     {
@@ -90,42 +109,47 @@ main()
         pb[i] = b[i + 1] - b[i];
     }
     // cout << pa[n] << endl;
+    n++;
+    m++;
 
     a.clear();
     b.clear();
-    for (int i = 0; i < m + 1; i++)
-    {
-        for (int j = 0; j < n + 1; j++)
-        {
-            // cout << mv(i, j) << endl;
-            if (i > 0)
-                edges.push_back(make_pair(pa[j], make_pair(mv(i, j), mv(i - 1, j))));
-            if (i > 0)
-                edges.push_back(make_pair(pa[j], make_pair(mv(i - 1, j), mv(i, j))));
-            if (j > 0)
-                edges.push_back(make_pair(pb[i], make_pair(mv(i, j), mv(i, j - 1))));
-            if (j > 0)
-                edges.push_back(make_pair(pb[i], make_pair(mv(i, j - 1), mv(i, j))));
-        }
-    }
 
-    // cout << mv(2,5) << endl;
+    sort(pa.begin(), pa.end());
+    sort(pb.begin(), pb.end());
 
-    // cout << "aa" << endl;
-    V = (n + 1) * (m + 1);
+    V = (n) * (m);
 
-    E = edges.size();
-    sort(edges.begin(), edges.end());
+    for (int i = 0; i < V; i++)
+        p[i] = i;
 
-    UnionFind uf(V);
     long long cost = 0;
-    for (int i = 0; i < E; i++)
+    for (int i = 0, j = 0; i < n || j < m;)
     {
-        pair<int, ii> fr = edges[i];
-        if (!uf.isSameSet(fr.ss.ff, fr.ss.ss))
+        // cerr << pa[i] << " " << pb[j] << endl;
+        if (j == m || (i < n && pa[i] < pb[j]))
         {
-            cost += fr.ff;
-            uf.unionSet(fr.ss.ff, fr.ss.ss);
+            for (int s = 0; s < m - 1; s++)
+            {
+                if (union_set(mv(i, s), mv(i, s + 1)))
+                {
+                    // cerr << pa[i] << endl;
+                    cost += pa[i];
+                }
+            }
+            i++;
+        }
+        else
+        {
+            for (int s = 0; s < n - 1; s++)
+            {
+                // cerr << "here" << endl;
+                if (union_set(mv(s, j), mv(s + 1, j)))
+                {
+                    cost += pb[j];
+                }
+            }
+            j++;
         }
     }
     cout << cost << endl;
