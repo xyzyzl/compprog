@@ -77,6 +77,16 @@ We see that because N < 20, we can run an exponential-time solution. Thus, we us
 
 Just take the minimum length of __builtin_popcount(mask).
 
+**USACO 2016 Febrary Gold - Circular Barn Revisited** \
+12.9.2019 \
+Estimated CF Difficulty: 1700
+
+Simple DP. We can assume the start position is O, and wrap around as needed. (Or we could rotate the entire array at each step)
+
+Then at each index i, we loop through all indices j and open the jth door. Then we find the number of cows from i to j. We then find the best j and store that into our current state. We refresh the dp array n times, and each time we take the minimum that gets us to the end with k doors unlocked.
+
+Total time is O(n * n^2 k) = O(n^3 k).
+
 **USACO 2018 Open Gold - Out of Sorts** \
 12.5.2019 \
 Estimated CF Difficulty: 1800
