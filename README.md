@@ -87,6 +87,18 @@ Then at each index i, we loop through all indices j and open the jth door. Then 
 
 Total time is O(n * n^2 k) = O(n^3 k).
 
+**USACO 2017 January Gold - Cow Navigation** \
+12.10.2019 \
+Estimated CF Difficulty: 1800
+
+BFS
+
+Just BFS regularly, but the states and transitions are slightly modified to fit the problem. For each state, we keep track of Bessie's location if she were facing forwards or to the right, plus the direction of each. Then we just do our BFS. We start with our original state, and either rotate left, rotate right, or go forward. When we reach (N,N) for both movesets we just output the value since it's guaranteed to be the minimum if it reaches first.
+
+Issues (originally): Didn't freeze bessie when she reached (N,N) on only one direction, got 3/10.
+
+Total time is O(n^4), which passed in time for me.
+
 **USACO 2018 Open Gold - Out of Sorts** \
 12.5.2019 \
 Estimated CF Difficulty: 1800
