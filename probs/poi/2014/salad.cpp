@@ -1,4 +1,4 @@
-#include <bits/stdc++.h> // :rage: :deciduous_tree:
+#include <bits/stdc++.h> // idk lol
 
 #pragma GCC optimize("O3")
 
@@ -43,43 +43,42 @@ typedef map<int, int> mii;
 
 #define bitinc(x) x&-x
 
-int n, arr[MAXN],psum[MAXN];
+const int MAX(int &a, int b)
+{
+    a = max(a, b); 
+}
+const int MIN(int &a, int b)
+{
+    a = min(a, b); 
+}
+
+int n, arr[MAXN],psum[MAXN],pos[2*MAXN],r[MAXN];
 int main()
 {
-    int t = 1;
-    // cin >> t;
-    while(t--)
+    cin >> n;
+    char c;
+    FOBIR(i, n)
     {
-        cin >> n;
-        FOBIR(i, n)
-        {
-            char c;
-            cin >> c;
-            if(c == 'j') arr[i]=1;
-            else arr[i] = -1;
-        }
-        int ans = 0;
-        FOR(moo, 2)
-        {
-            memset(psum, 0, sizeof(psum));
-            FOBIR(i, n) psum[i] = psum[i-1] + arr[i];
-            int m = INT_MIN;
-            FOBIRD(i, n)
-            {
-                // i is the endpoint
-                int lo = 1;
-                int hi = i;
-                while(lo + 1 < hi)
-                {
-                    int mid = (lo+hi)/2;
-                    if(psum[i] - psum[mid-1] >= 0) lo = mid;
-                    else hi = mid;
-                }  
-                m = max(m, i-lo);
-            }
-            ans = max(ans, m);
-            reverse(arr, arr+n);
-        }
-        cout << ans << endl;
+        cin >> c;
+        arr[i] = (c=='p') ? 1 : -1;
     }
+    psum[0] = n;
+    FOBIR(i, n)
+    {
+        psum[i] = psum[i-1] + arr[i];
+    }
+    r[n] = pos[psum[n]] = n;
+    int ans = 0;
+    FORD(i, n)
+    {
+        if(psum[i] < psum[i+1])
+        {
+            r[i] = r[i+1];
+            if(pos[psum[i]] != 0 && psum[r[pos[psum[i]]]] >= psum[r[i]])
+                r[i] = r[pos[psum[i]]];
+        } else r[i] = i;
+        ans = max(ans, r[i] - i);
+        pos[psum[i]] = i;
+    }
+    cout << ans << endl;
 }

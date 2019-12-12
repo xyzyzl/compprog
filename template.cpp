@@ -1,15 +1,16 @@
-#include <bits/stdc++.h> // :rage: :deciduous_tree:
+#include <bits/stdc++.h>
 
 #pragma GCC optimize("O3")
 
 using namespace std;
 
-#define MAXN 100005
+#define MAXN 1000005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
 #define FORD(i, n) for (int i = n - 1; i >= 0; i--)
 #define FOBIR(i, n) for (int i = 1; i <= n; i++)
+#define FOBIRD(i, n) for (int i = n; i >= 1; i--)
 #define pb push_back
 #define mp make_pair
 #define endl '\n'
@@ -42,12 +43,11 @@ typedef map<int, int> mii;
 
 #define bitinc(x) x&-x
 
-int main()
+const int MAX(int &a, int b)
 {
-    int t = 1;
-    // cin >> t;
-    while(t--)
-    {
-
-    }
+    a = max(a, b); 
+}
+const int MIN(int &a, int b)
+{
+    a = min(a, b); 
 }

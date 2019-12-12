@@ -5,6 +5,20 @@ So as of 11/17/19 I have decided to start writing motivations to questions, in p
 
 Additionally it would make it harder for me to copy the editorial mindlessly, which is honestly the only way for me to solve some questions since I suck.
 
+**POI 2014 - Salad Bar** \
+12.11.2019 \
+Estimated CF Rating: 2200
+
+Ranch dressing, Implementation, borderline dp (?)
+
+Let an apple have value -1 and an orange have value 1. We see that by taking the prefix sums (which we put in psum[x]) we can determine whether there are more apples or oranges in a given interval. If psum[i] > psum[j<i], then index i has more oranges than in psum[j]. Thus, if we pick the interval from j to i, we will have more oranges than apples at index j.
+
+However, psum[i-1] <= psum[x] <= psum[j] must be true for all indices x in the interval [i,j]. Thus we need to check and see if the current index is below the final value. If psum[i] > psum[i+1] clearly the rightmost for i must be i itself. However, otherwise we can recurse. The rightmost, first, is clearly the rightmost for the next index. Additionally, we can store the last instance of this prefix sum value. If the prefix sum for the rightmost of that is greater than or equal to that of the current rightmost, we can just set our rightmost to the rightmost of the last instance.
+
+Remember to reset the last instance and take a running max.
+
+Mistakes I made: Binary searching for the right/leftmost does not work because just because a prefix sum is greater doesn't mean everything in between is greater.
+
 **POI 2014 - Hotels** \
 12/8/2019 \
 Estimated CF Rating: 1900
@@ -63,7 +77,7 @@ But be sure to update *each* node. I forgot to do this so it took v long for me 
 
 just like how i don't have the stamina to do cp
 
-**USACO 2015 January Gold - Moovie Mooving**
+**USACO 2015 January Gold - Moovie Mooving** \
 12.8.2019 \
 Estimated CF Difficulty: 2100
 
@@ -77,7 +91,7 @@ We see that because N < 20, we can run an exponential-time solution. Thus, we us
 
 Just take the minimum length of __builtin_popcount(mask).
 
-**USACO 2016 Febrary Gold - Circular Barn Revisited** \
+**USACO 2016 February Gold - Circular Barn Revisited** \
 12.9.2019 \
 Estimated CF Difficulty: 1700
 
@@ -86,6 +100,14 @@ Simple DP. We can assume the start position is O, and wrap around as needed. (Or
 Then at each index i, we loop through all indices j and open the jth door. Then we find the number of cows from i to j. We then find the best j and store that into our current state. We refresh the dp array n times, and each time we take the minimum that gets us to the end with k doors unlocked.
 
 Total time is O(n * n^2 k) = O(n^3 k).
+
+**USACO 2016 February Gold - Fenced in** \
+12.9.2019 \
+Estimated CF Difficulty: 2000
+
+Just run an MST algorithm, but don't store the edges. Instead find the edges when you are at some pair of point. Doing Kruskal like this should not be very different from the original variant
+
+Storing the edges = MLE. I did that and got 7/10.
 
 **USACO 2017 January Gold - Cow Navigation** \
 12.10.2019 \
