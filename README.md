@@ -77,6 +77,18 @@ But be sure to update *each* node. I forgot to do this so it took v long for me 
 
 just like how i don't have the stamina to do cp
 
+**USACO 2015 January Gold - Cow Rectangles** \
+12.12.2019 \
+Estimated CF Difficulty: 1600 \
+
+Standard sweepline. Pick a bound of y-coordinates and for every cow in this bound of y-coordinates simulate through and find the largest area that doesn't have any Guernseys. This can be done by seeing if the current x-value is "pure", or that it has solely Holsteins. If not, then we wait until we stumble upon a "pure" x-coordinate. Then we just repeat the process.
+
+At the end, if there is a suitable cow at this x-coordinate then we check if the number of cows is greater. If so, then we maximize the number of cows and update the area.
+
+The total complexity is around O(n^3), which passes. If it ever hits TLE then there are two options: 1) switch to c++ 2) use faster IO methods
+
+Mistakes I made were: Put an AND sign instead of OR. This should not happen as it took a long time to debug :(
+
 **USACO 2015 January Gold - Moovie Mooving** \
 12.8.2019 \
 Estimated CF Difficulty: 2100
