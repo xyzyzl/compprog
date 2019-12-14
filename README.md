@@ -133,6 +133,16 @@ Issues (originally): Didn't freeze bessie when she reached (N,N) on only one dir
 
 Total time is O(n^4), which passed in time for me.
 
+**USACO 2017 Open Gold - Bovine Genomics** \
+12.13.2019 (unlucky omg) \
+Estimated CF Difficulty: 2500
+
+Hashing, Strings
+
+At first glance it was pretty obvious that this question was a hashable one. You can do some form of hash to find the substring values efficiently. 
+
+Well my polynomial hash was definitely poorly constructed and I was too lazy to look for a fix since long code so I just changed the hash function.
+
 **USACO 2018 Open Gold - Out of Sorts** \
 12.5.2019 \
 Estimated CF Difficulty: 1800
