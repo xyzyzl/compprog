@@ -56,13 +56,27 @@ const int MIN(int &a, int b)
     return a = min(a, b); 
 }
 
+int n, m;
+viii adj[MAXN];
 int main()
 {
+    fileio("pump.in", "pump.out");
     int t = 1;
-    // cin >> t; // uncomment if it's multitest
+    // cin >> t // uncomment if it's multitest
     while(t--)
     {
-    
+        cin >> n >> m;
+        FOR(i, m)
+        {
+            int a, b, c, f;
+            cin >> a >> b >> c >> f;
+            --a;
+            --b;
+            adj[a].pb(mp(b, mp(c,f)));
+            adj[b].pb(mp(a, mp(c,f)));
+        }
+        
+        // end_tc:
     }
-    
+    // end_mn:
 }

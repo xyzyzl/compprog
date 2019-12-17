@@ -1,4 +1,4 @@
-int p[2005 * 2005];
+int n, p[2005 * 2005];
 
 int find_set(int i)
 {
@@ -13,4 +13,9 @@ bool union_set(int i, int j)
         return false;
     p[x] = p[y] = p[i] = p[j] = x;
     return true;
+}
+
+int init()
+{
+    for(int i = 0; i < n; i++) p[i] = i;
 }
