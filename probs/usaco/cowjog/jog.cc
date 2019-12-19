@@ -1,6 +1,3 @@
-// Time:
-// Algorithms: 
-
 #include <bits/stdc++.h>
 
 #pragma GCC optimize("O3")
@@ -27,14 +24,12 @@ using namespace std;
     freopen(out, "w", stdout);
 
 #define ll long long
-#define INF (1e9*1)+5
 
 typedef set<int> si;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
 typedef pair<int, pii> iii;
 typedef vector<pii> vii;
-typedef vector<iii> viii;
 typedef priority_queue<int> pqi;
 typedef stack<int> sti;
 typedef queue<int> qi;
@@ -50,20 +45,33 @@ typedef map<int, int> mii;
 
 const int MAX(int &a, int b)
 {
-    return a = max(a, b); 
+    a = max(a, b); 
 }
 const int MIN(int &a, int b)
 {
-    return a = min(a, b); 
+    a = min(a, b); 
 }
+
+int n;
+ll t;
+vector<ll> x;
 
 int main()
 {
-    int t = 1;
-    // cin >> t; // uncomment if it's multitest
-    while(t--)
+    fileio("cowjog.in", "cowjog.out");
+    cin >> n >> t;
+    FOR(i, n)
     {
-    
+        ll pos, spd;
+        cin >> pos >> spd;
+        ll m = (-(pos + t*spd));
+        if(x.empty() || m >= *x.rbegin())
+        {
+            x.pb(m);
+        } else 
+        {
+            *upper_bound(x.begin(), x.end(), m) = m;
+        }
     }
-    
+    cout << x.size() << endl;
 }
