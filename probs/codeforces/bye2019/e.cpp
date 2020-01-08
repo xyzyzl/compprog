@@ -7,8 +7,7 @@
 
 using namespace std;
 
-#define MAXN 1005
-#define MAXK 15
+#define MAXN 200005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -29,7 +28,6 @@ using namespace std;
 
 #define ll long long
 #define INF (1e9*1)+5
-#define MOD (ll)((1e9*1)+9)
 
 typedef set<int> si;
 typedef vector<int> vi;
@@ -59,47 +57,70 @@ const int MIN(int &a, int b)
     return a = min(a, b); 
 }
 
-int n, m, k, a[MAXN], b[MAXN];
-ll dp[MAXN][MAXN], ar[MAXN][MAXN];
+int n, freq[MAXN];
 int main()
 {
-    DUEHOANG;
-    fileio("team.in", "team.out");
     int t = 1;
     // cin >> t; // uncomment if it's multitest
     while(t--)
     {
-        cin >> n >> m >> k;
-        FOR(i, n) cin >> a[i];
-        FOR(i, m) cin >> b[i];
-        sort(a, a+n);
-        sort(b, b+m);
-        FOR(i, n+1) FOR(j, m+1)
+        cin >> n;
+        FOR(i, n)
         {
-            dp[i][j] = 1; // state 0
+            int x;
+            cin >> x;
+            freq[x]++;
         }
-        FOR(x, k)
+        // find min value
+        int ct = 0;
+        FOBIR(i, n)
         {
-            memset(ar, 0, sizeof(ar));
-            FOR(i, n) FOR(j, m)
+            if(!freq[i]) continue;
+            else 
             {
-                if(a[i] > b[j]) ar[i+1][j+1] += dp[i][j];
-            }
-            FOR(i, n+1) FOR(j, m+1)
-            {
-                dp[i][j] = ar[i][j];
-            }
-            FOR(i, n+1) FOR(j, m+1)
-            {
-                // note that every group that consists of things before i, j from the previous iteration can be used in the current
-                // set, we should reflect that in the current
-                if(i) dp[i][j] += dp[i-1][j];
-                if(j) dp[i][j] += dp[i][j-1];
-                if(i && j) dp[i][j] -= dp[i-1][j-1];
-
-                dp[i][j] = (dp[i][j] % MOD + MOD) % MOD; // ensure modulo 100000007
+                ct++;
+                i += 2;
             }
         }
-        cout << dp[n][m] % MOD << endl;
+        cout << ct << " ";
+		// find max value
+		ct = 0;
+		bool ex = 0;
+		int dist = 2;
+		FOBIR(i, n)
+		{
+			if(!freq[i])
+			{
+				dist++;
+				continue;
+			}
+			int right = i;
+			int sm = 0;
+			while(right <= n && freq[right])
+			{
+				right++;
+				sm += freq[right-1];
+			}
+			ct += (right-i); // the number of houses that form a segment
+			if(sm > (right-i) && (!ex || dist > 1))
+			{
+				sm--;
+				ct++;
+				// cout << "yes" << endl;
+			}
+			ex = 0; // extendable?
+			if(sm > (right-i))
+			{
+				ex = 1;
+				ct++;
+				// cout << "ok" << endl;
+			}
+			dist = 0;
+			// cout << i << " " << right - 1 << endl;
+			// cout << ct << endl;
+			i = right-1; // sets i back to right value
+		}
+		cout << ct << endl;
     }
+    
 }

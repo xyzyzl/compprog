@@ -7,8 +7,7 @@
 
 using namespace std;
 
-#define MAXN 1005
-#define MAXK 15
+#define MAXN 105
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -29,7 +28,6 @@ using namespace std;
 
 #define ll long long
 #define INF (1e9*1)+5
-#define MOD (ll)((1e9*1)+9)
 
 typedef set<int> si;
 typedef vector<int> vi;
@@ -59,47 +57,47 @@ const int MIN(int &a, int b)
     return a = min(a, b); 
 }
 
-int n, m, k, a[MAXN], b[MAXN];
-ll dp[MAXN][MAXN], ar[MAXN][MAXN];
+int n, arr[MAXN];
+int dp[MAXN][MAXN][MAXN][2];
 int main()
 {
-    DUEHOANG;
-    fileio("team.in", "team.out");
     int t = 1;
     // cin >> t; // uncomment if it's multitest
     while(t--)
     {
-        cin >> n >> m >> k;
-        FOR(i, n) cin >> a[i];
-        FOR(i, m) cin >> b[i];
-        sort(a, a+n);
-        sort(b, b+m);
-        FOR(i, n+1) FOR(j, m+1)
+        cin >> n;
+        FOR(i, n)
         {
-            dp[i][j] = 1; // state 0
+            cin >> arr[i];
         }
-        FOR(x, k)
+        FOR(i, n) FOR(j, n) FOR(k, n) FOR(l, 2)
         {
-            memset(ar, 0, sizeof(ar));
-            FOR(i, n) FOR(j, m)
+            dp[i][j][k][l] = INF;
+        }
+        dp[0][1][0][0] = 0;
+        dp[0][0][1][1] = 0;
+        if(arr[0])
+        {
+            // cerr << "ajsod" << endl;
+            if(arr[0] % 2) dp[0][1][0][0] = INF;
+            else dp[0][0][1][1] = INF;
+        }
+        // time for real transition!
+        FORR(1, i, n) FOR(j, n) FOR(k, n)
+        {
+            // curr value is even
+            if(!(arr[i] % 2) && j)
             {
-                if(a[i] > b[j]) ar[i+1][j+1] += dp[i][j];
+                // this includes if arr[i] is 0
+                dp[i][j][k][0] = min(dp[i-1][j-1][k][0], dp[i-1][j-1][k][1] + 1);
             }
-            FOR(i, n+1) FOR(j, m+1)
+            if((arr[i] % 2 || !arr[i]) && k) // curr value is odd 
             {
-                dp[i][j] = ar[i][j];
-            }
-            FOR(i, n+1) FOR(j, m+1)
-            {
-                // note that every group that consists of things before i, j from the previous iteration can be used in the current
-                // set, we should reflect that in the current
-                if(i) dp[i][j] += dp[i-1][j];
-                if(j) dp[i][j] += dp[i][j-1];
-                if(i && j) dp[i][j] -= dp[i-1][j-1];
-
-                dp[i][j] = (dp[i][j] % MOD + MOD) % MOD; // ensure modulo 100000007
+                dp[i][j][k][1] = min(dp[i-1][j][k-1][0] + 1, dp[i-1][j][k-1][1]);
             }
         }
-        cout << dp[n][m] % MOD << endl;
+        int eve = n/2;
+        cout << min(dp[n-1][eve][n-eve][0], dp[n-1][eve][n-eve][1]) << endl;
     }
+    
 }
