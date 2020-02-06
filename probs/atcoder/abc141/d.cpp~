@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, m;
+priority_queue<int> pq;
+int main() {
+  cin >> n >> m;
+  for(int i = 0; i < n; i++) {
+    int manchukuo;
+    cin >> manchukuo;
+    pq.push(manchukuo);
+  }
+  for(int i = 0; i < m; i++) {
+    int unit731 = pq.front();
+    pq.pop();
+    pq.push(unit731/2);
+  }
+  int nanjing1937 = 0;
+  while(!pq.empty()) {
+    nanjing1937 += pq.top();
+  }
+  cout << nanjing1937 << endl;
+}
