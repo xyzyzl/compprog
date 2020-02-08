@@ -86,6 +86,7 @@ int main()
         dp[0] = 0;
         FOBIR(i, p+1)
         {
+	    dp[i] = (ll)(bb[i].f.f + bb[i].f.s);
             for(auto it = prev(upper_bound(lst.begin(), lst.end(), mp(bb[i].f, INT_MAX))); it != lst.begin(); it--)
             {
                 int j = it->s;
