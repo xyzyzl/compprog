@@ -1,5 +1,5 @@
 // Time:
-// Algorithms: 
+// Algorithms:
 
 #include <bits/stdc++.h>
 
@@ -29,7 +29,7 @@ using namespace std;
 
 #define ll long long
 #define int ll
-#define INF (1e9*1)+5
+#define INF (1e9 * 1) + 5
 
 typedef set<int> si;
 typedef vector<int> vi;
@@ -48,15 +48,15 @@ typedef map<int, int> mii;
 #define LEFT(x) 2 * x
 #define RIGHT(x) 2 * x + 1
 
-#define bitinc(x) x&-x
+#define bitinc(x) x & -x
 
 const int MAX(int &a, int b)
 {
-    return a = max(a, b); 
+    return a = max(a, b);
 }
 const int MIN(int &a, int b)
 {
-    return a = min(a, b); 
+    return a = min(a, b);
 }
 
 int n;
@@ -64,6 +64,28 @@ ll h_table[HASHY];
 ll arr[MAXN];
 ll dat[MAXN][MAXN];
 bool vis[MAXN][MAXN];
+
+ll asdf(int st, int en)
+{
+    if (st > en)
+        return -1;
+    if (st == en)
+    {
+        // cout << dat[st][en] << endl;
+        return dat[st][en];
+    }
+    if (vis[st][en])
+        return dat[st][en];
+    vis[st][en] = 1;
+    ll first = asdf(st + 1, en);
+    ll second = asdf(st, en - 1);
+    ll over = asdf(st + 1, en - 1);
+    if (first == -1 || second == -1 || over == -1)
+        return 0;
+    dat[st][en] = dat[st][en] + first + second - over;
+    // if(st == 1 && en == 4) cout << first << " " << second << " " << over << endl;
+    return dat[st][en];
+}
 
 signed main()
 {
@@ -78,23 +100,24 @@ signed main()
     FORD(i, n)
     {
         // unordered_set<ll> x;
-        int curr_sum = 1e6-arr[i];
-        FORR(i+1, j, n)
+        int curr_sum = 1e6 - arr[i];
+        FORR(i + 1, j, n)
         {
-            if(1e6-arr[i]-arr[j] >= 0 && 1e6-arr[i]-arr[j] <= 2*1e6)
-	    {
-		dat[i][j] = h_table[(int)1e6-arr[i]-arr[j]];
-		// cout << i << " " << j << endl;
+            if (1e6 - arr[i] - arr[j] >= 0 && 1e6 - arr[i] - arr[j] <= 2 * 1e6)
+            {
+                dat[i][j] = h_table[(int)1e6 - arr[i] - arr[j]];
+                // cout << i << " " << j << endl;
             }
-	    // cout << i << " " << j << endl;
-            h_table[(int)1e6+arr[j]]++;
+            // cout << i << " " << j << endl;
+            h_table[(int)1e6 + arr[j]]++;
         }
-	FORR(i+1, j, n)
-	{
-	    h_table[(int)1e6+arr[j]]--;
-	}
+        FORR(i + 1, j, n)
+        {
+            h_table[(int)1e6 + arr[j]]--;
+        }
     }
     // cout << dat[1][4] << endl;
+    /*
     FORD(i, n)
     {
 	FORR(i+1, j, n)
@@ -102,7 +125,9 @@ signed main()
 	    dat[i][j] += dat[i+1][j] + dat[i][j-1] - dat[i+1][j-1];
 	}
     }
-    while(t--)
+    */
+    asdf(0, n - 1);
+    while (t--)
     {
         int l, r;
         cin >> l >> r;
@@ -110,5 +135,4 @@ signed main()
         r--;
         cout << dat[l][r] << endl;
     }
-    
 }
