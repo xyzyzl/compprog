@@ -1,6 +1,8 @@
 #define ll long long
 #define MOD 1e9+7
 
+// due to Benjamin Qi
+
 namespace modOp
 {
     int ad(int a, int b, int mod = MOD) { return (a+b)%mod; }

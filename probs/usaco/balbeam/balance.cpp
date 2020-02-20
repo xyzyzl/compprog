@@ -31,7 +31,7 @@ using namespace std;
 #define ll long long
 #define INF (1e9*1)+5
 
-#define O make_pair(0,0)
+#define O mp(0,0)
 
 typedef set<int> si;
 typedef vector<int> vi;
@@ -62,7 +62,6 @@ const int MIN(int &a, int b)
 }
 
 int n, arr[MAXN];
-long double ans[MAXN];
 pii pts[MAXN];
 
 unsigned int dist_2(pii p1, pii p2)
@@ -84,7 +83,7 @@ bool comp(pii a, pii b)
     {
         return (dist_2(O, b) >= dist_2(O, a));
     }
-    return (x == 2);
+    return (x == 1);
 }
 
 pii sec_to_top(stack<pii> &st)
@@ -99,83 +98,45 @@ pii sec_to_top(stack<pii> &st)
 vii hull;
 void convex()
 {
-    int ymin = pts[0].s, mn = 0;
-    FOBIR(i, n)
-    {
-        int y = pts[i].s;
-        if(y < ymin)
-        {
-            ymin = y;
-            mn = i;
-        }
-    }
-    pii thing = pts[0];
-    pts[0] = pts[mn];
-    pts[mn] = thing;
-    sort(pts+1, pts+n, comp); // sort the points
+    sort(pts+1, pts+n+2, comp); // sort the points
     // cerr << "tUrkmenistan" << endl;
 
     // cerr << pts[79976].f << " " << pts[79976].s << endl;
     int m = 1;
-    FOBIR(i, n-1)
+    FOBIR(i, n+1)
     {
-        while(i < n && orientation(O,pts[i],pts[i+1]) == 0) i++;
+        while(i < n+1 && orientation(O,pts[i],pts[i+1]) == 0) i++;
         pts[m] = pts[i];
         ++m;
     }
     // cerr << "brug" << endl;
-    if(m < 3)
-    {
-        FOR(i, m)
-        {
-            hull.pb(pts[i]);
-        }
-        return;
-    }
     // cerr << m << endl;
     stack<pii> st;
     // cerr << "jldsljkfd" << endl;
-    st.push(pts[0]);
-    st.push(pts[1]);
-    st.push(pts[2]);
-    bool blah = 0;
-    FORR(3, i, m)
+    FOR(i, m)
     {
         // cerr << i << endl;
-        while(st.size() > 2 && orientation(sec_to_top(st), st.top(), pts[i]) != 2)
+        while(st.size() >= 2 && orientation(sec_to_top(st), st.top(), pts[i]) != 1)
         {
-            if(!blah)
-            {
-                blah = 1;
-                // cerr << st.top().f << endl;
-            }
             st.pop();
         }
         st.push(pts[i]);
-        if(i == 80000)
-        {
-            // cerr << "hello!" << endl;
-        }
     }
     // cerr << "ajdflakdjflkadjf" << endl;
     while(!st.empty())
     {
+        // cout << st.top().f << endl;
         hull.pb(st.top());
         st.pop();
     }
     reverse(hull.begin(), hull.end());
-    
-    for(pii p : hull)
-    {
-        // if(p.f == 80001) cerr << p.s << endl;
-        // cerr << p.f << " " << p.s << endl;
-    }
 }
 
+ll l[MAXN], r[MAXN];
 signed main()
 {
     DUEHOANG;
-    // fileio("bruh.txt", "ok.txt");
+    fileio("balance.in", "balance.out");
     int t = 1;
     // cin >> t; // uncomment if it's multitest
     while(t--)
@@ -186,27 +147,34 @@ signed main()
             // cerr << i << endl;
             cin >> arr[i];
         }
-        if(n == 1)
-        {
-            cout << setprecision(9) << fixed << (double)arr[1] << endl;
-            return 0;
-        }
+        
         FOBIR(i, n)
         {
-            pts[i].s = arr[i] + pts[i-1].s;
+            pts[i].s = arr[i];
             pts[i].f = i;
         }
         pts[0] = mp(0, 0);
+        pts[n+1] = mp(n+1, 0);
         // cerr << "bruh" << endl;
-        convex(); // gives the entire convex hull, but we only care about the lower portion
-        FOBIR(i, hull.size()-1)
+        convex(); // gives the entire convex hull, but we only care about the upper portion
+        FOR(i, hull.size()-1)
         {
-            // if(hull[i] < hull[i-1]) break;
-            long double ret = (long double)(hull[i].s - hull[i-1].s)/(long double)(hull[i].f - hull[i-1].f);
-            // if(ret == 79999.5) cerr << hull[i].f << " " << hull[i-1].f << endl;
-            FORR(hull[i-1].f, j, hull[i].f)
+            FORR(hull[i].f + 1, j, hull[i+1].f)
+            {   
+                l[j] = hull[i].f;
+                r[j] = hull[i+1].f;
+            }
+            l[hull[i].f] = r[hull[i].f] = hull[i].f;
+        }
+        l[n+1] = r[n+1] = hull.back().f;
+        FOBIR(i, n)
+        {
+            if(l[i] == r[i])
             {
-                cout << setprecision(9) << fixed << ret << endl;
+                cout << 100000ll * arr[i] << endl;
+            } else 
+            {
+                cout << 100000ull * (((unsigned int)(r[i] - i) * (unsigned int)arr[l[i]]) + ((unsigned int)(i - l[i]) * (unsigned int)arr[r[i]])) / ((unsigned int) r[i] - l[i]) << endl;
             }
         }
     }
