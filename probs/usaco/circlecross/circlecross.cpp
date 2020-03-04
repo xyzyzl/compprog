@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 50005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -50,50 +50,66 @@ typedef map<int, int> mii;
 
 const int MAX(int &a, int b)
 {
-    return a = max(a, b); 
+	return a = max(a, b); 
 }
 const int MIN(int &a, int b)
 {
-    return a = min(a, b); 
+	return a = min(a, b); 
 }
 
-int n,m,C,val[MAXN], best[MAXN][MAXN];
-vi adj[MAXN];
+int n, bit[3*MAXN];
+pii arr[MAXN];
+int sum(int ind)
+{
+	++ind;
+	int sm = 0;
+	while(ind > 0)
+	{
+		sm += bit[ind];
+		ind -= ind & (-ind);
+	}
+	return sm;
+}
+void upd(int ind, int val)
+{
+	++ind;
+	while(ind <= n)
+	{
+		bit[ind] += val;
+		ind += ind & (-ind);
+	}
+}
+
 int main()
 {
-    fileio("time.in", "time.out");
     int t = 1;
     // cin >> t; // uncomment if it's multitest
     while(t--)
     {
-        cin >> n >> m >> C;
-        FOR(i, n) cin >> val[i];
-        FOR(i, m)
-        {
-            int a, b;
-            cin >> a >> b;
-            a--; b--;
-            adj[a].pb(b);
-        }
+		cin >> n;
+		FOR(i, n)
+		{
+			arr[i].f = arr[i].s = -1;
+		}
+		FOR(i, 2*n)
+		{
+			int w;
+			cin >> w;
+			--w;
+			if(arr[w].f == -1) arr[w].f = i;
+			else arr[w].s = i;
+		}
+		// now all of the arr[i] are in place
+		sort(arr, arr+n);
+		int ans = 0;
+		FOR(i, n)
+		{
+			ans += (sum(arr[i].s) - sum(arr[i].f)); // number of endpoints
+			// up to 2nd index - # endpoints up to 1st index
+			upd(arr[i].s, 1);
+			cout << sum(arr[i].s) << endl;
+		}
+		cout << ans << endl;
     }
-    // since most you can earn at any city is 1000, the most steps
-    // you can take is 1000
-    memset(best, -1, sizeof(best));
-    best[0][0] = 0;
-    FOBIR(k, MAXN-1)
-    {
-        FOR(i, n)
-        {
-            for(int j : adj[i])
-            {
-                if(best[i][k-1] >= 0) best[j][k] = max(best[j][k], best[i][k-1] + val[j]);
-            }
-        }
-    }
-    int ans = 0;
-    FOR(k, MAXN)
-    {
-        ans = max(ans, best[0][k] - k * k * C);
-    }
-    cout << ans << endl;
+    
 }
