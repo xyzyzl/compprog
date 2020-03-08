@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 50005
+#define MAXN 1000005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -50,69 +50,46 @@ typedef map<int, int> mii;
 
 const int MAX(int &a, int b)
 {
-	return a = max(a, b); 
+    return a = max(a, b); 
 }
 const int MIN(int &a, int b)
 {
-	return a = min(a, b); 
+    return a = min(a, b); 
 }
 
-int n, bit[(1 << 17)];
-pii arr[MAXN];
-const int BIG = (1 << 17);
-
-/* 
- * Issue was with BIT 
- */
-int sum(int ind)
-{
-	int sm = 0;
-	for(int i = ind-1; ind != 0; i &= i-1)
-	{
-		sm += bit[i];
-		if(!i) break;
-	}
-	return sm;
-}
-void upd(int ind, int val)
-{
-	for(int i = ind | BIG; i < 2 * BIG; i += bitinc(i))
-	{
-		bit[i ^ BIG] += val;
-	}
-}
-
+int n, m, c, indeg[MAXN], arr[MAXN];
+vii adj[MAXN];
 int main()
 {
-	fileio("circlecross.in", "circlecross.out");
+	fileio("timeline.in", "timeline.out");
     int t = 1;
     // cin >> t; // uncomment if it's multitest
     while(t--)
     {
-		cin >> n;
-		FOR(i, n)
+		cin >> n >> m >> c;
+		FOR(i, n) cin >> arr[i];
+		FOR(i, c) 
 		{
-			arr[i].f = arr[i].s = -1;
+			int a, b, w;
+			cin >> a >> b >> w;
+			--a; --b;
+			adj[a].pb({b,w});
+			++indeg[b];
 		}
-		FOR(i, 2*n)
+		qi q;
+		FOR(i, n) if(!indeg[i]) q.push(i);
+		while(!q.empty())
 		{
-			int w;
-			cin >> w;
-			--w;
-			if(arr[w].f == -1) arr[w].f = i;
-			else arr[w].s = i;
+			int tp = q.front();
+			q.pop();
+			for(pii p : adj[tp])
+			{
+				arr[p.f] = max(arr[p.f], arr[tp] + p.s);
+				if(!(--indeg[p.f])) q.push(p.f); // only push once after
+				// all dependencies are resolved.
+			}
 		}
-		// now all of the arr[i] are in place
-		sort(arr, arr+n);
-		int ans = 0;
-		FOR(i, n)
-		{
-			ans += (sum(arr[i].s) - sum(arr[i].f)); // number of endpoints
-			// up to 2nd index - # endpoints up to 1st index
-			upd(arr[i].s, 1);
-			// cout << sum(arr[i].s) << endl;
-		}
-		cout << ans << endl;
+		FOR(i, n) cout << arr[i] << endl;
     }
     
 }
