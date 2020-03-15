@@ -1,11 +1,5 @@
 // Time:
-// Algorithms: Run Dijkstra to find all the shortest paths, then find which train tracks are deletable.
-// If an edge is on the shortest path to another node, then it must contain a shortest path to its parent.
-// Thus we can forget an edge (a,b) if wt[a] + w != wt[b]. Otherwise it would be the case that
-// the edge (a,b) does not give the shortest path to b.
-// If any train track is forgotten then we can simply remove it.
-// We can assign a flag which distinguishes train tracks from regular roads. We consider all edges such that wt[a] + w = wt[b]
-// and subtract the amount of train tracks found from the total.
+// Algorithms: 
 
 #include <bits/stdc++.h>
 
@@ -33,13 +27,13 @@ using namespace std;
     freopen(out, "w", stdout);
 
 #define ll long long
-
-#define INF 1e15 + 7
+#define MOD (1e9*1)+7
+#define INF (1e9*1)+5
 
 typedef set<int> si;
 typedef vector<int> vi;
-typedef pair<ll, ll> pii;
-typedef pair<ll, pii> iii;
+typedef pair<int, int> pii;
+typedef pair<int, pii> iii;
 typedef vector<pii> vii;
 typedef vector<iii> viii;
 typedef priority_queue<int> pqi;
@@ -53,111 +47,111 @@ typedef map<int, int> mii;
 #define LEFT(x) 2 * x
 #define RIGHT(x) 2 * x + 1
 
-#define bitinc(x) x & -x
+#define bitinc(x) x&-x
 
 const int MAX(int &a, int b)
 {
-    return a = max(a, b);
+    return a = max(a, b); 
 }
 const int MIN(int &a, int b)
 {
-    return a = min(a, b);
+    return a = min(a, b); 
 }
 
-int n, m, k, in[MAXN];
-ll wt[MAXN];
+int n,m,k;
 viii adj[MAXN], del[MAXN];
 
-void not_prim(int src)
+ll wt[MAXN];
+void dijkstra(int src)
 {
-    fill(wt, wt + n, INF);
+	fill(wt, wt + n, LLONG_MAX);
 
-    set<pii> pq;
-    pq.insert(mp(0, src));
+	set<pair<ll, ll> > pq;
+	pq.insert(mp(0ll, src));
 
-    wt[src] = 0;
+	wt[src] = 0ll;
 
-    int ct = 0;
-    while (!pq.empty())
-    {
-        pii tp = *pq.begin();
-        pq.erase(pq.begin());
+	while (!pq.empty())
+	{
+		pair<ll, ll> tp = *pq.begin();
+		pq.erase(pq.begin());
 
-        for (iii gu : adj[tp.s])
-        {
-            int w = gu.f;
-            int ind = gu.s.f;
-            if (wt[tp.s] + w < wt[ind])
-            {
-                pq.erase(mp(wt[ind], ind)); /// you can't efficiently erase with a priority queue
-                /// and you're processing way too many indices
-                wt[ind] = wt[tp.s] + w;
-                pq.insert(mp(wt[ind], ind));
-            }
-        }
-    }
+		for (pair<ll, pair<ll, ll> > gu : adj[tp.s])
+		{
+			ll w = gu.f;
+			ll ind = gu.s.f;
+			if (wt[tp.s] + w < wt[ind])
+			{
+				pq.erase(mp(wt[ind], ind)); /// you can't efficiently erase with a priority queue
+				/// and you're processing way too many indices
+				wt[ind] = wt[tp.s] + w;
+				pq.insert(mp(wt[ind], ind));
+			}
+		}
+	}
 }
 
-int d[MAXN];
+int indeg[MAXN];
 int main()
 {
     int t = 1;
     // cin >> t; // uncomment if it's multitest
-    while (t--)
+    while(t--)
     {
-        cin >> n >> m >> k;
-        FOR(i, m)
-        {
-            int a, b, w;
-            cin >> a >> b >> w;
-            --a;
-            --b;
-            adj[a].pb({w, {b, 0}});
-            adj[b].pb({w, {a, 0}});
-        }
-        FOR(i, k)
-        {
-            int b, w;
-            cin >> b >> w;
-            --b;
-            d[i] = b;
-            adj[0].pb({w, {b, 1}});
-            adj[b].pb({w, {0, 1}});
-        }
-        // cout << "a" << endl;
-        not_prim(0);
-        /*
-        FOR(i, n)
-        {
-            cout << wt[i] << " ";
-        }
-        cout << endl;
-        */
-        int e = 0; // times a train track is needed
-        FOR(i, n)
-        {
-            for(iii x : adj[i])
-            {
-                // cout << i << " " << x.s.f << endl;
-                if(wt[i] + x.f == wt[x.s.f])
-                {
-                    del[i].pb({x.f, {x.s.f, x.s.s}});
-                    in[x.s.f]++;
-                }
-            }
-        }
-        // FOR(i, n) cout << in[i] << endl;
-        FOR(i, n)
-        {
-            for(iii x : del[i])
-            {
-                if(x.s.s && in[x.s.f] == 1)
-                {
-                    e++;
-                    in[x.s.f]--;
-                }
-            }
-        }
-        cout << k - e << endl;
+		cin >> n >> m >> k;
+		FOR(i, m)
+		{
+			int a, b, w;
+			cin >> a >> b >> w;
+			--a; --b;
+			adj[a].pb(mp(w, mp(b, 0)));
+			adj[b].pb(mp(w, mp(a, 0)));
+		}
+		FOR(i, k)
+		{
+			int a, w;
+			cin >> a >> w;
+			--a;
+			adj[a].pb(mp(w, mp(0, 1)));
+			adj[0].pb(mp(w, mp(a, 1)));
+		}
+		dijkstra(0); // run dijkstra's from capital to find all
+		// shortest paths to the capital
+		
+		// now all we need is to make the graph with only shortest path
+		// nodes
+		
+		// FOR(i, n) cerr << wt[i] << " ";
+		// cerr << endl;
+		
+		FOR(i, n)
+		{
+			for(iii x : adj[i])
+			{
+				if(wt[i] + x.f == wt[x.s.f])
+				{
+					del[i].pb(mp(x.f, mp(x.s.f, x.s.s)));
+					indeg[x.s.f]++;
+				}
+			}
+		}
+		// need to find train edges that exclusively reach node
+		int e = 0;
+		FOR(i, n)
+		{
+			for(iii x : del[i])
+			{
+				if(x.s.s && indeg[x.s.f]==1)
+				{
+					e++;
+					// indeg[x.s.f]--;
+				} else if(x.s.s)
+				{
+					indeg[x.s.f]--;
+				}
+			}
+		}
+		cout << (k-e) << endl;
     }
+    
 }
