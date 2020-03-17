@@ -59,18 +59,13 @@ const int MIN(int &a, int b)
     return a = min(a, b); 
 }
 
-void solve()
-{
-	
-}
-
 int main()
 {
     int t = 1;
     // cin >> t; // uncomment if it's multitest
     while(t--)
     {
-    	solve();
+    
     }
     
 }
