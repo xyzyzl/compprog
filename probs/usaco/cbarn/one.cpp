@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 100005
+#define MAXN 1000005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -59,82 +59,47 @@ const int MIN(int &a, int b)
     return a = min(a, b); 
 }
 
-int n, q, p[MAXN], sz[MAXN], ans[MAXN];
-viii edg, que;
+int n, a[MAXN];
 
-int find_set(int i)
+ll sum(int a)
 {
-    return (p[i] == i) ? i : (p[i] = find_set(p[i]));
-}
-
-int find_sz(int i)
-{
-	return sz[find_set(i)];
-}
-
-bool union_set(int i, int j)
-{
-    int x = find_set(i);
-    int y = find_set(j);
-    if(x==y) return false;
-    p[x] = y;
-    sz[y] += sz[x];
-    return true;
-}
-
-void init()
-{
-	// cerr << n << endl;
-    for(int i = 0; i < n; i++)
-    {
-    	// cerr << "l" << endl;
-    	p[i] = i;
-    	sz[i] = 1;
-    	// cerr << (1848 > 0) << endl;
-    }
+	return a*(a+1)*(2*a+1)/6;
 }
 
 void solve()
 {
-	fileio("mootube.in", "mootube.out");
-	cin >> n >> q;
-	FOR(i, n-1)
+	fileio("cbarn.in", "cbarn.out");
+	cin >> n;
+	int T = 0;
+	FOR(i, n)
 	{
-		// cout << "bru" << endl;
-		int a, b, r;
-		cin >> a >> b >> r;
-		--a; --b;
-		edg.pb(mp(r, mp(a, b)));
+		cin >> a[i];
+		T--;
+		T += a[i];
+		MAX(T, 0);
 	}
-	// cerr << "bru" << endl;
-	sort(edg.begin(), edg.end());
-	reverse(edg.begin(), edg.end());
-	// cerr << "bru" << endl;
-	init();
-	// cerr << "e" << endl;
-	FOR(i, q)
+	FOR(i, n*4)
 	{
-		int k, v;
-		cin >> v >> k;
-		--k;
-		que.pb(mp(v, mp(k, i)));
-	}
-	// cout << "bru" << endl;
-	sort(que.begin(), que.end());
-	reverse(que.begin(), que.end());
-	int ind = 0;
-	for(iii x : que)
-	{
-		while(ind < n && edg[ind].f >= x.f)
+		if(T == 0)
 		{
-			union_set(edg[ind].s.f, edg[ind].s.s);
-			ind++;
+			// final wave processed
+			rotate(a, a+i, a+n);
+			break;
 		}
-		ans[x.s.s] = find_sz(x.s.f) - 1;
-		// cout << find_set(x.s.f) << endl;
-		// cout << x.f << " " << ans[x.s.s] << endl;
+		T--; // drop a cow off
+		T += a[i]; // add a cow
+		MAX(T, 0);
 	}
-	FOR(i, q) cout << ans[i] << endl;
+	
+	ll ans = 0;
+	FOR(i, n)
+	{
+		ans += sum(a[i] + T - 1) - sum(T - 1);
+		T--;
+		T += a[i];
+		MAX(T, 0);
+	}
+	cout << ans << endl;
 }
 
 int main()

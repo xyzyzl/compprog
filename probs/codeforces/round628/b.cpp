@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 1000005
+#define MAXN 100005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -59,18 +59,23 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, a[MAXN];
 void solve()
 {
-	
+	cin >> n;
+    si s;
+    FOR(i, n) 
+    {
+        int a;
+        cin >> a;
+        s.insert(a);
+    }
+    cout << s.size() << endl;
 }
 
 int main()
 {
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
-	while(t--)
-	{
-		solve();
-	}
-	
+	cin >> t; // uncomment if it's multitest
+    while(t--) solve();
 }
