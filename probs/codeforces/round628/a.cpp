@@ -1,5 +1,5 @@
 // Time:
-// Algorithms: 
+// Algorithms:
 
 #include <bits/stdc++.h>
 
@@ -27,9 +27,9 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
-#define MOD (1e9*1)+7
+#define MOD (1e9 * 1) + 7
 #define MOD2 998244353
-#define INF (1e9*1)+5
+#define INF (1e9 * 1) + 5
 
 typedef set<int> si;
 typedef vector<int> vi;
@@ -48,29 +48,30 @@ typedef map<int, int> mii;
 #define LEFT(x) 2 * x
 #define RIGHT(x) 2 * x + 1
 
-#define bitinc(x) x&-x
+#define bitinc(x) x & -x
 
 const int MAX(int &a, int b)
 {
-	return a = max(a, b); 
+	return a = max(a, b);
 }
 const int MIN(int &a, int b)
 {
-	return a = min(a, b); 
+	return a = min(a, b);
 }
 
 void solve()
 {
-	
+	int x;
+	cin >> x;
+	cout << 1 << " " << x-1 << endl;
 }
 
 int main()
 {
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
-	while(t--)
+	cin >> t; // uncomment if it's multitest
+	while (t--)
 	{
 		solve();
 	}
-	
 }

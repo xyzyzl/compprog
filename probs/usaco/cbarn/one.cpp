@@ -18,13 +18,13 @@ using namespace std;
 #define mp make_pair
 #define endl '\n'
 #define DUEHOANG                  \
-	ios_base::sync_with_stdio(0); \
-	cin.tie(NULL);                \
-	cout.tie(NULL)
+    ios_base::sync_with_stdio(0); \
+    cin.tie(NULL);                \
+    cout.tie(NULL)
 
 #define fileio(in, out)      \
-	freopen(in, "r", stdin); \
-	freopen(out, "w", stdout);
+    freopen(in, "r", stdin); \
+    freopen(out, "w", stdout);
 
 #define ll long long
 #define MOD (1e9*1)+7
@@ -52,25 +52,63 @@ typedef map<int, int> mii;
 
 const int MAX(int &a, int b)
 {
-	return a = max(a, b); 
+    return a = max(a, b); 
 }
 const int MIN(int &a, int b)
 {
-	return a = min(a, b); 
+    return a = min(a, b); 
+}
+
+int n, a[MAXN];
+
+ll sum(int a)
+{
+	return a*(a+1)*(2*a+1)/6;
 }
 
 void solve()
 {
+	fileio("cbarn.in", "cbarn.out");
+	cin >> n;
+	int T = 0;
+	FOR(i, n)
+	{
+		cin >> a[i];
+		T--;
+		T += a[i];
+		MAX(T, 0);
+	}
+	FOR(i, n*4)
+	{
+		if(T == 0)
+		{
+			// final wave processed
+			rotate(a, a+i, a+n);
+			break;
+		}
+		T--; // drop a cow off
+		T += a[i]; // add a cow
+		MAX(T, 0);
+	}
 	
+	ll ans = 0;
+	FOR(i, n)
+	{
+		ans += sum(a[i] + T - 1) - sum(T - 1);
+		T--;
+		T += a[i];
+		MAX(T, 0);
+	}
+	cout << ans << endl;
 }
 
 int main()
 {
-	int t = 1;
-	// cin >> t; // uncomment if it's multitest
-	while(t--)
-	{
-		solve();
-	}
-	
+    int t = 1;
+    // cin >> t; // uncomment if it's multitest
+    while(t--)
+    {
+    	solve();
+    }
+    
 }
