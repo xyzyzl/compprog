@@ -4,7 +4,7 @@ LANG: C++14
 PROB: poetry
 **/
 
-/// Time: O(n lg n)
+/// Time: O(m lg n)
 
 #include <bits/stdc++.h>
 
