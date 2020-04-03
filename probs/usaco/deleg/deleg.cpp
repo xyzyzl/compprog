@@ -79,6 +79,8 @@ bool test(int x)
 {
 	if((n-1)%x != 0) return 0;
 	// cout << x << endl;
+	memset(cur, 0, sizeof cur); // this needs to exist in order for
+	// cur to remain 0 each time
 	FOR(i, n)
 	{
 		int y = 0;

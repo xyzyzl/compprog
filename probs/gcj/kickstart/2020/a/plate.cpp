@@ -59,18 +59,49 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-void solve()
+int n, k, p, a[55][35];
+int dp[55][1505];
+void solve(int tc)
 {
-	
+	memset(dp, 0, sizeof dp);
+	memset(a, 0, sizeof a);
+	cin >> n >> k >> p;
+	F1R(i, n)
+	{
+		F1R(j, k)
+		{
+			int w;
+			cin >> w;
+			a[i][j] = a[i][j-1] + w;
+		}
+	}
+	/*
+	F1R(i, n)
+	{
+		F1R(j, k) cout << a[i][j] << " ";
+		cout << endl;
+	}
+	*/
+	F1R(i, n)
+	{
+		FOR(j, p+1)
+		{
+			FOR(q, 1+min(j, k))
+			{
+				dp[i][j] = max(dp[i][j], dp[i-1][j-q] + a[i][q]);
+			}
+		}
+	}
+	cout << "Case #" << tc << ": " << dp[n][p] << endl; // all n stacks and p plates
 }
 
 int main()
 {
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
-	while(t--)
+	cin >> t; // uncomment if it's multitest
+	F1R(tc, t)
 	{
-		solve();
+		solve(tc);
 	}
 	
 }

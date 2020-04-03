@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 1000005
+#define MAXN 100005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -59,18 +59,52 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-void solve()
+int n, k, m[MAXN], d[MAXN];
+
+bool ok(int x)
 {
-	
+	int r_tot = 0;
+	FOR(i, n-1)
+	{
+		r_tot += ceil(-1.0 + (double)d[i]/(double)x);
+	}
+	return r_tot <= k;
+}
+
+void solve(int x)
+{
+	memset(m, 0, sizeof m);
+	memset(d, 0, sizeof d);
+	cin >> n >> k;
+	FOR(i, n)
+	{
+		cin >> m[i];
+	}
+	FOR(i, n-1)
+	{
+		d[i] = m[i+1]-m[i];
+	}
+	int lo = 1;
+	int hi = INF;
+	while(lo < hi)
+	{
+		int mid = (lo+hi)/2;
+		if(ok(mid))
+		{
+			hi = mid; // mid is attainable
+		} else lo = mid+1; // mid not attainable
+	}
+	cout << "Case #" << x << ": " << lo << endl;
 }
 
 int main()
 {
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
+	int x = 0;
 	while(t--)
 	{
-		solve();
+		++x;
+		solve(x);
 	}
-	
 }

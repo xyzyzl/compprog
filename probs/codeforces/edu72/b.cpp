@@ -1,3 +1,4 @@
+
 // Time:
 // Algorithms: 
 
@@ -61,13 +62,29 @@ const int MIN(int &a, int b)
 
 void solve()
 {
-	
+	int n, x;
+	cin >> n >> x;
+	vi v(n), a(n);
+	FOR(i, n)
+	{
+		int d, h;
+		cin >> d >> h;
+		v[i] = d-h;
+		a[i] = d;
+	}
+	sort(v.begin(), v.end());
+	sort(a.begin(), a.end());
+	x -= a.back();
+	if(x <= 0) cout << 1 << endl;
+	else if(v.back() > 0)
+		cout << 1+(x+v.back()-1)/(v.back()) << endl;
+	else cout << -1 << endl;
 }
 
 int main()
 {
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

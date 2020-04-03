@@ -59,6 +59,7 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+
 void solve()
 {
 	

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 1000005
+#define MAXN (1 << 16)
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -18,13 +18,13 @@ using namespace std;
 #define mp make_pair
 #define endl '\n'
 #define DUEHOANG                  \
-	ios_base::sync_with_stdio(0); \
-	cin.tie(NULL);                \
-	cout.tie(NULL)
+ ios_base::sync_with_stdio(0); \
+ cin.tie(NULL);                \
+ cout.tie(NULL)
 
 #define fileio(in, out)      \
-	freopen(in, "r", stdin); \
-	freopen(out, "w", stdout);
+ freopen(in, "r", stdin); \
+ freopen(out, "w", stdout);
 
 #define ll long long
 #define MOD (1e9*1)+7
@@ -59,18 +59,49 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, d, lr[MAXN*2], lx[MAXN*2], xr[MAXN*2], xx[MAXN*2];
+
+// refreshes the D&C tree
+void refresh(int x)
+{
+	lr[x] = max(lr[LEFT(x)]+xr[RIGHT(x)],lx[LEFT(x)]+lr[RIGHT(x)]);
+	lx[x] = max(lr[LEFT(x)]+xx[RIGHT(x)],lx[LEFT(x)]+lx[RIGHT(x)]);
+	xr[x] = max(xx[LEFT(x)]+lr[RIGHT(x)],xr[LEFT(x)]+xr[RIGHT(x)]);
+	xx[x] = max(xr[LEFT(x)]+xx[RIGHT(x)],xx[LEFT(x)]+lx[RIGHT(x)]);
+}
+
 void solve()
 {
-	
+	cin >> n >> d;
+	FOR(i, n)
+	{
+		cin >> lr[i+MAXN];
+	}
+	FORD(i, MAXN) refresh(i);
+	ll ans = 0;
+	FOR(i, d)
+	{
+		int a, b;
+		cin >> a >> b; // online update
+		lr[(--a)+MAXN] = b;
+		for(int j = (a+MAXN)/2; j > 0; j /= 2)
+		{
+			refresh(j);
+		}
+		ans += lr[1];
+	}
+	cout << ans << endl;
 }
 
 int main()
 {
+	fileio("optmilk.in", "optmilk.out");
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+ // cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();
 	}
-	
+ 
 }
+
