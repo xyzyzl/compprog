@@ -61,13 +61,16 @@ const int MIN(int &a, int b)
 
 void solve()
 {
-	
+	int st, in, ex;
+	cin >> st >> in >> ex;
+	int k = max(0, min(ex+1, (int)ceil((st+ex-in)/(2.0))));
+	cout << k << endl;
 }
 
 int main()
 {
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

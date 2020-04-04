@@ -1,3 +1,4 @@
+
 // Time:
 // Algorithms: 
 
@@ -59,9 +60,56 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, m;
+vii adj[MAXN];
+bool back_edge[MAXN];
+bool vis[MAXN];
+si stk;
+
+void dfs(int v)
+{
+	vis[v] = 1;
+	stk.insert(v);
+	for(pii x : adj[v])
+	{
+		// cout << stk.size() << endl;
+		if(vis[x.f])
+		{
+			// cout << stk.size() << endl;
+			if(stk.count(x.f))
+			{
+				// cout << "yuh" << endl;
+				back_edge[x.s] = 1;
+			}
+			continue;
+		}
+		dfs(x.f);
+	}
+	stk.erase(v);
+}
+
 void solve()
 {
-	
+	cin >> n >> m;
+	FOR(i, m)
+	{
+		int a, b;
+		cin >> a >> b;
+		--a; --b;
+		adj[a].pb(mp(b, i));
+		// adj[b].pb(a);
+	}
+	// find all of the back-edges
+	FOR(i, n)
+	{
+		if(vis[i]) continue;
+		dfs(i);
+	}
+	int x = 1;
+	FOR(i, m) x = max(x, 1+back_edge[i]);
+	cout << x << endl;
+	FOR(i, m) cout << 1+back_edge[i] << " ";
+	cout << endl;
 }
 
 int main()

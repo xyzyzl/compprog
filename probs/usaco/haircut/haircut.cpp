@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 1000005
+#define MAXN 100005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -59,13 +59,74 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, max_el, min_el, r[MAXN];
+ll bit[2 * MAXN];
+
+ll sum(int ind)
+{
+	int sm = 0;
+	while(ind > 0)
+	{
+		sm += bit[ind];
+		ind -= bitinc(ind);
+	}
+	return sm;
+}
+void upd(int ind, int val)
+{
+	while(ind <= n)
+	{
+	 	bit[ind] += val;
+		ind += bitinc(ind);
+	}
+}
+
+// the number of inversions in r
+ll num_inv(int j)
+{
+	// cerr << "hi" << endl;
+	ll ct = 0;
+	FOR(i, n)
+	{
+		bit[i] = 0;
+	}
+	FORD(i, n)
+	{
+		// cerr << ct << endl;
+		ct += sum(min(j,r[i])-1);
+		// cerr << "G" << endl;
+		upd(min(j,r[i]), 1);
+		// cerr << "h" << endl;
+	}
+	return ct;
+}
+
+int ans[MAXN];
+bool vis[MAXN];
 void solve()
 {
-	
+	cin >> n;
+	min_el = n+2;
+	FOR(i, n)
+	{
+		cin >> r[i];
+		max_el = max(max_el, ++r[i]);
+		min_el = min(min_el, r[i]);
+		vis[r[i]] = 1;
+	}
+	// cerr << "don" << endl;
+	F1R(j, n)
+	{
+		if(vis[j]) ans[j] = num_inv(j+1); // O(n^2lgn)
+		else ans[j] = ans[j-1];
+	}
+	FOR(i, n) cout << ans[i] << endl;
+
 }
 
 int main()
 {
+	fileio("haircut.in", "haircut.out");
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
 	while(t--)

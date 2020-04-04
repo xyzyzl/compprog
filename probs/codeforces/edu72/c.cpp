@@ -1,3 +1,4 @@
+
 // Time:
 // Algorithms: 
 
@@ -61,16 +62,42 @@ const int MIN(int &a, int b)
 
 void solve()
 {
-	
+	string s;
+	cin >> s;
+	int n = s.length();
+	vi v(n); // FREESTAILO
+	FOR(i, n)
+	{
+		if(i == 0)
+		{
+			if(s[i] == '1') v[i] = 0;
+			else v[i] = -1;
+			continue;
+		}
+		if(s[i] == '1') v[i] = i;
+		else v[i] = v[i-1];
+	}
+	int res = 0;
+	FOR(i, n)
+	{
+		int sm = 0;
+		for(int j = i; j >= 0 && i-j <= 18; j--)
+		{
+			if(s[j] == '0') continue;
+			sm += 1 << (i-j);
+			if(sm <= i-(j == 0 ? -1 : v[j-1])) res++;
+		}
+	}
+	cout << res << endl;
 }
 
 int main()
 {
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();
 	}
-	
+
 }
