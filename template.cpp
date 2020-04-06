@@ -66,6 +66,7 @@ void solve()
 
 int main()
 {
+	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
 	while(t--)

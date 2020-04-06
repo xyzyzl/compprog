@@ -59,52 +59,14 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], bit[2*MAXN];
-ll inv[MAXN];
-
-int sum(int ind)
-{
-	int sm = 0;
-	while(ind > 0)
-	{
-		sm += bit[ind];
-		ind -= bitinc(ind);
-	}
-	return sm;
-}
-void upd(int ind, int val)
-{
-	while(ind <= n)
-	{
-		bit[ind] += val;
-		ind += bitinc(ind);
-	}
-}
 
 void solve()
 {
-	// cerr << "yu" << endl;
-	cin >> n;
-	FOR(i, n)
-	{
-		cin >> a[i];
-		a[i]++;
-		inv[a[i]] += i-sum(a[i]); // everything that isn't less than
-		upd(a[i], 1);
-	}
-	// cerr << "aa" << endl;
-	ll ans = 0;
-	F1R(i, n)
-	{
-		cout << ans << endl;
-		ans += (ll)inv[i];
-	}
-	// count the number of inversions
+	
 }
 
 int main()
 {
-	fileio("haircut.in", "haircut.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

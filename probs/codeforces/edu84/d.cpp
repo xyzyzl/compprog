@@ -59,55 +59,58 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], bit[2*MAXN];
-ll inv[MAXN];
-
-int sum(int ind)
-{
-	int sm = 0;
-	while(ind > 0)
-	{
-		sm += bit[ind];
-		ind -= bitinc(ind);
-	}
-	return sm;
-}
-void upd(int ind, int val)
-{
-	while(ind <= n)
-	{
-		bit[ind] += val;
-		ind += bitinc(ind);
-	}
-}
-
 void solve()
 {
-	// cerr << "yu" << endl;
+	int n;
 	cin >> n;
+	vi c(n), p(n);
 	FOR(i, n)
 	{
-		cin >> a[i];
-		a[i]++;
-		inv[a[i]] += i-sum(a[i]); // everything that isn't less than
-		upd(a[i], 1);
+		cin >> p[i];
+		--p[i];
 	}
-	// cerr << "aa" << endl;
-	ll ans = 0;
-	F1R(i, n)
+	FOR(i, n) cin >> c[i];
+	// put into a "cycle" format
+	vi vis(n);
+	int ans = INF;
+	FOR(i, n)
 	{
-		cout << ans << endl;
-		ans += (ll)inv[i];
+		if(vis[i]) continue;
+		vi cycle;
+		int v = i;
+		while(!vis[v])
+		{
+			vis[v] = 1; // originally misplaced oops
+			// cout << v << endl;
+			cycle.pb(v);
+			v=p[v];
+			// vis[v] = 1;
+		}
+		F1R(j, cycle.size())
+		{
+			if(cycle.size() % j) continue;
+			FOR(r, j)
+			{
+				bool good = 1;
+				for(int k = r; k + j < cycle.size(); k += j)
+					if(c[cycle[k]] != c[cycle[k+j]]) good = 0;
+				// if(j == 1) cout << cycle.size() << endl;
+				if(good)
+				{
+					MIN(ans, j);
+					break;
+				}
+			}
+		}
 	}
-	// count the number of inversions
+	cout << ans << endl;
 }
 
 int main()
 {
-	fileio("haircut.in", "haircut.out");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();
