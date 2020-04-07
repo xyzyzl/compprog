@@ -59,6 +59,11 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+void read()
+{
+
+}
+
 void solve()
 {
 	
@@ -71,6 +76,7 @@ int main()
 	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
+		read();
 		solve();
 	}
 	
