@@ -59,104 +59,101 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, m, p[MAXN], sz[MAXN];
-vi adj[MAXN];
-vi groups;
-qi q;
-int find_set(int i)
-{
-    return (p[i] == i) ? i : (p[i] = find_set(p[i]));
-}
-
-bool union_set(int i, int j)
-{
-    int x = find_set(i);
-    int y = find_set(j);
-    if (x == y)
-        return false;
-    p[x] = p[y] = x;
-    sz[x] += sz[y];
-    adj[x].insert(adj[x].end(), adj[y].begin(), adj[y].end());
-    adj[y].clear();
-    if(adj[x].size() >= 2) q.push(x);
-    return true;
-}
-
-void init()
-{
-    for(int i = 0; i < n; i++) p[i] = i;
-    for(int i = 0; i < n; i++) sz[i] = 1;
-}
-
+int n, k;
+vi dir;
 void read()
 {
-	// cerr << "y" << endl;
-	cin >> n >> m;
-	// cerr << "ye" << endl;
-	FOR(i, m)
+	cin >> n >> k;
+	dir.resize(n);
+	FOR(i, n)
 	{
-		int a, b;
-		cin >> a >> b;
-		--a; --b;
-		adj[a].pb(b);
+		char c;
+		cin >> c;
+		dir[i] = (c == 'R');
 	}
-	init();
-	// cerr << "yes" << endl;
+}
+
+vi find_bad(vi d)
+{
+	vi ret;
+	FOR(i, n-1)
+	{
+		if(d[i] == 1 && d[i+1] == 0) ret.pb(i);
+	}
+	return ret;
 }
 
 void solve()
 {
-	// add all of the elements admired by > 2 cows into the list
-	// qi adm;
-	FOR(i, n)
+	int lb = 0, ub = 0, cnt = 0, nxt = 0;
+	FORD(i, n)
 	{
-		if(adj[i].size() >= 2) q.push(i);
-	}
-	while(q.size())
-	{
-		int x = q.front();
-		// cerr << x << endl;
-		if(adj[x].size() <= 1)
+		if(dir[i])
 		{
-			q.pop();
-			continue;
+			ub += cnt;
+			lb = max(cnt, nxt + 1);
+			nxt = lb;
+		} else
+		{
+			cnt++;
 		}
-		int a = adj[x].back();
-		adj[x].pop_back();
-		int b = adj[x].back();
-		if(p[a] == p[b]) continue;
-		// merge the nodes
-		union_set(a, b);
 	}
-	vi sets(n);
-	FOR(i, n) sets[i] = find_set(i);
-	vi vis(n), val(n);
-	int ct = 0;
-	vi ans(n);
-	FOR(i, n)
+	if(k < lb || k > ub)
 	{
-		if(vis[sets[i]])
+		cout << -1 << endl;
+		return;
+	}
+
+	// need to find the number of head turns
+	bool reached = 0;
+	vi rem;
+	FOR(i, k)
+	{
+		if(!reached)
 		{
-			ans[i] = val[sets[i]];
+			vi bad = find_bad(dir);
+			cout << min((int)bad.size(), ub - k + i + 1) << ' ';
+			int cur = 0;
+			while(k-i-1 < ub && cur < bad.size())
+			{
+				cout << bad[cur]+1 << ' ';
+				dir[bad[cur]] = 0;
+				dir[bad[cur]+1] = 1;
+				++cur;
+				--ub;
+			}
+			if(ub == k-i-1)
+			{
+				reached = 1;
+				rem = find_bad(dir);
+			}
 		} else 
 		{
-			val[sets[i]] = ++ct;
-			ans[i] = val[sets[i]];
-			vis[sets[i]] = 1;
+			int v = rem.back();
+			rem.pop_back();
+			cout << "1 " << v+1;
+			dir[v] = 0;
+			dir[v+1] = 1;
+			if(v > 0 && dir[v-1] == 1)
+			{
+				rem.pb(v-1);
+			}
+			if(v + 2 < n && dir[v+2] == 0)
+			{
+				rem.pb(v+1);
+			}
 		}
+		cout << endl;
 	}
-	FOR(i, n) cout << ans[i] << endl;
 }
 
 int main()
 {
-	fileio("fcolor.in", "fcolor.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
-		// cerr << "huh" << endl;
 		read();
 		solve();
 	}
