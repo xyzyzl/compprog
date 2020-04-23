@@ -76,31 +76,31 @@ void build(int node, int a, int b)
 	build(RIGHT(node), (a + b) / 2 + 1, b);
 
 	int t = min(st[LEFT(node)].s.f, st[RIGHT(node)].s.s);
-	st[node].f = st[LEFT(node)].f + st[RIGHT(node)].f + t;
+	st[node].f = st[LEFT(node)].f + st[RIGHT(node)].f + 2*t;
 	st[node].s.f = st[LEFT(node)].s.f + st[RIGHT(node)].s.f - t;
 	st[node].s.s = st[LEFT(node)].s.s + st[RIGHT(node)].s.s - t;
 }
 
-int query(int node, int a, int b, int i, int j)
+iii query(int node, int a, int b, int i, int j)
 {
-	if (a > b || a > j || b < i) return 0;
+	if (a > b || a > j || b < i) return mp(0, mp(0, 0));
 	if (a >= i && b <= j)
 	{
-		return st[node].f;
+		return st[node];
 	}
 
-	int q1 = query(LEFT(node), a, (a + b) / 2, i, max((a + b) / 2+1, j));
-	int q2 = query(RIGHT(node), (a + b) / 2 + 1, b, max(i, (a + b) / 2+1), j);
+	iii q1 = query(LEFT(node), a, (a + b) / 2, i, j);
+	iii q2 = query(RIGHT(node), (a + b) / 2 + 1, b, i, j);
 	// cout << min(st[LEFT(node)].s.f, st[RIGHT(node)].s.s) << endl;
-	int t = min(st[LEFT(node)].s.f, st[RIGHT(node)].s.s);
-	return q1 + q2 + t;
+	int t = min(q1.s.f, q2.s.s);
+	return mp(q1.f + q2.f + 2*t, mp(q1.s.f + q2.s.f - t, q1.s.s + q2.s.s - t));
 }
 
 void read()
 {
 	cin >> arr;
 	n = arr.length();
-	build(1, 0, n-1);
+	build(1, 0, n);
 }
 
 void solve()
@@ -113,7 +113,7 @@ void solve()
 		int l, r;
 		cin >> l >> r;
 		--l; --r;
-		cout << query(1, 0, n-1, l, r)*2 << endl;
+		cout << query(1, 0, n, l, r).f << endl;
 	}
 }
 
