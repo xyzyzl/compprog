@@ -107,14 +107,17 @@ void solve()
 		cin >> l >> r;
 		--l; --r;
 		pii pierogi = rmq(1, 0, n-1, l, r);
-		cerr << pierogi.f << " " << pierogi.s << endl;
+		// cerr << pierogi.f << " " << pierogi.s << endl;
 		if(pierogi.f != pierogi.s)
 		{
-			cout << 5 << endl;
+			cout << r-l+1 << endl;
 			continue;
 		} else 
 		{
-			cout << pierogi.f << endl;
+			cout << (r-l+1 - (int)(upper_bound(pts, pts+n, mp(pierogi.f, r)) - 
+					lower_bound(pts, pts+n, mp(pierogi.f, l)))) << endl; 
+			// cerr << (upper_bound(pts, pts+n, mp(pierogi.f, r)) - pts) << " " << (lower_bound(pts, pts+n, mp(pierogi.f, l)) - pts) << endl;
+			// cout << pierogi.f << endl;
 		}
 	}
 }
