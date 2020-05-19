@@ -14,9 +14,9 @@ ll find_for_spec(ll h)
 {
 	int x = lower_bound(arr.begin(), arr.end(), h) - arr.begin();
 	ll ret = 0;
-	ll p = h*x - psum[x-1];
-	ll q = psum[n-1] - psum[x-1] - h*(n-x);
-	ret=min(p,q);
+	ll p = h*x - psum[x];
+	ll q = psum[n] - psum[x] - h*(n-x);
+	ret = min(p,q);
 	p -= ret;
 	q -= ret;
 	ret *= m;
@@ -35,13 +35,14 @@ int main()
 	sort(arr.begin(), arr.end());
 
 	// vector<ll> psum(n);
-	psum.resize(n);
-	psum[0] = arr[0];
-	F1R(i, n-1) psum[i] = psum[i-1] + arr[i];
+	psum.resize(n+1);
+	psum[0] = 0;
+	// psum[0] = arr[0];
+	FOR(i, n) psum[i+1] = psum[i] + arr[i];
 
-	ll ans = INT_MAX;
-	ans = min(ans, find_for_spec(psum[n-1]/n));
-	ans = min(ans, find_for_spec(psum[n-1]/n+1));
+	ll ans = LLONG_MAX;
+	ans = min(ans, find_for_spec(psum[n]/n));
+	ans = min(ans, find_for_spec(psum[n]/n+1));
 	FOR(i, n)
 	{
 		ans = min(ans, find_for_spec(arr[i]));

@@ -5,6 +5,7 @@
         "bitset": "cpp",
         "random": "cpp",
         "iomanip": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "tuple": "cpp"
     }
 }
