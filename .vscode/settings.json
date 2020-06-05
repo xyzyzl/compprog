@@ -6,6 +6,7 @@
         "random": "cpp",
         "iomanip": "cpp",
         "type_traits": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "cmath": "cpp"
     }
 }
