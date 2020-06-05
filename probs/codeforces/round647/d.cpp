@@ -1,6 +1,12 @@
 // Time:
 // Algorithms: 
 
+/**
+ * MISTAKE IN ORIGINAL D;
+ * checked only if topic i-1 was included in a child node -- didn't
+ * actually consider mex of all child nodes
+ */
+
 #include <bits/stdc++.h>
 
 #pragma GCC optimize("O3")
@@ -64,88 +70,67 @@ vi adj[MAXN];
 vi vals[MAXN];
 void read()
 {
-    cin >> n >> m;
-    FOR(i, m)
-    {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        adj[a].pb(b);
-        adj[b].pb(a);
-    }
-    FOR(i, n)
-    {
-        cin >> val[i];
-        vals[val[i]].pb(i);
-    }
+	cin >> n >> m;
+	FOR(i, m)
+	{
+		int a, b;
+		cin >> a >> b;
+		adj[a].pb(b);
+		adj[b].pb(a);
+	}
+	F1R(i, n)
+	{
+		cin >> val[i];
+		vals[val[i]].pb(i);
+	}
 }
 
+int last[MAXN];
+int mex[MAXN];
 void solve()
 {
-    FOR(i, n)
-    {
-        for(int j : adj[i])
-        {
-            // cerr << val[i] << " " << val[j] << endl;
-            if(val[i] == val[j])
-            {
-                // cerr << "equal" << endl;
-                cout << -1 << endl;
-                return; // impossible
-            }
-        }
-    }
-	vector<bool> vis(n);
-    for(int x : vals[1])
-    {
-        vis[x] = 1;
-        for(int y : adj[x])
-        {
-            vis[y] = 1;
-        }
-    }
-    FOR(i, n)
-    {
-        if(!vis[i])
-        {
-            // cerr << "limbo" << endl;
-            // in limbo
-            cout << -1 << endl;
-            return;
-        }
-    }
-    FORR(2, i, n+1)
-    {
-        for(int x : vals[i])
-        {
-            int flag = 0;
-            for(int y : adj[x])
-            {
-                // cerr << y << endl;
-                if(val[y] == i-1)
-                {
-                    flag = 1;
-                }
-            }
-            // cout << x << endl;
-            if(!flag)
-            {
-                // cerr << "dependency" << endl;
-                // dependency not met!
-                cout << -1 << endl;
-                return;
-            }
-        }
-    }
-    F1R(i, n)
-    {
-        for(int x : vals[i])
-        {
-            cout << x+1 << " ";
-        }
-    }
-    cout << endl;
+	F1R(i, n)
+	{
+		// cerr << "aha" << endl;
+		for(int j : adj[i])
+		{
+			// cerr << val[i] << " " << val[j] << endl;
+			if(val[i] == val[j])
+			{
+				// cerr << "equal" << endl;
+				cout << -1 << endl;
+				return; // impossible
+			}
+		}
+	}
+	F1R(i, n)
+	{
+		for(int x : vals[i])
+		{
+			for(int y : adj[x])
+			{
+				last[mex[y]] = x;
+			}
+			mex[x] = 1;
+			while(last[mex[x]] == x)
+			{
+				++mex[x];
+			}
+			if(mex[x] != i)
+			{
+				cout << -1 << endl;
+				return; // impossible
+			}
+		}
+	}
+	F1R(i, n)
+	{
+		for(int x : vals[i])
+		{
+			cout << x << " ";
+		}
+	}
+	cout << endl;
 }
 
 int main()
