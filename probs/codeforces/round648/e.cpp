@@ -1,5 +1,6 @@
-// Time:
-// Algorithms: 
+// Time: idk lol
+// Algorithms: O(n^3) brute force algorithm with interesting
+// motivation
 
 #include <bits/stdc++.h>
 
@@ -7,7 +8,7 @@
 
 using namespace std;
 
-#define MAXN 1000005
+#define MAXN 505
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -52,21 +53,35 @@ typedef map<int, int> mii;
 
 const int MAX(int &a, int b)
 {
-	return a = max(a, b); 
+	return a = max(a, b);
 }
 const int MIN(int &a, int b)
 {
-	return a = min(a, b); 
+	return a = min(a, b);
 }
 
+int n;
+ll a[MAXN];
 void read()
 {
-
+	cin >> n;
+	FOR(i, n)
+	{
+		cin >> a[i];
+	}
 }
 
 void solve()
 {
-	
+	// let's just do O(nC3) brute force!!1
+	// as n <= 500, we can even just get lazy and
+	// do nP3 !111!
+	ll ans = 0;
+	FOR(i, n) FOR(j, i+1) FOR(k, j+1)
+	{
+		ans = max(ans, (a[i] | (a[j] | a[k])));
+	}
+	cout << ans << endl;
 }
 
 int main()
@@ -79,5 +94,5 @@ int main()
 		read();
 		solve();
 	}
-	
+
 }

@@ -1,5 +1,5 @@
 // Time:
-// Algorithms: 
+// Algorithms:
 
 #include <bits/stdc++.h>
 
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 1000005
+#define MAXN 55
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -52,32 +52,143 @@ typedef map<int, int> mii;
 
 const int MAX(int &a, int b)
 {
-	return a = max(a, b); 
+	return a = max(a, b);
 }
 const int MIN(int &a, int b)
 {
-	return a = min(a, b); 
+	return a = min(a, b);
 }
 
+int dx[4] = { 0, 1, 0, -1 };
+int dy[4] = { 1, 0, -1, 0 };
+
+int n, m;
+int arr[MAXN][MAXN];
+bool vis[MAXN][MAXN];
 void read()
 {
-
+	cin >> n >> m;
+	FOR(i, n)
+	{
+		FOR(j, m)
+		{
+			vis[i][j] = 0;
+			char c;
+			cin >> c;
+			if(c == '#') arr[i][j] = 0;
+			else if(c == '.') arr[i][j] = 1;
+			else if(c == 'G') arr[i][j] = 2;
+			else arr[i][j] = 3;
+		}
+	}
 }
 
 void solve()
 {
-	
+	// replace everything around bad with 0's
+	FOR(i, n) FOR(j, m)
+	{
+		if(arr[i][j] != 3) continue;
+		if(i)
+		{
+			// look at arr[i-1][j]
+			if(arr[i-1][j] == 2)
+			{
+				cout << "No" << endl;
+				return;
+			}
+			if(arr[i-1][j] != 3) arr[i-1][j] = 0;
+		}
+		if(j)
+		{
+			// look at arr[i-1][j]
+			if(arr[i][j-1] == 2)
+			{
+				cout << "No" << endl;
+				return;
+			}
+			if(arr[i][j-1] != 3) arr[i][j-1] = 0;
+		}
+		if(i < n-1)
+		{
+			// look at arr[i-1][j]
+			if(arr[i+1][j] == 2)
+			{
+				cout << "No" << endl;
+				return;
+			}
+			if(arr[i+1][j] != 3) arr[i+1][j] = 0;
+		}
+		if(j < m-1)
+		{
+			// look at arr[i-1][j]
+			if(arr[i][j+1] == 2)
+			{
+				cout << "No" << endl;
+				return;
+			}
+			if(arr[i][j+1] != 3) arr[i][j+1] = 0;
+		}
+	}
+
+	queue<pii> q;
+	q.push(mp(n-1, m-1));
+	while(!q.empty())
+	{
+		pii p = q.front();
+		q.pop();
+		// cout << p.f << " " << p.s << endl;
+		if((!arr[p.f][p.s]) || (vis[p.f][p.s])) continue;
+		vis[p.f][p.s] = 1;
+		FOR(i, 4)
+		{
+			pii np = mp(p.f + dx[i], p.s + dy[i]);
+			if((!arr[np.f][np.s]) || (vis[np.f][np.s])) continue;
+			if(np.f < 0 || np.f >= n || np.s < 0 || np.s >= m) continue;
+			q.push(np);
+		}
+	}
+
+	/*
+	FOR(i, n)
+	{
+		FOR(j, m)
+		{
+			cout << arr[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	FOR(i, n)
+	{
+		FOR(j, m)
+		{
+			cout << vis[i][j] << " ";
+		}
+		cout << endl;
+	}
+	*/
+
+	FOR(i, n) FOR(j, m)
+	{
+		if((arr[i][j] == 2 && (!vis[i][j])) || (arr[i][j] == 3 && vis[i][j]))
+		{
+			cout << "No" << endl;
+			return;
+		}
+	}
+	cout << "Yes" << endl;
 }
 
 int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		read();
 		solve();
 	}
-	
+
 }
