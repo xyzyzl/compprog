@@ -13,8 +13,13 @@ int main()
     if(1)
     {
         cout << "one" << endl;
-    } else 
+    } else
     {
         cout << "two" << endl;
     }
+	cout << "what if i edit this?" << endl;
+	for(int i = 0; i < 4; i++)
+	{
+		cout << "now" << endl;
+	}
 }
