@@ -1,5 +1,5 @@
 // Time:
-// Algorithms: 
+// Algorithms:
 
 #include <bits/stdc++.h>
 
@@ -27,6 +27,7 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
+#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -52,76 +53,94 @@ typedef map<int, int> mii;
 
 const int MAX(int &a, int b)
 {
-	return a = max(a, b); 
+	return a = max(a, b);
 }
 const int MIN(int &a, int b)
 {
-	return a = min(a, b); 
+	return a = min(a, b);
 }
+
+// due to Benjamin Qi
+namespace modOp
+{
+    int ad(int a, int b, int mod = MOD) { return (a+b)%mod; }
+    int sub(int a, int b, int mod = MOD) { return (a-b+mod)%mod; }
+    int mul(int a, int b, int mod = MOD) { return (ll)a*b%mod; }
+
+    int AD(int& a, int b, int mod = MOD) { return a = ad(a,b,mod); }
+    int SUB(int& a, int b, int mod = MOD) { return a = sub(a,b,mod); }
+    int MUL(int& a, int b, int mod = MOD) { return a = mul(a,b,mod); }
+
+    int po (int b, int p, int mod = MOD) { return !p?1:mul(po(mul(b,b,mod),p/2,mod),p&1?b:1,mod); }
+    int inv (int b, int mod = MOD) { return po(b,mod-2,mod); }
+
+    int invGeneral(int a, int b) { // 0 < a < b, gcd(a,b) = 1
+        if (a == 0) return b == 1 ? 0 : -1;
+        int x = invGeneral(b%a,a);
+        return x == -1 ? -1 : ((1-(ll)b*x)/a+b)%b;
+    }
+}
+
+using namespace modOp;
 
 int n, m;
-vi primes;
-bool comp[MAXN];
-const int N_P = 1230;
-ll dp[N_P][MAXN];
-
-ll add(int a, int b)
-{
-	return (a+b)%m;
-}
-ll sub(int a, int b)
-{
-	return (a-b+m)%m;
-}
-ll mul(int a, int b)
-{
-	return ((ll)(a) * (ll)(b))%m;
-}
-
-void solve()
+void read()
 {
 	cin >> n >> m;
+}
+
+ll dp[2500][MAXN];
+bool vis[MAXN];
+vi primes;
+void solve()
+{
+	primes.pb(1); // placeholder thing
+	// first run a sieve to find all primes < n
 	FORR(2, i, n+1)
 	{
-		if(!comp[i])
+		if(vis[i]) continue;
+		primes.pb(i);
+		for(int j = i; j <= n; j+=i)
 		{
-			primes.pb(i);
-			for(int j = i; j <= n; j+=i) comp[j] = 1;
+			vis[j] = 1;
 		}
 	}
-	int p = primes.size();
-	if(primes.empty())
+	if(primes.size() == 1)
 	{
-		cout << 1 << endl;
+		cout << -1 << endl;
 		return;
 	}
-	FOR(i, n+1) dp[0][i] = 1;
-	F1R(i, p)
+	// F1R(i, primes.size()-1) cout << primes[i] << endl;
+	FOR(i, n+1)
+	{
+		dp[0][i] = 1;
+	}
+	F1R(i, primes.size()-1)
 	{
 		FOR(j, n+1)
 		{
-			dp[i][j] = dp[i-1][j]; // everything from previous index
-
-			// add things from new index, all powers
-			int x = primes[i-1];
+			dp[i][j] = dp[i-1][j];
+			int x = primes[i];
 			while(x <= j)
 			{
-				dp[i][j] = add(dp[i][j], mul(x, dp[i-1][j-x]));
-				x = mul(x, primes[i-1]);
+				AD(dp[i][j], mul(x,dp[i-1][j-x],m), m);
+				MUL(x, primes[i], m);
 			}
 		}
 	}
-	cout << dp[p][n] << endl;
+	cout << dp[primes.size()-1][n] << endl;
 }
 
-int main()
+signed main()
 {
 	fileio("exercise.in", "exercise.out");
+	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
+		read();
 		solve();
 	}
-	
+
 }
