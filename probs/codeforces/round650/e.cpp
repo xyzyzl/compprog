@@ -1,5 +1,9 @@
-// Time:
-// Algorithms:
+// Time: too long
+// Algorithms: this question was actually quite simple but i had just overcomplicated it
+// it's obvious that we need to find the number of occurrences of each character.
+// then we just make cyclic groups i -> i+k -> etc mod m for all m
+// note that every cyclic group must be covered by one letter -- if there aren't
+// enough letters, Too bad! and you just go on to the next smaller index
 
 #include <bits/stdc++.h>
 
@@ -59,21 +63,67 @@ const int MIN(int &a, int b)
 	return a = min(a, b);
 }
 
+int n, k;
+vi freq;
 void read()
 {
-
+	cin >> n >> k;
+	freq.clear();
+	freq.resize(26);
+	FOR(i, n)
+	{
+		char c;
+		cin >> c;
+		freq[c - 'a']++;
+	}
+	sort(freq.begin(), freq.end());
 }
 
 void solve()
 {
-
+	int ans;
+	F1RD(m, n)
+	{
+		ans = m;
+		vi vis(m);
+		vi cyc_groups_sizes;
+		FOR(i, m)
+		{
+			// generate cyclic groups
+			if(vis[i]) continue; // if it's alr in a group don't put it in one lol
+			cyc_groups_sizes.pb(1);
+			vis[i] = 1;
+			int j = (i + k) % m;
+			while(!vis[j])
+			{
+				vis[j] = 1;
+				cyc_groups_sizes.back()++;
+				j = (j + k) % m;
+			}
+		}
+		vi _freq(freq);
+		bool brk = 1;
+		while(!cyc_groups_sizes.empty())
+		{
+			if(_freq.back() < cyc_groups_sizes.back())
+			{
+				brk = 0;
+				break;
+			}
+			_freq.back() -= cyc_groups_sizes.back();
+			cyc_groups_sizes.pop_back();
+			sort(_freq.begin(), _freq.end());
+		}
+		if(brk) break;
+	}
+	cout << ans << endl;
 }
 
 int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		read();
