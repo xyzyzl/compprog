@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 1000005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -59,52 +59,17 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n;
-pii a[MAXN], r[MAXN];
+int x,y,n;
 void read()
 {
-	cin >> n;
-	FOR(i, n)
-	{
-		cin >> a[i].f;
-		a[i].s = i;
-	}
+	cin >> x >> y >> n;
 }
 
-si ma[MAXN];
 void solve()
 {
-	FOR(i, MAXN) ma[i].clear();
-	// flattening makes this shit a hell of a lot easier
-	sort(a, a+n);
-	int tmp = 0;
-	r[0] = mp(tmp, a[0].s);
-	// cerr << "no" << endl;
-	F1R(i, n-1)
-	{
-		if(a[i].f != a[i-1].f) 
-		{
-			r[i] = mp(++tmp, a[i].s);
-		} else 
-		{
-			r[i] = mp(tmp, a[i].s);
-		}
-	}
-	FOR(i, n) ma[r[i].f].insert(r[i].s);
-	int ptr = 0;
-	si pre = ma[0];
-	int cur = ma[0].size();
-	int best = cur;
-	F1R(i, n-1)
-	{
-		si now = ma[i];
-		if(*pre.rbegin() < *now.begin()) cur += now.size();
-		else 
-		{
-			
-		}
-	}
-	cout << n-best << endl;
+	int a = x * (n/x) + y;
+	if(a > n) a -= x*((a-n)/x);
+	cout << a << endl;
 }
 
 int main()

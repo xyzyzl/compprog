@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 1000005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -59,59 +59,64 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n;
-pii a[MAXN], r[MAXN];
+int n, g;
+si groups[250005];
+vi is_in[MAXN];
 void read()
 {
-	cin >> n;
-	FOR(i, n)
+	cin >> n >> g;
+	FOR(i, g)
 	{
-		cin >> a[i].f;
-		a[i].s = i;
+		int k;
+		cin >> k;
+		FOR(j, k)
+		{
+			int w;
+			cin >> w;
+			--w;
+			groups[i].insert(w);
+			is_in[w].pb(i);
+		}
 	}
+
 }
 
-si ma[MAXN];
+bool inv[MAXN];
 void solve()
 {
-	FOR(i, MAXN) ma[i].clear();
-	// flattening makes this shit a hell of a lot easier
-	sort(a, a+n);
-	int tmp = 0;
-	r[0] = mp(tmp, a[0].s);
-	// cerr << "no" << endl;
-	F1R(i, n-1)
+	qi q;
+	q.push(0);
+	inv[0] = 1;
+	while(!q.empty())
 	{
-		if(a[i].f != a[i-1].f) 
+		int tp = q.front();
+		q.pop();
+		for(int k : is_in[tp]) 
 		{
-			r[i] = mp(++tmp, a[i].s);
-		} else 
-		{
-			r[i] = mp(tmp, a[i].s);
+			groups[k].erase(tp);
+			if(groups[k].size() == 1)
+			{
+				int m = *groups[k].begin();
+				if(!inv[m])
+				{
+					inv[m] = 1;
+					q.push(m);
+					groups[k].erase(groups[k].begin());
+				}
+			}
 		}
 	}
-	FOR(i, n) ma[r[i].f].insert(r[i].s);
-	int ptr = 0;
-	si pre = ma[0];
-	int cur = ma[0].size();
-	int best = cur;
-	F1R(i, n-1)
-	{
-		si now = ma[i];
-		if(*pre.rbegin() < *now.begin()) cur += now.size();
-		else 
-		{
-			
-		}
-	}
-	cout << n-best << endl;
+	int ret = 0;
+	FOR(i, n) if(inv[i]) ++ret;
+	cout << ret << endl;
 }
 
 int main()
 {
+	fileio("invite.in", "invite.out");
 	DUEHOANG;
 	int t = 1;
-	cin >> t; // uncomment if it's multitest
+	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		read();

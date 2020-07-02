@@ -1,5 +1,7 @@
-// Time:
-// Algorithms: 
+// Time: 31:25
+// Algorithms: DP - essentially comes from the fact that level n dead bush is composed of one level n-1 bush and one level n-2 bush.
+// let dp[i] = max. # yellow bushes for i. then dp[i] = 2*dp[i-1] + dp[i-2]. also important is that 3|n => paint the top "claw" yellow => add 4 to dp[i].
+// if i % 3 != 0 then we cannot pain the top "claw" yellow as some top thing must already be taken.
 
 #include <bits/stdc++.h>
 
@@ -7,7 +9,7 @@
 
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 2000005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -27,7 +29,7 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
-#define MOD (1e9*1)+7
+#define MOD int((1e9*1)+7)
 #define MOD2 998244353
 #define INF (1e9*1)+5
 
@@ -60,56 +62,31 @@ const int MIN(int &a, int b)
 }
 
 int n;
-pii a[MAXN], r[MAXN];
+int dp[MAXN];
 void read()
 {
 	cin >> n;
-	FOR(i, n)
-	{
-		cin >> a[i].f;
-		a[i].s = i;
-	}
 }
 
-si ma[MAXN];
 void solve()
 {
-	FOR(i, MAXN) ma[i].clear();
-	// flattening makes this shit a hell of a lot easier
-	sort(a, a+n);
-	int tmp = 0;
-	r[0] = mp(tmp, a[0].s);
-	// cerr << "no" << endl;
-	F1R(i, n-1)
+	cout << dp[n] << endl;
+}
+
+void precomp()
+{
+	F1R(i, 2000000)
 	{
-		if(a[i].f != a[i-1].f) 
-		{
-			r[i] = mp(++tmp, a[i].s);
-		} else 
-		{
-			r[i] = mp(tmp, a[i].s);
-		}
+		if(i-2 >= 0) dp[i] = (dp[i] + (dp[i-2] + dp[i-2]) % MOD) % MOD;
+		if(i-1 >= 0) dp[i] = (dp[i] + dp[i-1]) % MOD;
+		if(i % 3 == 0) dp[i] = (dp[i] + 4) % MOD;
 	}
-	FOR(i, n) ma[r[i].f].insert(r[i].s);
-	int ptr = 0;
-	si pre = ma[0];
-	int cur = ma[0].size();
-	int best = cur;
-	F1R(i, n-1)
-	{
-		si now = ma[i];
-		if(*pre.rbegin() < *now.begin()) cur += now.size();
-		else 
-		{
-			
-		}
-	}
-	cout << n-best << endl;
 }
 
 int main()
 {
 	DUEHOANG;
+	precomp();
 	int t = 1;
 	cin >> t; // uncomment if it's multitest
 	while(t--)

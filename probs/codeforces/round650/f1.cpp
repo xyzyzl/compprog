@@ -91,6 +91,8 @@ void solve()
 		}
 	}
 	FOR(i, n) ma[r[i].f].insert(r[i].s);
+	// cerr << "oi no" << endl;
+	// FOR(i, n) cerr << r[i].f << endl;
 	int ptr = 0;
 	si pre = ma[0];
 	int cur = ma[0].size();
@@ -98,11 +100,15 @@ void solve()
 	F1R(i, n-1)
 	{
 		si now = ma[i];
-		if(*pre.rbegin() < *now.begin()) cur += now.size();
+		// cout << *pre.begin() << " " << *now.begin() << endl;
+		if(*pre.rbegin() < *now.begin()) cur ++;
 		else 
 		{
-			
+			// essentially reset
+			cur = 1;
 		}
+		pre = now;
+		MAX(best, cur);
 	}
 	cout << n-best << endl;
 }

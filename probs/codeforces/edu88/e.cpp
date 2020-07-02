@@ -7,7 +7,7 @@
 
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 500005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -27,8 +27,8 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
-#define MOD (1e9*1)+7
-#define MOD2 998244353
+// #define MOD (1e9*1)+7
+#define MOD 998244353
 #define INF (1e9*1)+5
 
 typedef set<int> si;
@@ -59,59 +59,65 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n;
-pii a[MAXN], r[MAXN];
+// due to Benjamin Qi
+
+namespace modOp
+{
+    int ad(int a, int b, int mod = MOD) { return (a+b)%mod; }
+    int sub(int a, int b, int mod = MOD) { return (a-b+mod)%mod; }
+    int mul(int a, int b, int mod = MOD) { return (ll)a*b%mod; }
+ 
+    int AD(int& a, int b, int mod = MOD) { return a = ad(a,b,mod); }
+    int SUB(int& a, int b, int mod = MOD) { return a = sub(a,b,mod); }
+    int MUL(int& a, int b, int mod = MOD) { return a = mul(a,b,mod); }
+ 
+    int po (int b, int p, int mod = MOD) { return !p?1:mul(po(mul(b,b,mod),p/2,mod),p&1?b:1,mod); }
+    int inv (int b, int mod = MOD) { return po(b,mod-2,mod); }
+ 
+    int invGeneral(int a, int b) { // 0 < a < b, gcd(a,b) = 1
+        if (a == 0) return b == 1 ? 0 : -1;
+        int x = invGeneral(b%a,a);
+        return x == -1 ? -1 : ((1-(ll)b*x)/a+b)%b;
+    }
+}
+ 
+using namespace modOp;
+
+
+int n, k;
 void read()
 {
-	cin >> n;
-	FOR(i, n)
-	{
-		cin >> a[i].f;
-		a[i].s = i;
-	}
+	cin >> n >> k;
 }
 
-si ma[MAXN];
+int fact[MAXN];
+
+int choose(int a, int b)
+{
+	if(a < b) return 0;
+	return mul(fact[a], inv(mul(fact[b], fact[a-b])));
+}
+
 void solve()
 {
-	FOR(i, MAXN) ma[i].clear();
-	// flattening makes this shit a hell of a lot easier
-	sort(a, a+n);
-	int tmp = 0;
-	r[0] = mp(tmp, a[0].s);
-	// cerr << "no" << endl;
-	F1R(i, n-1)
+	fact[0] = 1;
+	F1R(i, n)
 	{
-		if(a[i].f != a[i-1].f) 
-		{
-			r[i] = mp(++tmp, a[i].s);
-		} else 
-		{
-			r[i] = mp(tmp, a[i].s);
-		}
+		fact[i] = mul(fact[i-1], i);
 	}
-	FOR(i, n) ma[r[i].f].insert(r[i].s);
-	int ptr = 0;
-	si pre = ma[0];
-	int cur = ma[0].size();
-	int best = cur;
-	F1R(i, n-1)
+	int ans = 0;
+	F1R(i, n)
 	{
-		si now = ma[i];
-		if(*pre.rbegin() < *now.begin()) cur += now.size();
-		else 
-		{
-			
-		}
+		AD(ans, choose((n/i) - 1, k-1));
 	}
-	cout << n-best << endl;
+	cout << ans << endl;
 }
 
 int main()
 {
 	DUEHOANG;
 	int t = 1;
-	cin >> t; // uncomment if it's multitest
+	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		read();
