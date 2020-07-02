@@ -76,11 +76,13 @@ int main()
 	for(int i = 0; i < n; i++)
 		cin >> c[i];
 	sort(c,c+n);
+	/*
 	if(c[0] > x)
 	{
 		cout << -1 << endl;
 		return 0;
 	}
+	*/
 	fill(dp, dp+x+1, INF);
 	dp[0] = 0; // 0 ways for a combination of 0 currency
 	for(int i = 1; i <= x; i++)
@@ -94,5 +96,6 @@ int main()
 			}
 		}
 	}
-	cout << dp[x] << endl;
+	if(dp[x] == INF) cout << -1 << endl;
+	else cout << dp[x] << endl;
 }
