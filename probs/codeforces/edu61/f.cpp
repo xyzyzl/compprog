@@ -7,7 +7,11 @@
 
 using namespace std;
 
+<<<<<<< HEAD
 #define MAXN 1000005
+=======
+#define MAXN 505
+>>>>>>> cf0dc10f9f74a2bdff9ff6fb1ab25eb578c8fd38
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -59,14 +63,32 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, dp[MAXN][MAXN];
+string w;
 void read()
 {
-
+	cin >> n;
+	cin >> w;
+	FOR(i, n+5) FOR(j, n+5) dp[i][j] = -1;
 }
 
+// with memoization!
+int recurse(int i, int j)
+{
+	if(dp[i][j] != -1) return dp[i][j];
+	if(i == j) return dp[i][j] = 1;
+	if(i > j) return dp[i][j] = 0;
+	int ret = recurse(i+1, j) + 1;
+	FORR(i+1, k, j+1)
+	{
+		if(w[i] == w[k])
+			MIN(ret, recurse(i+1, k-1) + recurse(k, j));
+	}
+	return dp[i][j] = ret;
+}
 void solve()
 {
-	
+	cout << recurse(0, n-1) << endl;	
 }
 
 int main()
