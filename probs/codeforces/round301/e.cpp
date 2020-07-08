@@ -105,6 +105,7 @@ ll num_inv()
 }
 
 si exist;
+vii lst;
 void read()
 {
 	cin >> n;
@@ -126,6 +127,7 @@ void read()
 	int ind = 0;
 	for(int x : exist)
 	{
+		lst.pb(mp(x, to[x]));
 		r[ind] = to[x];
 		inv[to[x]] = ind;
 		ind++;
@@ -153,23 +155,11 @@ void read()
 void solve()
 {
 	ll ret = num_inv();
-	cerr << ret << endl;
-	mii link;
-	FOR(i, n)
+	FOR(i, m)
 	{
-		link[inds[i].f] = inds[i].s;
-		link[inds[i].s] = inds[i].f;
-	}
-	for(int i : exist)
-	{
-		int p = max(inv[to[i]], inv[to[link[i]]]);
-		int q = min(inv[to[i]], inv[to[link[i]]]);
-		int pp = max(to[i], to[link[i]]);
-		int qq = min(to[i], to[link[i]]);
-		int rr = pp-qq-1;
-		// find # indices in between that have alr been swapped
-		ll x = rr - (p-1-q);
-		ret += x;
+		int j = lower_bound(lst.begin(), lst.end(), mp(lst[i].s, -1)) - lst.begin();
+		ll w = abs(lst[i].f - lst[j].f) - abs(i - j);
+		ret += w;
 	}
 	cout << ret << endl;
 }
