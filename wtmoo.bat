@@ -1,1 +1,0 @@
-C:/users/abinav_kapoor/AppData/Local/Programs/Python/Python37-32/python.exe -m wtmoo.py

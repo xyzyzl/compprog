@@ -1,116 +1,73 @@
-// Time:
-// Algorithms: 
+#include <iostream>
+#include <vector>
 
-#include <bits/stdc++.h>
-
-#pragma GCC optimize("O3")
+#define ll long long
 
 using namespace std;
 
-#define MAXN 1000005
+int n, a[100005];
+ll bit[200005];
 
-#define FOR(i, n) for (int i = 0; i < n; i++)
-#define FORR(j, i, n) for (int i = j; i < n; i++)
-#define FORD(i, n) for (int i = n - 1; i >= 0; i--)
-#define F1R(i, n) for (int i = 1; i <= n; i++)
-#define F1RD(i, n) for (int i = n; i >= 1; i--)
-#define pb push_back
-#define mp make_pair
-#define endl '\n'
-#define DUEHOANG                  \
-	ios_base::sync_with_stdio(0); \
-	cin.tie(NULL);                \
-	cout.tie(NULL)
-
-#define fileio(in, out)      \
-	freopen(in, "r", stdin); \
-	freopen(out, "w", stdout);
-
-#define ll long long
-#define MOD (1e9*1)+7
-#define MOD2 998244353
-#define INF (1e9*1)+5
-
-typedef set<int> si;
-typedef vector<int> vi;
-typedef pair<int, int> pii;
-typedef pair<int, pii> iii;
-typedef vector<pii> vii;
-typedef vector<iii> viii;
-typedef priority_queue<int> pqi;
-typedef stack<int> sti;
-typedef queue<int> qi;
-typedef deque<int> di;
-typedef map<int, int> mii;
-#define f first
-#define s second
-
-#define LEFT(x) 2 * x
-#define RIGHT(x) 2 * x + 1
-
-#define bitinc(x) x&-x
-
-const int MAX(int &a, int b)
+ll sum(int x)
 {
-	return a = max(a, b); 
-}
-const int MIN(int &a, int b)
-{
-	return a = min(a, b); 
-}
-
-int n, a[MAXN], bit[2*MAXN];
-ll inv[MAXN];
-
-int sum(int ind)
-{
-	int sm = 0;
-	while(ind > 0)
+	ll ret = 0;
+	while(x > 0)
 	{
-		sm += bit[ind];
-		ind -= bitinc(ind);
+		ret += bit[x];
+		x -= (x & -x);
 	}
-	return sm;
+	return ret;
 }
-void upd(int ind, int val)
+
+void upd(int x, int v)
 {
-	while(ind <= n)
+	while(x <= n+1)
 	{
-		bit[ind] += val;
-		ind += bitinc(ind);
+		bit[x] += v;
+		x += (x & -x);
 	}
 }
 
-void solve()
+ll inv_count[100005];
+ll find_inv()
 {
-	// cerr << "yu" << endl;
-	cin >> n;
-	FOR(i, n)
+	ll ret = 0;
+	for(int i = 0; i < n; i++)
 	{
-		cin >> a[i];
-		a[i]++;
-		inv[a[i]] += i-sum(a[i]); // everything that isn't less than
-		upd(a[i], 1);
+		bit[i] = 0;
 	}
-	// cerr << "aa" << endl;
-	ll ans = 0;
-	F1R(i, n)
+	for(int i = 0; i < n; i++)
 	{
-		cout << ans << endl;
-		ans += (ll)inv[i];
+		inv_count[i] = sum(n+1) - sum(a[i]+1);
+		ret += inv_count[i];
+		upd(a[i]+1, 1);
 	}
-	// count the number of inversions
+	return ret;
 }
 
+vector<int> cur[100005];
+ll fin[100005];
 int main()
 {
-	fileio("haircut.in", "haircut.out");
-	DUEHOANG;
-	int t = 1;
-	// cin >> t; // uncomment if it's multitest
-	while(t--)
+	freopen("haircut.in", "r", stdin);
+	freopen("haircut.out", "w", stdout);
+	cin >> n;
+	for(int i = 0; i < n; i++)
 	{
-		solve();
+		cin >> a[i];
+		cur[a[i]].push_back(i);
 	}
-	
+	ll init = find_inv();
+	for(int i = n-1; i >= 0; i--)
+	{
+		for(int j : cur[i])
+		{
+			init -= inv_count[j];
+		}
+		fin[i] = init;
+	}
+	for(int i = 0; i < n; i++)
+	{
+		cout << fin[i] << endl;
+	}
 }
