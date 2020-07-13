@@ -59,19 +59,55 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, p[MAXN];
 void read()
 {
+	cin >> n;
+	FOR(i, n)
+	{
+		cin >> p[i];
+	}
 }
 
 void solve()
 {
+	bool inc = 0, dec = 0;
+	int a,b,c;
+	F1R(i, n-1)
+	{
+		if(!inc && p[i] > p[i-1])
+		{
+			a=i-1;
+			b=i;
+			inc = 1;
+		} else if(inc && p[i] > p[b]) b=i;
+		if(inc)
+		{
+			if(p[i] < p[b])
+			{
+				dec = 1;
+				c = i;
+				break;
+			}
+		}
+	}
+	++a; ++b; ++c;
+
+	if(!dec)
+	{
+		cout << "NO" << endl;
+		return;
+	}
+	cout << "YES" << endl;
+	cout << a << " " << b << " " << c << endl;
+	cout.flush();
 }
 
 int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		read();

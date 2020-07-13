@@ -4,7 +4,6 @@ using namespace std;
 
 int n, dep[100005], par[100005][20];
 vector<int> adj[100005];
-int psum[100005];
 bool vis[100005];
 
 // finds the depths

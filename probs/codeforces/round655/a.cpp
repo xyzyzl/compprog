@@ -59,19 +59,26 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n;
 void read()
 {
+	cin >> n;
 }
 
 void solve()
 {
+	FOR(i, n)
+	{
+		cout << n << " ";
+	}
+	cout << endl;
 }
 
 int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		read();
