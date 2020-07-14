@@ -65,22 +65,54 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-void read()
-{
-}
-
+int n, a[MAXN], c[MAXN];
 void solve()
 {
+	cin >> n;
+	FOR(i, n) cin >> a[i];
+	int ans = 1;
+	c[0] = 1;
+	int rep = -1;
+	F1R(i, n-1)
+	{
+		if(a[i] != a[i-1])
+		{
+			ans = 2;
+			c[i] = (c[i-1] == 1) ? 2 : 1;
+		}
+		else
+		{
+			rep = i;
+			c[i] = c[i-1];
+		}
+	}
+	if(a[0] != a[n-1] && c[0] == c[n-1])
+	{
+		// this isn't ok
+		if(rep == -1)
+		{
+			ans = 3;
+			c[n-1] = 3;
+		} else
+		{
+			FORR(rep, i, n)
+			{
+				c[i] = (c[i] == 1) ? 2 : 1;
+			}
+		}
+	}
+	cout << ans << endl;
+	FOR(i, n) cout << c[i] << " ";
+	cout << endl;
 }
 
 int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
-		read();
 		solve();
 	}
 	
