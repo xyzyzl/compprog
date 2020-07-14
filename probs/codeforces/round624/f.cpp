@@ -47,7 +47,7 @@ typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
 // ordered_set
-typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
+typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> os;
 #define f first
 #define s second
 
@@ -65,8 +65,34 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n;
+pii a[MAXN];
+void read()
+{
+	cin >> n;
+	FOR(i, n) cin >> a[i].f;
+	FOR(i, n) cin >> a[i].s;
+	sort(a, a+n);
+}
+
+os ds;
 void solve()
 {
+	ll ltr = 0, rtl = 0;
+	FOR(i, n)
+	{
+		ds.insert(mp(a[i].s, i));
+		int x = ds.order_of_key(mp(a[i].s, i));
+		ltr += (ll)x * (ll)a[i].f;
+	}
+	ds.clear();
+	FORD(i, n)
+	{
+		ds.insert(mp(a[i].s, i));
+		int x = ds.order_of_key(mp(a[i].s, i));
+		rtl += (ll)(ds.size()-1-x) * (ll)a[i].f;
+	}
+	cout << (ltr-rtl) << endl;
 }
 
 int main()
@@ -76,6 +102,7 @@ int main()
 	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
+		read();
 		solve();
 	}
 	
