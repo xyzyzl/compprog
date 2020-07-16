@@ -2,60 +2,42 @@
 
 using namespace std;
 
-int n, m, t[200005], val[200005], dep[200005], par[200005][20];
+int n, m, t[200005], val[200005], par[400005][20];
 vector<int> adj[400005];
-bool vis[200005];
+
+int tmp = 0, in[400005], ot[400005];
 
 // finds the depths
 void dfs(int v, int p)
 {
-	dep[v] = 1 + dep[p];
-	if(p > 0)
-	{
-		par[v][0] = p;
-	}
+	in[v] = tmp;
+	++tmp;
+	par[v][0] = p;
+	for(int i = 1; i < 20; i++)
+		par[v][i] = par[par[v][i-1]][i-1];
 	for(int x : adj[v])
 	{
-		if(x != p) dfs(x,v);
+		dfs(x,v);
 	}
+	ot[v] = tmp;
+	++tmp;
 }
 
 // -------- real algo --------- //
-// precomp
-void precomp()
+bool anc(int u, int v)
 {
-	// cerr << "ok" << endl;
-	for(int j = 1; j < 20; j++)
-	{
-		for(int i = 1; i <= m; i++)
-		{
-			if(par[i][j-1] > 0)
-			{
-				par[i][j] = par[par[i][j-1]][j-1];
-			}
-		}
-	}
+	return (in[u] <= in[v] && ot[u] >= ot[v]);
 }
 
 // method finding all lca's
 int lca(int u, int v)
 {
-	if(dep[u] > dep[v]) swap(u, v);
-	int x = dep[v] - dep[u];
-
-	for(int i = 0; i < 20; i++)
-	{
-		if((x >> i) & 1) v = par[v][i];
-	}
-	if(u == v) return u;
-
+	if(anc(u,v))
+		return u;
 	for(int i = 19; i >= 0; i--)
 	{
-		if(par[u][i] != par[v][i] && par[u][i] > 0 && par[v][i] > 0)
-		{
+		if(!anc(par[u][i], v))
 			u = par[u][i];
-			v = par[v][i];
-		}
 	}
 	return par[u][0];
 }
@@ -77,15 +59,12 @@ int main()
 		qry[i][1] = ob;
 		a = val[a]; b = val[b];
 		ct++;
-		adj[a].push_back(ct);
 		adj[ct].push_back(a);
-		adj[b].push_back(ct);
 		adj[ct].push_back(b);
 		val[oa] = ct;
 	}
 	par[ct][0] = ct;
 	dfs(ct, ct);
-	precomp();
 	int tot = 0;
 	for(int i = 1; i <  n; i++)
 	{
