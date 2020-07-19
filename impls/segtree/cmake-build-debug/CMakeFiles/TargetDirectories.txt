@@ -1,3 +1,0 @@
-/home/ha/Documents/cp/impls/segtree/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/ha/Documents/cp/impls/segtree/cmake-build-debug/CMakeFiles/segtree.dir
-/home/ha/Documents/cp/impls/segtree/cmake-build-debug/CMakeFiles/edit_cache.dir
