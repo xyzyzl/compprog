@@ -47,13 +47,13 @@ int main()
 			cout << 0 << endl;
 			continue;
 		}
-		if(k <= val + (L2 - L1 + R2 - R1)*n)
+		long long x = val + (L2 - L1 + R2 - R1) * n;
+		if(k <= x)
 		{
 			ans += k - val;
 		} else 
 		{
-			int x = val + (L2 - L1 + R2 - R1) * n;
-			ans += x+(k-x)*2;
+			ans += x+(k-x)*2-val;
 		}
 		cout << ans << endl;
 	}
