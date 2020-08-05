@@ -13,5 +13,6 @@
         "vector": "cpp"
     },
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.formatting.provider": "black"
 }
