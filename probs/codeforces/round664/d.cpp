@@ -2,52 +2,43 @@
 
 using namespace std;
 
+int n;
+long long d, m, a[100005], b[100005];
+int sa, sb;
 int main()
 {
-	long long n, d, m;
 	cin >> n >> d >> m;
-	vector<long long> a(n);
-	for(int i = 0; i < n; i++) cin >> a[i];
-	sort(a.begin(), a.end());
-	long long mn = n-(upper_bound(a.begin(), a.end(), m) - a.begin());
-	deque<long long> dq;
-	long long ans = 0;
 	for(int i = 0; i < n; i++)
 	{
-		dq.push_back(a[i]);
-	}
-	for(int i = 0; i < mn-1; i++)
-	{
-		ans += (long long)dq.back();
-		dq.pop_back();
-		long long altsum = 0;
-		for(int i = 0; i < d; i++)
+		int x;
+		cin >> x;
+		if(x <= m)
 		{
-			if(dq.empty())
-			{
-				ans += altsum;
-				goto here;
-			}
-			if(dq.front() <= m)
-			{
-				altsum += dq.front();
-			}
-			dq.pop_front();
-		}
-		if(dq.empty())
+			a[++sa] = x;
+		} else
 		{
-			ans += altsum;
-			goto here;
+			b[++sb] = x;
 		}
 	}
-	if(dq.empty()) goto here;
-	ans += (long long) dq.back();
-	dq.pop_back();
-	while(!dq.empty())
+	sort(a+1, a+sa+1);
+	reverse(a+1, a+sa+1);
+	for(int i = 1; i <= sa; i++) a[i] = a[i-1] + a[i];
+	sort(b+1, b+sb+1);
+	reverse(b+1, b+sb+1);
+	for(int i = 1; i <= sb; i++) b[i] = b[i-1] + b[i];
+	long long ans = 0;
+	for(int i = 0; i <= sb; i++)
 	{
-		ans += (long long) dq.back();
-		dq.pop_back();
+		if(i)
+		{
+			long long lhs = b[i];
+			if(n-(d+1)*(i-1)-1 < 0) continue;
+			long long rhs = a[min((long long)sa, n-(d+1)*(i-1)-1)];
+			ans = max(ans, lhs+rhs);
+		} else
+		{
+			ans = a[sa];
+		}
 	}
-here:
 	cout << ans << endl;
 }

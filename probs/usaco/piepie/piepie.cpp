@@ -1,149 +1,87 @@
-/**
-ID: albert.28
-LANG: C++14
-PROB: piepie
-**/
-
-/// Time:
-
 #include <bits/stdc++.h>
-
-/**
-Mod operations in O(lg n)
-Source: Benjamin Qi, https://github.com/bqi343/USACO/blob/master/Implementations/11%20-20(4)/Operators/modOp.cpp?fbclid=IwAR0m2afS-1xVg9kgeF8q8EJIeP9TP3Lct8dYb_hPJuI5gqHP1Utp5EkiOQ8
-**/
 
 using namespace std;
 
-#define MAXN 100005
-#define MOD 1000000007
-
-#define FOR(g,i,n) for(int i = g; i < n; i++)
-#define FORD(g,i,n) for(int i = g; i >= n; i--)
-
-#define apple() ios_base::sync_with_stdio(0)
-#define hentai() cin.tie(); cout.tie()
-
-#define mp make_pair
-#define pb push_back
-#define	ll long long
-// #define int ll
-#define INF (1e9*1)+5
-#define LL_INF (1e18*1)+5
-#define bitinc(s) (s&-s)
-#define endl '\n'
-
+int n, D, d[200005];
 typedef pair<int, int> pii;
-typedef vector<int> vi;
-typedef set<int> si;
-typedef map<int, int> mi;
 #define f first
 #define s second
-typedef vector<pii> vii;
-typedef set<pii> sii;
-typedef map<pii, pii> mii;
+pii a[200005];
 
-void fileio(char* in, char* out)
+bool cmpB(int x, int y)
 {
-	freopen(in, "r", stdin);
-	freopen(out, "w", stdout);
+	return a[x].s < a[y].s;
 }
 
-namespace modOp
+bool cmpE(int x, int y)
 {
-    int ad(int a, int b, int mod = MOD) { return (a+b)%mod; }
-    int sub(int a, int b, int mod = MOD) { return (a-b+mod)%mod; }
-    int mul(int a, int b, int mod = MOD) { return (ll)a*b%mod; }
-
-    int AD(int& a, int b, int mod = MOD) { return a = ad(a,b,mod); }
-    int SUB(int& a, int b, int mod = MOD) { return a = sub(a,b,mod); }
-    int MUL(int& a, int b, int mod = MOD) { return a = mul(a,b,mod); }
-
-    int po (int b, int p, int mod = MOD) { return !p?1:mul(po(mul(b,b,mod),p/2,mod),p&1?b:1,mod); }
-    int inv (int b, int mod = MOD) { return po(b,mod-2,mod); }
-
-    int invGeneral(int a, int b) { // 0 < a < b, gcd(a,b) = 1
-        if (a == 0) return b == 1 ? 0 : -1;
-        int x = invGeneral(b%a,a);
-        return x == -1 ? -1 : ((1-(ll)b*x)/a+b)%b;
-    }
+	return a[x].f < a[y].f;
 }
 
-using namespace modOp;
-
-int n, d, a[2*MAXN], b[2*MAXN], dist[2*MAXN];
-
-struct ja
-{
-	bool operator()(int p, int q) const
-	{
-		return b[p] < b[q];
-	}
-};
-
-struct jb
-{
-	bool operator()(int p, int q) const
-	{
-		return a[p] < a[q];
-	}
-};
-
-multiset<int, ja> A;
-multiset<int, jb> B;
-
-queue<int> q;
-
+multiset<pii> mB, mE;
 int main()
 {
-	fileio("piepie.in", "piepie.out");
-	cin >> n >> d;
-	FOR(0, i, 2*n)
+	// freopen("piepie.in", "r", stdin);
+	// freopen("piepie.out", "w", stdout);
+	cin >> n >> D;
+	for(int i = 0; i < 2*n; i++)
 	{
-		int x, y;
-		cin >> x >> y;
-		a[i] = -x;
-		b[i] = -y;
-		dist[i] = -1;
+		// taste to Bessie and Elsie
+		cin >> a[i].f >> a[i].s;
+		a[i].f = -a[i].f;
+		a[i].s = -a[i].s;
 	}
-	FOR(0, i, n)
+	// bfs queue. put 0's as sources and dfs as needed
+	queue<int> q;
+	for(int i = 0; i < n; i++)
 	{
-		if(b[i] == 0)
+		if(a[i].s == 0) // gift elsie 0 pie 
 		{
-			dist[i] = 1;
+			d[i] = 1;
 			q.push(i);
-		} else A.insert(i);
-		if(a[n+i] == 0)
+		} else 
 		{
-			dist[n+i] = 1;
+			d[i] = -1;
+			mB.insert(make_pair(a[i].s, i));
+		}
+
+		if(a[n+i].f == 0) // gift bessie 0 pie
+		{
+			d[n+i] = 1;
 			q.push(n+i);
-		} else B.insert(n+i);
-	}
-	// cout << q.size() << endl;
-	multiset<int, ja>::iterator rb1;
-	multiset<int, jb>::iterator rb2;
-	while(!q.empty())
-	{
-		int f = q.front();
-		q.pop();
-		// cout << f << endl;
-		if(f >= n) while(true) // currently on Elsie's pie and trying to give to Bessie
+		} else
 		{
-			rb1 = A.lower_bound(f);
-			// cout << *rb1 << " A" << endl;
-			if(rb1 == A.end() || b[*rb1] > b[f]+d) break;
-			dist[*rb1] = dist[f]+1;
-			q.push(*rb1);
-			A.erase(rb1);
-		} else while(true) // currently on Bessie's pie and trying to give to Elsie
-		{
-			rb2 = B.lower_bound(f);
-			// cout << *rb2 << " B" << endl;
-			if(rb2 == B.end() || a[*rb2] > a[f]+d) break;
-			dist[*rb2] = dist[f]+1;
-			q.push(*rb2);
-			B.erase(rb2);
+			d[n+i] = -1;
+			mE.insert(make_pair(a[n+i].f, n+i));
 		}
 	}
-	for(int i = 0; i < n; i++) cout << dist[i] << endl;
+	auto x = mE.begin();
+	auto y = mB.begin();
+	while(!q.empty())
+	{
+		int tp = q.front();
+		cerr << tp << endl;
+		q.pop();
+		if(tp < n) while(true)
+		{ // bessie gives elsie pie
+			x = mE.upper_bound(make_pair(a[tp].f, tp));
+			if(x == mE.end() || a[x->s].f > a[tp].f+D) break;
+			cerr << tp << " " << (x->s) << " " << "B->E" << endl;
+			d[x->s] = d[tp]+1;
+			q.push(x->s);
+			mE.erase(x);
+		} else while(true)
+		{ // elsie gives bessie pie
+			y = mB.upper_bound(make_pair(a[tp].s, tp));
+			if(y == mB.end() || a[y->s].s > a[tp].s+D) break;
+			cerr << tp << " " << (y->s) << " " << "E->B" << endl;
+			d[y->s] = d[tp]+1;
+			q.push(y->s);
+			mB.erase(y);
+		}
+	}
+	for(int i = 0; i < n; i++)
+	{
+		cout << d[i] << endl;
+	}
 }
