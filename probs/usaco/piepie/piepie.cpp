@@ -21,8 +21,8 @@ bool cmpE(int x, int y)
 multiset<pii> mB, mE;
 int main()
 {
-	// freopen("piepie.in", "r", stdin);
-	// freopen("piepie.out", "w", stdout);
+	freopen("piepie.in", "r", stdin);
+	freopen("piepie.out", "w", stdout);
 	cin >> n >> D;
 	for(int i = 0; i < 2*n; i++)
 	{
@@ -60,21 +60,18 @@ int main()
 	while(!q.empty())
 	{
 		int tp = q.front();
-		cerr << tp << endl;
 		q.pop();
 		if(tp < n) while(true)
 		{ // bessie gives elsie pie
-			x = mE.upper_bound(make_pair(a[tp].f, tp));
+			x = mE.lower_bound(make_pair(a[tp].f, -1));
 			if(x == mE.end() || a[x->s].f > a[tp].f+D) break;
-			cerr << tp << " " << (x->s) << " " << "B->E" << endl;
 			d[x->s] = d[tp]+1;
 			q.push(x->s);
 			mE.erase(x);
 		} else while(true)
 		{ // elsie gives bessie pie
-			y = mB.upper_bound(make_pair(a[tp].s, tp));
+			y = mB.lower_bound(make_pair(a[tp].s, -1));
 			if(y == mB.end() || a[y->s].s > a[tp].s+D) break;
-			cerr << tp << " " << (y->s) << " " << "E->B" << endl;
 			d[y->s] = d[tp]+1;
 			q.push(y->s);
 			mB.erase(y);
@@ -85,3 +82,4 @@ int main()
 		cout << d[i] << endl;
 	}
 }
+

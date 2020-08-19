@@ -1,5 +1,6 @@
 // Time:
-// Algorithms: 
+// Algorithms: should have been pbds but i'm a lazy ass and
+// definitely didn't do it
 
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp> // pbds
@@ -65,25 +66,81 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-ll n;
+ll sum[2], k[2]; // total sum, number of lightningspells
+set<int> x[2], lgt;
+
+void add_to_top()
+{
+	int to_add = *x[0].rbegin();
+	x[0].erase(prev(x[0].end()));
+	x[1].insert(to_add);
+	sum[0]-=to_add;
+	sum[1]+=to_add;
+	if(lgt.count(to_add))
+	{
+		k[0]--;
+		k[1]++;
+	}
+}
+
+void rm_frm_top()
+{
+	int to_rem = *x[1].begin();
+	x[1].erase(x[1].begin());
+	x[0].insert(to_rem);
+	sum[1]-=to_rem;
+	sum[0]+=to_rem;
+	if(lgt.count(to_rem))
+	{
+		k[1]--;
+		k[0]++;
+	}
+}
+
 void solve()
 {
+	int n;
 	cin >> n;
-	FOR(i, n)
+	while(n--)
 	{
-		FOR(j, n)
+		int tp, d;
+		cin >> tp >> d;
+		if(d > 0) 
 		{
-			cout << 1ll+i*n*(n+1)/2+j << " ";
+			// everything defaults to "all" set
+			sum[0] += d;
+			x[0].insert(d);
+			if(tp) lgt.insert(d);
+			k[0]+=tp;
+		} else
+		{
+			// remove some element
+			d=-d;
+			int i = x[1].count(d);
+			x[i].erase(x[i].find(d));
+			sum[i] -= d;
+			if(tp) lgt.erase(d);
+			k[i]-=tp;
+			d=-d;
 		}
-		cout << endl;
-	}
-	cout.flush();
-	int q;
-	cin >> q;
-	while(q--)
-	{
-		ll tot;
-		cin >> tot;
+		while(x[1].size() < lgt.size()) add_to_top();
+		while(x[1].size() > lgt.size()) rm_frm_top();
+		// update top
+		while(x[0].size() && x[1].size() && *x[0].rbegin() > *x[1].begin())
+		{
+			add_to_top();
+			rm_frm_top();
+		}
+		// if all lightning spells are in the top, we need to remove
+		// one of them from top and add one fire spell in its place
+		ll ans = sum[0] + 2*sum[1];
+		if(lgt.size() == k[1] && lgt.size())
+		{
+			ans -= *x[1].begin();
+			if(x[0].size()) ans += *x[0].rbegin();
+		}
+		cout << ans << endl;
+		cout.flush();
 	}
 }
 

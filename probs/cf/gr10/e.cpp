@@ -11,7 +11,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 30 
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -65,48 +65,42 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-ll sm = 0;
-os cur;
-si lgt;
+ll n, a[MAXN][MAXN];
 void solve()
 {
-	int n;
 	cin >> n;
-	while(n--)
+	F1R(i, n)
 	{
-		int tp, d;
-		cin >> tp >> d;
-		if(d > 0)
-		{
-			sm += d;
-			if(tp==0)
+		if(!(i%2))
+			F1R(j, n)
 			{
-				cur.insert(d);
-				if(cur.order_of_key(d) >= n-lgt.size())
-				{
-					// can be doubled
-					sm += d;
-					// remove n-lgt.size()-1 th element
-					sm -= *cur.find_by_order(n-lgt.size()-1);
-				}
-			} else
-			{
-				cur.insert(d);
-				lgt.insert(d);
+				cout << (a[j][i] = (1ll << (i+j))) << " ";
 			}
-		} else
-		{
-			sm -= d;
-			if(tp==0)
+		else
+			F1R(j, n)
 			{
-				cur.erase(cur.find(d));
-			} else
-			{
-				lgt.erase(lgt.find(d));
-				cur.erase(cur.find(d));
-			} 
-		}
+				cout << 0 << " ";
+			}
+		cout << endl;
 	}
+	cout.flush();
+	int q;
+	cin >> q;
+	while(q--)
+	{
+		ll tot;
+		cin >> tot;
+		int sx=1,sy=1;
+		cout << 1 << " " << 1 << endl;
+		FORR(3, i, 2*n+1)
+		{
+			if(sx+1 <= n && a[sx+1][sy] == (tot&(1ll << i))) sx++;
+			else sy++;
+			cout << sy << " " << sx << endl;
+		}
+		cout.flush();
+	}
+	cout.flush();
 }
 
 int main()
