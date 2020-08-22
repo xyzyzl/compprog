@@ -11,6 +11,7 @@ typedef pair<int, int> pii;
 vector<pii> adj[100005];
  
 int sz[100005];
+// dfs for subtree sizes
 int dfs(int v, int p)
 {
 	sz[v] = 1;
@@ -48,18 +49,24 @@ signed main()
 		} else
 		{
 			for(int i = m; i < n-1; i++) p[i] = 1;
+			// again, don't sort modded values! p[n-2] thing will be thrown off
+			// by an additional sort. only need sort for the else condition!
+			sort(p, p+n-1);
 		}
-		sort(p, p+n-1);
 		dfs(0, -1);
 		for(int i = 0; i < n; i++)
 		{
 			for(pii x : adj[i])
 			{
 				int k = min(sz[i], sz[x.f]);
-				num[x.s] = (k * (long long)(n-k)) % MOD;
+				num[x.s] = (k * (long long)(n-k));
 			}
 		}
+		// don't sort modded values, mod after
 		sort(num, num+n-1);
+		for(int i = 0; i < n-1; i++) num[i] %= MOD;
+
+		// calculate val[i]
 		for(int i = 0; i < n-1; i++)
 		{
 			val[i] = p[i];
