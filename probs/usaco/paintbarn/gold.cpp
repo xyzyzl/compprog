@@ -3,9 +3,9 @@
 #define int long long
 using namespace std;
 
-int n,k,ps[205][205],vl[205][205],pv[205][205],sc,ec,sr,er;
+int n,k,ps[205][205],vl[205][205],pv[205][205],sc[205],ec[205],sr[205],er[205];
 
-int max_rect()
+void max_rect()
 {
 	int ret = INT_MIN;
 	for(int i = 0; i < 200; i++) for(int j = 0; j < 200; j++)
@@ -18,11 +18,12 @@ int max_rect()
 		vector<int> tmp(205);
 		for(int r = 0; r < 200; r++) 
 			tmp[r] = pv[r][j] - (i>0 ? pv[r][i-1] : 0);
-		// current sum, current max sum
-		int cs = 0, cm = 0;
+		// current sum
+		int cs = 0;
 		// current start row, temp. start row, current end row
 		int csr = 0, tsr = 0, cer = -1;
-		// Kadane
+		// Kadane except we're keeping track of the max. rectangle one some side of each edge
+		// of each computed rectangle.
 		for(int r = 0; r < 200; r++)
 		{
 			cs += tmp[r];
@@ -32,9 +33,12 @@ int max_rect()
 				tsr = r+1;
 			} else if(cs > cm)
 			{
-				cm = cs;
 				csr = tsr;
 				cer = r;
+				sc[i] = max(sc[i], cs); // max. to the right of column i
+				ec[j] = max(ec[j], cs); // max. to the left of column j
+				sr[csr] = max(sr[csr], cs); // max. below row csr
+				er[cer] = max(er[cer], cs); // max. above row cer
 			}
 		}
 		// check if current end row doesn't exist
@@ -42,16 +46,7 @@ int max_rect()
 		{
 			continue;
 		}
-		if(cm > ret)
-		{
-			ret = cm;
-			sc = i;
-			ec = j;
-			sr = csr;
-			er = cer;
-		}
 	}
-	return ret;
 }
 
 signed main()
@@ -74,6 +69,8 @@ signed main()
 		if(j) ps[i][j] += ps[i][j-1];
 		if(i&&j) ps[i][j] -= ps[i-1][j-1];
 	}
+	// key observation is that two valid rectangles would need to be
+	// on opposite ends of some vertical/horizontal line.
 	int cnt = 0;
 	for(int i = 0; i < 200; i++) for(int j = 0; j < 200; j++)
 	{
@@ -86,17 +83,20 @@ signed main()
 	}
 	// cerr << cnt << endl;
 	// cerr << max_rect() << endl;
-	int a = max_rect();
-	// cerr << sc << " " << ec << " " << sr << " " << er << endl;
-	for(int i = sr; i <= er; i++)
+	max_rect();
+	for(int i = 1; i < 200; i++)
 	{
-		for(int j = sc; j <= ec; j++)
-		{
-			vl[i][j] = -40000;
-		}
+		// take prefix/suffix maxima as needed
+		sc[200-i-1] = max(sc[200-i-1], sc[200-i]);
+		ec[i] = max(ec[i], ec[i-1]);
+		sr[200-i-1] = max(sr[200-i-1], sr[200-i]);
+		er[i] = max(er[i], er[i-1]);
 	}
-	int b = max_rect();
-	cnt += max(a,0ll)+max(b,0ll);
-	cout.tie(NULL);
-	cout << cnt << endl;
+	int ans = 0;
+	for(int i = 0; i < 200; i++)
+	{
+		// maximize sums of prefix maxima
+		ans = max(ans, max(sc[i]+ec[i-1], sr[i]+er[i-1]));
+	}
+	cout << ans+cnt << endl;
 }
