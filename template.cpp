@@ -69,7 +69,7 @@ void solve()
 {
 }
 
-int main()
+signed main()
 {
 	DUEHOANG;
 	int t = 1;
