@@ -31,6 +31,7 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
+#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -56,6 +57,30 @@ typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_
 
 #define bitinc(x) x&-x
 
+// due to Benjamin Qi
+
+namespace modOp
+{
+    int ad(int a, int b, int mod = MOD) { return (a+b)%mod; }
+    int sub(int a, int b, int mod = MOD) { return (a-b+mod)%mod; }
+    int mul(int a, int b, int mod = MOD) { return (ll)a*b%mod; }
+ 
+    int AD(int& a, int b, int mod = MOD) { return a = ad(a,b,mod); }
+    int SUB(int& a, int b, int mod = MOD) { return a = sub(a,b,mod); }
+    int MUL(int& a, int b, int mod = MOD) { return a = mul(a,b,mod); }
+ 
+    int po (int b, int p, int mod = MOD) { return !p?1:mul(po(mul(b,b,mod),p/2,mod),p&1?b:1,mod); }
+    int inv (int b, int mod = MOD) { return po(b,mod-2,mod); }
+ 
+    int invGeneral(int a, int b) { // 0 < a < b, gcd(a,b) = 1
+        if (a == 0) return b == 1 ? 0 : -1;
+        int x = invGeneral(b%a,a);
+        return x == -1 ? -1 : ((1-(ll)b*x)/a+b)%b;
+    }
+}
+ 
+using namespace modOp;
+
 const int MAX(int &a, int b)
 {
 	return a = max(a, b); 
@@ -65,11 +90,35 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-void solve()
+int n, h[MAXN], w[MAXN];
+
+int sm(int a)
 {
+	return mul(mul(a,a+1),inv(2));
 }
 
-int main()
+void solve()
+{
+	cin >> n;
+	FOR(i, n) cin >> h[i];
+	FOR(i, n) cin >> w[i];
+	stack<pii> st;
+	int ans = 0;
+	FOR(i, n+1)
+	{
+		int th = h[i], tw = w[i];
+		while(!st.empty() && st.top().f >= h[i])
+		{
+			AD(tw,st.top().s);
+			AD(ans,sub(mul(sm(st.top().f),sm(st.top().s)),mul(sm(h[i]),sm(st.top().s))));
+			st.pop();
+		}
+		if(th) st.push(mp(h[i],tw));
+	}
+	cout << ans << endl;
+}
+
+signed main()
 {
 	DUEHOANG;
 	int t = 1;
