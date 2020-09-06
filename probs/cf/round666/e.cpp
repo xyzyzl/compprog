@@ -11,7 +11,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 1000005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -65,8 +65,27 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n;
+ll r1,r2,r3,d,a[MAXN],dp[MAXN][2];
 void solve()
 {
+	cin >> n;
+	cin >> r1 >> r2 >> r3 >> d;
+	FOR(i, n) cin >> a[i];
+	dp[0][0] = r1*a[0]+r3;
+	dp[0][1] = min(r2, r1*(a[0]+1));
+	F1R(i, n-1)
+	{
+		dp[i][0] = min(dp[i-1][0] + a[i]*r1+r3, min(dp[i-1][1]+2*d+r2+2*r1, 
+					dp[i-1][1] + 2*d + (1+a[i])*r1+2*r1))+d;
+		dp[i][1] = min(dp[i-1][0] + min(r2,r1*(a[i]+1)), dp[i-1][1] + 2*d+
+					min(r2,r1*(a[i]+1))+r1)+d;
+		if(i == n-1)
+		{
+			dp[i][0] = min(dp[i][0], dp[i-1][1]+2*d+r1+a[i]*r1+r3);
+		}
+	}
+	cout << dp[n-1][0] << endl;
 }
 
 signed main()

@@ -65,15 +65,56 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-void solve()
+int sod(ll n)
 {
+	ll x = n;
+	int a = 0;
+	while(x > 0)
+	{
+		a += x % 10;
+		x /= 10;
+	}
+	return a;
 }
 
-signed main()
+void solve()
+{
+	ll n;
+	int s;
+	cin >> n >> s;
+	ll a = n;
+	if(sod(n) <= s) 
+	{
+		cout << 0 << endl;
+		return;
+	}
+	stack<char> st;
+	ll xx = 1;
+	while(a > 0)
+	{
+		a = n/xx;
+		ll q = a%10;
+		st.push(((10-q)%10)+'0');
+		n += ((10-q)%10)*xx;
+		xx *= 10ll;
+		if(sod(n) <= s) break;
+	}
+	int nz = 0;
+	while(!st.empty())
+	{
+		if(st.top() != 0) nz = 1;
+		if(!nz) continue;
+		cout << st.top();
+		st.pop();
+	}
+	cout << endl;
+}
+
+int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

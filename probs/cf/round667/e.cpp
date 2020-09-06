@@ -67,13 +67,45 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n,k;
+	cin >> n >> k;
+	vi v(n,0);
+	FOR(i,n) cin >> v[i];
+	vi y(n,0); // doesn't matter
+	FOR(i,n) cin >> y[i];
+	sort(v.begin(), v.end());
+	vi l(n), r(n);
+	FOR(i, n)
+	{
+		auto x = v.begin()+i;
+		l[i] = x-lower_bound(v.begin(),v.end(),v[i]-k);
+		l[i]++;
+		r[i] = prev(upper_bound(v.begin(),v.end(),v[i]+k))-x;
+		r[i]++;
+	}
+	l.push_back(0);
+	r.push_back(0);
+	F1R(i,n-1)
+	{
+		MAX(l[i],l[i-1]);
+	}
+	FORD(i, n-1)
+	{
+		MAX(r[i],r[i+1]);
+	}
+	int q = 0;
+	FOR(i, n)
+	{
+		q=max(q, l[i]+r[i+1]);
+	}
+	cout << q << endl;
 }
 
-signed main()
+int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

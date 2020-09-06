@@ -67,13 +67,26 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	ll a,b,x,y,n;
+	cin >> a >> b >> x >> y >> n;
+	ll da = max(x,a-n);
+	ll db = max(y,b-n);
+	if(da < db)
+	{
+		db = max(y, b-(n-a+da));
+		cout << da*db << endl;
+	} else
+	{
+		da = max(x, a-(n-b+db));
+		cout << db*da << endl;
+	}
 }
 
-signed main()
+int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

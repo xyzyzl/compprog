@@ -67,13 +67,16 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	double a,b;
+	cin >> a >> b;
+	cout << (ll)ceil(abs((a-b)/10.0)) << endl;
 }
 
-signed main()
+int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

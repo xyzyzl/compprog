@@ -67,13 +67,51 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n,x,y;
+	cin >> n >> x >> y;
+	int ma=INT_MAX,b=0;
+	F1R(a, 50)
+	{
+		int k = 0;
+		if((y-x)%a == 0)
+		{
+			// cerr << "--" << a << endl;
+			int j = 0;
+			for(int i = y; i > 0; i -= a)
+			{
+				// cerr << i << endl;
+				k++;
+				j=i;
+				if(k >= n) break;
+			}
+			// cerr << endl;
+			if(j>x) continue;
+			int mx = y;
+			while(k<n)
+			{
+				k++;
+				mx += a;
+			}
+			if(ma > mx)
+			{
+				ma = mx;
+				b = a;
+			}
+		}
+	}
+	// cout << b << " " << ma << endl;
+	FOR(i, n)
+	{
+		cout << ma - i*b << ' ';
+	}
+	cout << endl;
 }
 
-signed main()
+int main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();
