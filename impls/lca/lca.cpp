@@ -34,7 +34,8 @@ int lca(int u, int v)
 		return u;
 	for(int i = 19; i >= 0; i--)
 	{
-		if(!anc(par[u][i], v))
+		// as a verifier make sure par[u][i] >= 0 s.t. no array out of bounds
+		if(par[u][i] >= 0 && !anc(par[u][i], v))
 			u = par[u][i];
 	}
 	return par[u][0];
