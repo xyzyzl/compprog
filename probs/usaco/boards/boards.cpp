@@ -1,3 +1,9 @@
+// the main idea for this question is DP. let dp[i] be the shortest distance to get to
+// the start of board i. we need to thus find the largest amount skipped.
+
+// one naive O(N^2) way to do this is by simply looking at all previous boards and finding the
+// best one. however, N^2 only gets a third of the test cases. instead, we search for 
+// 
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -36,7 +42,7 @@ main()
 			pre[x.f.s] = dst;
 		} else
 		{
-			dp[x.s.f] = x.f.f + x.f.s + prev(pre.upper_bound(x.f.s))->s;
+			dp[x.s.f] = x.f.f + x.f.s + prev(pre.upper_bound(x.f.s))->s; // take longest distance saved and remove from x.f.f+x.f.s.
 		}
 	}
 	cout << (2*n + pre.rbegin()->s) << endl;

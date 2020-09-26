@@ -1,3 +1,8 @@
+// observation: between an intersection of two segments one intersection must carry all of the intersections.
+// then find which one intersects more other line segments. if there is an equal amount (which must be 1), pick
+// the one with the smaller index.
+// use sweepline to find any intersection.
+// be careful when using (multi) set to find intersecting lines, and also ensure that the start point of each line is considered first in the sweep.
 #include <bits/stdc++.h>
 
 #define int long long

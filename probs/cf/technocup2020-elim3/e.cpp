@@ -2,16 +2,12 @@
 // Algorithms: 
 
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp> // pbds
-#include <ext/pb_ds/tree_policy.hpp>
-#include <ext/pb_ds/detail/standard_policies.hpp>
 
 #pragma GCC optimize("O3")
 
-using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 1000005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -46,8 +42,6 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-// ordered_set
-typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
 #define f first
 #define s second
 
@@ -65,95 +59,166 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, m;
-int dx[8] = { 1, 0, -1, 0, 1, 1, -1, -1 };
-int dy[8] = { 0, 1, 0, -1, 1, -1, 1, -1 };
-vector<vi> ans,gr,ds,vis;
+int dx[8] = {1, 0, -1, 0, 1, 1, -1, -1};
+int dy[8] = {0, 1, 0, -1, 1, -1, 1, -1};
 
-bool fit(int x, int y)
+int n, m;
+vector<vi> grid; // X = 1, . = 0
+vector<vi> dist, test, vis;
+void read()
 {
-	return !(x < 0 || x > n+1 || y < 0 || y > m+1);
+	cin >> n >> m;
+	grid.resize(n);
+	dist.resize(n);
+	vis.resize(n);
+	FOR(i, n)
+	{
+		dist[i].resize(m);
+		grid[i].resize(m);
+		vis[i].resize(m);
+		FOR(j, m)
+		{
+			vis[i][j] = 0;
+			dist[i][j] = INF;
+			char c;
+			cin >> c;
+			if(c == 'X') grid[i][j] = 1;
+			else grid[i][j] = 0;
+		}
+	}
 }
 
 void bfs()
 {
 	queue<pii> q;
-	FOR(i, n+2) FOR(j, m+2)
+	FOR(i, n)
 	{
-		ds[i][j] = MOD;
-		if(!gr[i][j])
+		FOR(j, m)
 		{
-			q.push(mp(i,j));
-			ds[i][j] = 0;
+			// if they exist and they're next to some burnt tree
+			// mark in queue
+			FOR(k, 8)
+			{
+				if(0 <= i+dx[k] && i+dx[k] < n && 0 <= j+dy[k] && j+dy[k] < m)
+				{
+					if(!grid[i+dx[k]][j+dy[k]] && grid[i][j])
+					{
+						q.push(mp(i, j));
+						dist[i][j] = 0;
+					}
+				}
+			}
+			if(i == 0 || i == n-1 || j == 0 || j == m-1)
+				if(grid[i][j])
+				{
+					// cout << i << " " << j << endl;
+					q.push(mp(i, j));
+					dist[i][j] = 0;
+				}
 		}
 	}
+	// cerr << "hmm?" << endl;
 	while(!q.empty())
 	{
-		pii tp = q.front();
+		pii top = q.front();
 		q.pop();
-		if(vis[tp.f][tp.s]) continue;
-		vis[tp.f][tp.s]=1;
-		int i = tp.f;
-		int j = tp.s;
-		FOR(k,8)
+		int i = top.f;
+		int j = top.s;
+		if(vis[i][j]) continue;
+		vis[i][j] = 1;
+		FOR(k, 8) if(0 <= i+dx[k] && i+dx[k] < n && 0 <= j+dy[k] && j+dy[k] < m)
 		{
-			if(!fit(i+dx[k],j+dy[k])) continue;
-			ds[i+dx[k]][j+dy[k]] = min(ds[i+dx[k]][j+dy[k]],ds[i][j]+1);
-			q.push(mp(i+dx[k],j+dy[k]));
+			if(grid[i+dx[k]][j+dy[k]])
+			{
+				dist[i+dx[k]][j+dy[k]] = min(dist[i+dx[k]][j+dy[k]], dist[i][j] + 1);
+				q.push(mp(i+dx[k], j+dy[k]));
+			}
 		}
 	}
 }
 
 void solve()
 {
-	cin>>n>>m;
-	ans = vector<vi>(n+10, vi(m+10,0));
-	gr = vector<vi>(n+10, vi(m+10,0));
-	ds = vector<vi>(n+10, vi(m+10,0));
-	vis = vector<vi>(n+10, vi(m+10,0));
-	F1R(i, n) F1R(j, m)
-	{
-		char c;
-		cin >> c;
-		gr[i][j] = c=='X';
-	}
 	bfs();
 	int lo = 0;
 	int hi = min(n,m);
 	while(lo < hi-1)
 	{
+		// 	cerr << lo << " " << hi << endl;
 		int mid = (lo+hi)/2;
-		vii org;
-		F1R(i, n) F1R(j, m)
+		test = vector<vi>(n+5, vi(m+5, INF));
+		// cerr << test[0][0] << endl;
+		queue<pii> q;
+		FOR(i, n) FOR(j, m)
 		{
-			if(gr[i][j] && ds[i][j] >= mid)
+			vis[i][j] = 0;
+			// cout << dist[i][j] << " " << mid << endl;
+			if(grid[i][j] && dist[i][j] >= mid)
 			{
-				org.pb(mp(i,j));
-				cerr << i << " " << j << endl;
+				q.push(mp(i,j));
+				test[i][j] = 0;
 			}
 		}
-		if(org.size()) lo=mid;
-		else hi = mid-1;
-	}
-	cout << lo-1 << endl;
-	F1R(i, n)
-	{
-		F1R(j, m)
+		bool bad = q.empty();
+		while(!q.empty())
 		{
-			if(gr[i][j] && ds[i][j] >= lo) cout << 'X';
-			else cout << '.';
+			pii top = q.front();
+			q.pop();
+			int i = top.f;
+			int j = top.s;
+			if(vis[i][j]) continue;
+			vis[i][j] = 1;
+			FOR(k, 8) if(0 <= i+dx[k] && i+dx[k] < n && 0 <= j+dy[k] && j+dy[k] < m)
+			{
+				if(grid[i+dx[k]][j+dy[k]])
+				{
+					test[i+dx[k]][j+dy[k]] = min(test[i+dx[k]][j+dy[k]], test[i][j] + 1);
+					q.push(mp(i+dx[k], j+dy[k]));
+				}
+			}
 		}
+		FOR(i, n) FOR(j, m)
+		{
+			if(grid[i][j] && test[i][j] > mid)
+			{
+				bad = 1;
+			}
+		}
+		if(!bad)
+		{
+			lo = mid;
+		} else hi = mid;
+	}
+	cout << lo << endl;
+	vector<vi> ans(n);
+	FOR(i, n) ans[i].resize(m);
+	vii starts;
+	FOR(i, n) FOR(j, m)
+	{
+		if(dist[i][j] >= lo && grid[i][j])
+		{
+			starts.pb(mp(i, j));
+		}
+	}
+	for(pii x : starts)
+	{
+		ans[x.f][x.s] = 1;
+	}
+	FOR(i, n)
+	{
+		FOR(j, m) cout << (ans[i][j] ? 'X' : '.');
 		cout << endl;
 	}
 }
 
-signed main()
+int main()
 {
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
+		read();
 		solve();
 	}
 	
