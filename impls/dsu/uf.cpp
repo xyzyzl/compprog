@@ -16,7 +16,7 @@ bool union_set(int i, int j)
     return true;
 }
 
-int init()
+void init()
 {
     for(int i = 0; i < n; i++) p[i] = i;
     for(int i = 0; i < n; i++) sz[i] = 1;
