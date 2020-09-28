@@ -1,5 +1,28 @@
-// Time:
-// Algorithms: 
+/**
+ * post-solve notes:
+ * this question epitomizes pain and suffering no cap
+ * starts off as cancer geo problem upon first look, then becomes equally cancer dsu problem
+ * thoughts: how tf do you build a graph???
+ * answer: note that you can go from one corner to another corner as long as there is no wall of
+ * trees that this visitor can't go through. then we essentially take the gap sizes as weights
+ * and add edges into dsu in increasing order of weights.
+ * 
+ * thoughts: damn that's annoying as fuck. does it end?
+ * answer: no
+ * you then casework over which points get quarantined. set the fences as nodes, and using the DSU
+ * check for nodes connecting various fences.
+ * if adjacent fences connect each other, then the point that it intercepts is quarantined from
+ * the rest of the graph. otherwise opposite fences connect each other, in which case points can't cross
+ * the fence. this is not as cancer as the beginning part.
+ * 
+ * thoughts: is this the most cancer part?
+ * answer: for most people, probably yes. then this problem is a nice problem. but i had to fuck the impls up as usual.
+ * firstly, i didn't remove my (potentially large) cerr outputs leading to tle
+ * then i int overflowed
+ * then i realized i fucking set the "bad[i][j]" array too small.
+ * 
+ * small errors that i should not have made but still made the experience twice as long and twice as painful. ouch
+ */ 
 
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp> // pbds
@@ -31,6 +54,7 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
+#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -110,7 +134,7 @@ void solve()
 		cin >> r >> c;
 		vs[i] = mp(r*2, mp(c-1, i));
 	}
-	vector<pair<double, pair<int, int> > > eg;
+	vector<pair<long double, pair<int, int> > > eg;
 	FOR(i, n)
 	{
 		FORR(i+1,j,n)
@@ -129,13 +153,14 @@ void solve()
 	sort(vs, vs+m);
 	init();
 	int ind = 0;
-	bool bad[4][4];
+	bool bad[m][4];
+	bool C[4][4];
 	memset(bad, 0, sizeof bad);
 	for(auto e : eg)
 	{
 		while(ind < m && vs[ind].f <= e.f)
 		{
-			bool C[4][4];
+			memset(C, 0, sizeof C);
 			FOR(i, 4)
 			{
 				C[i][i] = 1;
