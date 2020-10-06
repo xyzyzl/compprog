@@ -75,7 +75,7 @@ int n, m, wt[MAXN];
 vii adj[MAXN];
 
 /// Set-based Dijkstra implementation.
-void not_prim(int src)
+void dijk(int src)
 {
 	fill(wt, wt + n, INF);
 
