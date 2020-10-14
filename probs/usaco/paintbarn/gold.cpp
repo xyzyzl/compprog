@@ -19,7 +19,7 @@ void max_rect()
 		for(int r = 0; r < 200; r++) 
 			tmp[r] = pv[r][j] - (i>0 ? pv[r][i-1] : 0);
 		// current sum
-		int cs = 0;
+		int cs = 0, cm = 0;
 		// current start row, temp. start row, current end row
 		int csr = 0, tsr = 0, cer = -1;
 		// Kadane except we're keeping track of the max. rectangle one some side of each edge

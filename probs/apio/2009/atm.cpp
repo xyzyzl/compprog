@@ -1,10 +1,9 @@
-// feeling cute, may implement Kosaraju later, idk
 #include <bits/stdc++.h>
 
 using namespace std;
 
-int n, m, num_scc;
-vector<int> adj[100005];
+int n, m, num_scc, is_pub[100005];
+vector<int> adj[100005], adj2[100005];
 
 int tmw = 0;
 int ind[100005], low[100005], head[100005]; // index, lowest visitable vertex
@@ -42,9 +41,37 @@ void tarjan(int x)
 	}
 }
 
+vector<int> res;
+int a[100005], indeg[100005], S, P, vis[100005];
+bool topo(int X)
+{
+	// no need to reset the adjacency list and things
+	multiset<int> st;
+	for(int i = 1; i <= num_scc; i++)
+	{
+		if(!indeg[i])
+		{
+			st.insert(i);
+			// cout << i << endl;
+		}
+	}
+	for(int i = 1; i <= num_scc; i++)
+	{
+		int u = *st.begin();
+		if(st.empty()) return 0;
+		st.erase(st.begin());
+		res.push_back(u);
+
+		for(int v : adj2[u])
+		{
+			indeg[v]--;
+			if(indeg[v] == 0) st.insert(v);
+		}
+	}
+	return 1;
+}
+
 const long long INF = 1e16 + 7; // must be long long for safety
-long long mn[100005];			// minimum cost for this scc group
-long long ways[100005];			// # ways
 int main()
 {
 	ios_base::sync_with_stdio(0);
@@ -67,4 +94,28 @@ int main()
 		{
 			tarjan(i);
 		}
+	vector<int> val(n);
+	for(int i = 0; i < n; i++)
+	{
+		cin >> val[i];
+	}
+	cin >> S >> P;
+	for(int i = 0; i < n; i++)
+	{
+		a[head[i]] += val[i];
+		for(int x : adj[i])
+		{
+			if(head[x] != head[i])
+			{
+				adj2[head[i]].push_back(head[x]);
+				indeg[head[x]]++;
+			}
+		}
+	}
+	for(int i = 0; i < P; i++)
+	{
+		int k; cin >> k;
+		is_pub[--k]=1;
+	}
+	topo();
 }

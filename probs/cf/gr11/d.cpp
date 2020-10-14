@@ -1,3 +1,8 @@
+/**
+ * stupid ass constructive
+ * basically if there's a prefix that is already working don't change it.
+ * try to move the next number into the prefix.
+ */
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp> // pbds
 #include <ext/pb_ds/tree_policy.hpp>
@@ -8,7 +13,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 55
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -28,9 +33,9 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
-#define MOD (1e9 * 1) + 7
+#define MOD (1e9*1)+7
 #define MOD2 998244353
-#define INF (1e9 * 1) + 5
+#define INF (1e9*1)+5
 
 typedef set<int> si;
 typedef vector<int> vi;
@@ -51,97 +56,66 @@ typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_
 #define LEFT(x) 2 * x
 #define RIGHT(x) 2 * x + 1
 
-#define bitinc(x) x & -x
+#define bitinc(x) x&-x
 
 const int MAX(int &a, int b)
 {
-	return a = max(a, b);
+	return a = max(a, b); 
 }
 const int MIN(int &a, int b)
 {
-	return a = min(a, b);
+	return a = min(a, b); 
 }
 
-int n;
-vi v, inds;
+int n, a[MAXN];
 void solve()
 {
 	cin >> n;
-	v.resize(n);
-	inds.resize(n + 1);
-	FOR(i, n)
+	FOR(i, n) cin >> a[i];
+	vi v; vector<vi> vv;
+	FOR(ct, n)
 	{
-		cin >> v[i];
-		inds[v[i]] = i;
-	}
-	if (n == 1)
-	{
-		cout << 0 << endl;
-		return;
-	}
-	int c = 0;
-	FOR(i, n)
-	{
-		if (v[i] != i + 1)
-			break;
-		c++;
-	}
-	if(c==n) return;
-	int ord = 0;
-	vi q;
-	FORR(1, k, n)
-	{
-		if (inds[k] < inds[k + 1])
-		{
-			q.clear();
-			FOR(i, inds[k])
-			q.pb(1);
-			q.pb(inds[k + 1] - inds[k]);
-			q.pb(1);
-			FORR(inds[k + 1] + 1, i, n)
-			{
-				q.pb(1);
-			}
-			cout << q.size() << " ";
-			for (int x : q)
-				cout << x << " ";
-			cout << endl;
-			reverse(v.begin() + inds[k], v.begin() + inds[1 + k]);
-			reverse(v.begin(), v.end());
-			for (int x : v)
-				cerr << x << " ";
-			cerr << endl;
-		}
-		else
-		{
-			q.clear();
-			FOR(i, inds[k + 1])
-			q.pb(1);
-			q.pb(inds[1] - inds[k + 1]);
-			q.pb(1);
-			FORR(inds[1] + 1, i, n)
-			{
-				q.pb(1);
-			}
-			cout << q.size() << " ";
-			for (int x : q)
-				cout << x << " ";
-			cout << endl;
-			reverse(v.begin() + inds[k + 1], v.begin() + inds[1]);
-			reverse(v.begin(), v.end());
-			for (int x : v)
-				cerr << x << " ";
-			cerr << endl;
-		}
-		FOR(i, n)
-		inds[v[i]] = i;
-		int c = 0;
+		v.clear();
 		FOR(i, n)
 		{
-			if (v[i] != i + 1)
+			if(a[i] == i+1) continue;
+			if(i != 0) v.pb(i);
+			FORR(i+1, j, n)
+			{
+				if(a[j] == a[j-1]+1) continue;
+				v.pb(j-i);
+				FORR(j, k, n)
+				{
+					if(a[k] != a[i]-1) continue;
+					v.pb(k-j+1);
+					if(k < n-1) v.pb(n-1-k);
+					break;
+				}
 				break;
-			c++;
+			}
+			break;
 		}
+		if(v.empty()) break;
+		// print
+		vv.pb(v);
+		// make changes
+		int sum = 0;
+		FOR(i, v.size()) sum += v[i];
+		if(sum != n) continue;
+		sum = 0;
+		FOR(i, v.size())
+		{
+			reverse(a+sum, a+sum+v[i]);
+			sum += v[i];
+		}
+		reverse(a, a+n);
+	}
+	cout << vv.size() << endl;
+	for(vi v : vv)
+	{
+		cout << v.size() << " ";
+		for(int x : v) cout << x << " ";
+		cout << endl;
 	}
 }
 
@@ -150,8 +124,9 @@ signed main()
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
-	while (t--)
+	while(t--)
 	{
 		solve();
 	}
+	
 }
