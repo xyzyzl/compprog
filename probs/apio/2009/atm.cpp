@@ -2,12 +2,12 @@
 
 using namespace std;
 
-int n, m, num_scc, is_pub[100005];
-vector<int> adj[100005], adj2[100005];
+int n, m, num_scc;
+vector<vector<int> > adj, adj2;
 
 int tmw = 0;
-int ind[100005], low[100005], head[100005]; // index, lowest visitable vertex
-bool stc[100005];							// is this in the recursion stack
+int ind[500005], low[500005], head[500005]; // index, lowest visitable vertex
+bool stc[500005];							// is this in the recursion stack
 stack<int> rec;								// the recursion stack
 
 void tarjan(int x)
@@ -36,18 +36,19 @@ void tarjan(int x)
 			k = rec.top();
 			rec.pop();
 			stc[k] = 0;
-			head[k] = num_scc;
+			head[k] = num_scc-1;
 		} while (x != k);
 	}
 }
 
-vector<int> res;
-int a[100005], indeg[100005], S, P, vis[100005];
-bool topo(int X)
+vector<int> res, a, indeg;
+vector<bool> is_pub;
+int S, P;
+bool topo()
 {
 	// no need to reset the adjacency list and things
 	multiset<int> st;
-	for(int i = 1; i <= num_scc; i++)
+	for(int i = 0; i < num_scc; i++)
 	{
 		if(!indeg[i])
 		{
@@ -55,7 +56,7 @@ bool topo(int X)
 			// cout << i << endl;
 		}
 	}
-	for(int i = 1; i <= num_scc; i++)
+	for(int i = 0; i < num_scc; i++)
 	{
 		int u = *st.begin();
 		if(st.empty()) return 0;
@@ -68,18 +69,18 @@ bool topo(int X)
 			if(indeg[v] == 0) st.insert(v);
 		}
 	}
+	st.clear();
 	return 1;
 }
 
-const long long INF = 1e16 + 7; // must be long long for safety
+const long long INF = 1e9 + 7; // must be long long for safety
 int main()
 {
 	ios_base::sync_with_stdio(0);
 	cin.tie(NULL);
 	cout.tie(NULL);
-	fill(ways, ways + 100005, 1);
-	fill(mn, mn + 100005, INF);
 	cin >> n >> m;
+	adj.resize(n);
 	for (int i = 0; i < m; i++)
 	{
 		int a, b;
@@ -94,15 +95,19 @@ int main()
 		{
 			tarjan(i);
 		}
-	vector<int> val(n);
+	adj2.resize(num_scc);
+	is_pub.resize(num_scc);
+	a.resize(num_scc);
+	indeg.resize(num_scc);
 	for(int i = 0; i < n; i++)
 	{
-		cin >> val[i];
+		int val; cin >> val;
+		a[head[i]] += val;
 	}
 	cin >> S >> P;
+	--S;
 	for(int i = 0; i < n; i++)
 	{
-		a[head[i]] += val[i];
 		for(int x : adj[i])
 		{
 			if(head[x] != head[i])
@@ -115,7 +120,25 @@ int main()
 	for(int i = 0; i < P; i++)
 	{
 		int k; cin >> k;
-		is_pub[--k]=1;
+		is_pub[head[--k]] =1;
 	}
 	topo();
+	vector<int> ans(num_scc);
+	for(int i = 0; i < num_scc; i++)
+		ans[i] = -INF;
+	ans[head[S]]=a[head[S]];
+	for(int x : res)
+	{
+		if(ans[x] == -INF) continue;
+		for(int y : adj2[x])
+		{
+			ans[y] = max(ans[y], ans[x]+a[y]);
+		}
+	}
+	int mx = 0;
+	for(int i = 0; i < num_scc; i++) 
+	{
+		if(is_pub[i]) mx = max(mx, ans[i]);
+	}
+	cout << mx << endl;
 }
