@@ -1,53 +1,28 @@
 #include <bits/stdc++.h>
 
-#pragma GCC optimize("O3")
-
 using namespace std;
 
 #define MAXN 50005
-
-#define FOR(i, n) for (int i = 0; i < n; i++)
-#define FORR(j, i, n) for (int i = j; i < n; i++)
-#define FORD(i, n) for (int i = n - 1; i >= 0; i--)
-#define FOBIR(i, n) for (int i = 1; i <= n; i++)
-#define pb push_back
-#define mp make_pair
-#define endl '\n'
-#define DUEHOANG                  \
-    ios_base::sync_with_stdio(0); \
-    cin.tie(NULL);                \
-    cout.tie(NULL)
-
-#define fileio(in, out)      \
-    freopen(in, "r", stdin); \
-    freopen(out, "w", stdout);
-
-#define ll long long
-
-typedef set<int> si;
-typedef vector<int> vi;
-typedef pair<int, int> pii;
-typedef vector<pii> vii;
-typedef priority_queue<int> pqi;
-typedef stack<int> sti;
-typedef queue<int> qi;
-typedef deque<int> di;
-typedef map<int, int> mii;
+#define INF (1e9+7)
+#define pii pair<int,int>
 #define f first
 #define s second
+#define vii vector<pii> 
+#define pb push_back
+#define mp make_pair
 
-int n, m, k, wt[2][MAXN], yum[MAXN];
-vi adj[MAXN];
-map<pair<int, int>, int> edg;
+int n, m, wt[MAXN], wc[MAXN];
+vii adj[MAXN];
 
-void dijkstra(int src, int x)
+/// Set-based Dijkstra implementation.
+void dijk(int src)
 {
-	fill(wt[x], wt[x] + n, 1000000000);
+	fill(wt, wt + n, INF);
 
 	set<pii> pq;
 	pq.insert(mp(0, src));
 
-	wt[x][src] = 0;
+	wt[src] = 0;
 
 	int ct = 0;
 	while (!pq.empty())
@@ -55,16 +30,16 @@ void dijkstra(int src, int x)
 		pii tp = *pq.begin();
 		pq.erase(pq.begin());
 
-		for (int gu : adj[tp.s])
+		for (pii gu : adj[tp.s])
 		{
-			int w = edg[mp(tp.s, gu)];
-			int ind = gu;
-			if (wt[x][tp.s] + w < wt[x][ind])
+			int w = gu.f;
+			int ind = gu.s;
+			if (wt[tp.s] + w < wt[ind])
 			{
-				pq.erase(mp(wt[x][ind], ind)); /// you can't efficiently erase with a priority queue
+				pq.erase(mp(wt[ind], ind)); /// you can't efficiently erase with a priority queue
 				/// and you're processing way too many indices
-				wt[x][ind] = wt[x][tp.s] + w;
-				pq.insert(mp(wt[x][ind], ind));
+				wt[ind] = wt[tp.s] + w;
+				pq.insert(mp(wt[ind], ind));
 			}
 		}
 	}
@@ -72,28 +47,29 @@ void dijkstra(int src, int x)
 
 int main()
 {
-    fileio("dining.in", "dining.out");
-    cin >> n >> m >> k;
-    FOR(i, m)
-    {
-        int a, b, w;
-        cin >> a >> b >> w;
-        a--;
-        b--;
-        adj[a].pb(b);
-        adj[b].pb(a);
-        edg[mp(a,b)] = w;
-        edg[mp(b,a)] = w;
-    }
-    dijkstra(n-1, 0);
-    
-    FOR(i, k)
-    {
-        int a, x;
-        cin >> a >> x;
-        adj[n].pb(--a);
-        edg[mp(n,a)] = wt[0][a]-x;
-    }
-    dijkstra(n,1);
-    FOR(i, n-1) cout << (wt[1][i] <= wt[0][i]) << endl;
+	freopen("dining.in", "r", stdin);
+	freopen("dining.out", "w", stdout);
+	int K;
+	cin >> n >> m >> K;
+	for(int i = 0; i < m; i++)
+	{
+		int a, b, w;
+		cin >> a >> b >> w;
+		a--; b--;
+		adj[a].pb(mp(w, b));
+		adj[b].pb(mp(w, a));
+	}
+	dijk(n-1);
+	for(int i = 0; i < n; i++) wc[i] = wt[i];
+	for(int i = 0; i < K; i++)
+	{
+		int v, Y;
+		cin >> v >> Y;
+		adj[n].pb(mp(wt[--v]-Y, v));
+	}
+	dijk(n);
+	for(int i = 0; i < n-1; i++)
+	{
+		cout << (wt[i] <= wc[i]) << endl;
+	}
 }
