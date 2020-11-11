@@ -112,10 +112,8 @@ void convex()
     pii thing = pts[0];
     pts[0] = pts[mn];
     pts[mn] = thing;
-    sort(pts+1, pts+n, comp); // sort the points
-    // cerr << "tUrkmenistan" << endl;
+    sort(pts+1, pts+n, comp);
 
-    // cerr << pts[79976].f << " " << pts[79976].s << endl;
     int m = 1;
     FOBIR(i, n-1)
     {
@@ -123,7 +121,6 @@ void convex()
         pts[m] = pts[i];
         ++m;
     }
-    // cerr << "brug" << endl;
     if(m < 3)
     {
         FOR(i, m)
@@ -132,44 +129,29 @@ void convex()
         }
         return;
     }
-    // cerr << m << endl;
     stack<pii> st;
-    // cerr << "jldsljkfd" << endl;
     st.push(pts[0]);
     st.push(pts[1]);
     st.push(pts[2]);
     bool blah = 0;
     FORR(3, i, m)
     {
-        // cerr << i << endl;
         while(st.size() > 2 && orientation(sec_to_top(st), st.top(), pts[i]) != 2)
         {
             if(!blah)
             {
                 blah = 1;
-                // cerr << st.top().f << endl;
             }
             st.pop();
         }
         st.push(pts[i]);
-        if(i == 80000)
-        {
-            // cerr << "hello!" << endl;
-        }
     }
-    // cerr << "ajdflakdjflkadjf" << endl;
     while(!st.empty())
     {
         hull.pb(st.top());
         st.pop();
     }
     reverse(hull.begin(), hull.end());
-    
-    for(pii p : hull)
-    {
-        // if(p.f == 80001) cerr << p.s << endl;
-        // cerr << p.f << " " << p.s << endl;
-    }
 }
 
 signed main()
