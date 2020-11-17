@@ -17,7 +17,6 @@ using namespace std;
 #define F1RD(i, n) for (int i = n; i >= 1; i--)
 #define pb push_back
 #define mp make_pair
-#define ins insert
 #define endl '\n'
 #define DUEHOANG                  \
 	ios_base::sync_with_stdio(0); \
@@ -29,6 +28,7 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
+#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -65,13 +65,64 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n; ll W;
+	cin >> n >> W;
+	vii a;
+	FOR(i, n)
+	{
+		int x; cin >> x;
+		if(x > W) continue;
+		a.pb({x, i+1});
+	}
+	for(pii x : a)
+	{
+		if(x.f >= (W+1)/2)
+		{
+			cout << 1 << endl;
+			cout << x.s << endl;
+			return;
+		}
+	}
+	ll sm = 0;
+	for(pii x : a) sm += x.f;
+	if(sm < (W+1)/2)
+	{
+		cout << -1 << endl;
+		return;
+	}
+	if(sm <= W)
+	{
+		cout << a.size() << endl;
+		for(pii x : a) cout << x.s << ' ';
+		cout << endl;
+		return;
+	} else
+	{
+		sort(a.begin(), a.end());
+		ll su = 0, id = 0;
+		while(su < (W+1)/2 && id < a.size())
+		{
+			su += a[id++].f;
+		}
+		if(su > W)
+		{
+			cout << -1 << endl;
+			return;
+		}
+		cout << id << endl;
+		for(int i = 0; i < id; i++)
+		{
+			cout << a[i].s << ' ';
+		}
+		cout << endl;
+	}
 }
 
 signed main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

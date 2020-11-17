@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 100005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -17,7 +17,6 @@ using namespace std;
 #define F1RD(i, n) for (int i = n; i >= 1; i--)
 #define pb push_back
 #define mp make_pair
-#define ins insert
 #define endl '\n'
 #define DUEHOANG                  \
 	ios_base::sync_with_stdio(0); \
@@ -63,8 +62,32 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n,m,S[MAXN],R[MAXN],A[MAXN];
+vi v[MAXN];
 void solve()
 {
+	cin >> n >> m;
+	FOR(i, n) cin >> S[i] >> R[i];
+	FOR(i, n) v[i] = vi();
+	FOR(i, n) v[S[i]-1].push_back(R[i]);
+	FOR(i, m) 
+	{
+		sort(v[i].begin(), v[i].end());
+		reverse(v[i].begin(), v[i].end());
+	}
+	FOR(i, m)
+	{
+		if(v[i].size())
+		F1R(j, v[i].size()-1) v[i][j] += v[i][j-1];
+	}
+	FOR(i, m)
+	{
+		if(v[i].size())
+		FOR(j, v[i].size()) if(v[i][j] >= 0) A[j] += v[i][j];
+	}
+	int mx = 0;
+	FOR(i, n) MAX(mx, A[i]);
+	cout << mx << endl;
 }
 
 signed main()

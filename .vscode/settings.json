@@ -1,17 +1,18 @@
 {
     "files.associations": {
-        "ostream": "cpp",
-        "iostream": "cpp",
-        "bitset": "cpp",
-        "random": "cpp",
-        "iomanip": "cpp",
-        "type_traits": "cpp",
-        "tuple": "cpp",
-        "cmath": "cpp",
-        "deque": "cpp",
-        "string": "cpp",
-        "vector": "cpp"
-    },
+		"ostream": "cpp",
+		"iostream": "cpp",
+		"bitset": "cpp",
+		"random": "cpp",
+		"iomanip": "cpp",
+		"type_traits": "cpp",
+		"tuple": "cpp",
+		"cmath": "cpp",
+		"deque": "cpp",
+		"string": "cpp",
+		"vector": "cpp",
+		"rope": "cpp"
+	},
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.formatting.provider": "black"

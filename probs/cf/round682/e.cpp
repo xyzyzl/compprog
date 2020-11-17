@@ -17,7 +17,6 @@ using namespace std;
 #define F1RD(i, n) for (int i = n; i >= 1; i--)
 #define pb push_back
 #define mp make_pair
-#define ins insert
 #define endl '\n'
 #define DUEHOANG                  \
 	ios_base::sync_with_stdio(0); \
@@ -63,8 +62,46 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, a[MAXN];
 void solve()
 {
+	cin >> n;
+	FOR(i, n) cin >> a[i];
+	int ans = 0;
+	set<pii> cont;
+	FOR(l, n-2)
+	{
+		int msbl = floor(log2(a[l]));
+		int r = l+2;
+		ll sm = 0;
+		while(r < n && sm <= (1ll << (msbl+1)))
+		{
+			sm += a[r-1];
+			if(sm == (a[l] ^ a[r]) && !cont.count(mp(l,r)))
+			{
+				ans++;
+				cont.insert(mp(l,r));
+			}
+			r++;
+		}
+	}
+	for(int r = n-1; r >= 2; r--)
+	{
+		int msbl = floor(log2(a[r]));
+		int l = r-2;
+		ll sm = 0;
+		while(l >= 0 && sm <= (1ll << (msbl+1)))
+		{
+			sm += a[l+1];
+			if(sm == (a[l] ^ a[r]) && !cont.count(mp(l,r)))
+			{
+				ans++;
+				cont.insert(mp(l,r));
+			}
+			l--;
+		}
+	}
+	cout << ans << endl;
 }
 
 signed main()

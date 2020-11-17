@@ -65,6 +65,42 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n; cin >> n;
+	viii v(n);
+	FOR(i, n) cin >> v[i].f >> v[i].s.f >> v[i].s.s;
+	map<pii, set<pii> > m;
+	int as1 = -1, as2 = -1;
+	int x = 0;
+	FOR(i, n)
+	{
+		m[mp(min(v[i].s.f, v[i].s.s), max(v[i].s.f, v[i].s.s))].insert(mp(v[i].f,i+1));
+		m[mp(min(v[i].f, v[i].s.s), max(v[i].f, v[i].s.s))].insert(mp(v[i].s.f,i+1));
+		m[mp(min(v[i].f, v[i].s.f), max(v[i].f, v[i].s.f))].insert(mp(v[i].s.s,i+1));
+		int rad = min(v[i].f, min(v[i].s.f, v[i].s.s));
+		if(rad > as1) x=i+1;
+		MAX(as1, rad);
+	}
+	int y = 0, z = 0;
+	for(auto k : m)
+	{
+		pii x = k.f;
+		if(m[x].size() < 2) continue;
+		int a = prev(m[x].end())->s, b = prev(prev(m[x].end()))->s;
+		if(a==b) continue;
+		int nh = prev(m[x].end())->f + prev(prev(m[x].end()))->f;
+		int rad = min(nh, min(x.f, x.s));
+		if(rad > as2) y=a,z=b;
+		MAX(as2, rad);
+	}
+	if(as1 > as2)
+	{
+		cout << 1 << endl;
+		cout << x << endl;
+	} else
+	{
+		cout << 2 << endl;
+		cout << y << ' ' << z << endl;
+	}
 }
 
 signed main()

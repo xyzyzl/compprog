@@ -17,7 +17,6 @@ using namespace std;
 #define F1RD(i, n) for (int i = n; i >= 1; i--)
 #define pb push_back
 #define mp make_pair
-#define ins insert
 #define endl '\n'
 #define DUEHOANG                  \
 	ios_base::sync_with_stdio(0); \
@@ -65,13 +64,27 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n; cin >> n;
+	vi b(n);
+	FOR(i, n) cin >> b[i];
+	si st;
+	FOR(i, n)
+	{
+		if(st.count(b[i]))
+		{
+			cout << "YES" << endl;
+			return;
+		}
+		st.insert(b[i]);
+	}
+	cout << "NO" << endl;
 }
 
 signed main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

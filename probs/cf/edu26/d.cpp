@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 205
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -17,7 +17,6 @@ using namespace std;
 #define F1RD(i, n) for (int i = n; i >= 1; i--)
 #define pb push_back
 #define mp make_pair
-#define ins insert
 #define endl '\n'
 #define DUEHOANG                  \
 	ios_base::sync_with_stdio(0); \
@@ -63,8 +62,38 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n,k,F[MAXN],T[MAXN],dp[MAXN][5005];
 void solve()
 {
+	cin >> n >> k;
+	FOR(i, n)
+	{
+		ll w; cin >> w;
+		while(w%5==0)
+		{
+			F[i]++;
+			w /= 5;
+		}
+		while(w%2==0)
+		{
+			T[i]++;
+			w /= 2;
+		}
+		// cerr << F[i] << ' ' << T[i] << endl;
+	}
+	memset(dp, -0x7f, sizeof dp);
+	dp[0][0] = 0; // number of twos
+	FOR(i, n) F1RD(j, k) for(int l = 5000; l >= F[i]; l--)
+	{
+		dp[j][l] = max(dp[j][l], dp[j-1][l-F[i]] + T[i]);
+	}
+	int ans = 0;
+	FOR(l, 5001)
+	{
+		// cerr << dp[n][k][l] << ' ' << l << endl;
+		MAX(ans, min(dp[k][l],l));
+	}
+	cout << ans << endl;
 }
 
 signed main()

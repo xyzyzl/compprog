@@ -17,7 +17,6 @@ using namespace std;
 #define F1RD(i, n) for (int i = n; i >= 1; i--)
 #define pb push_back
 #define mp make_pair
-#define ins insert
 #define endl '\n'
 #define DUEHOANG                  \
 	ios_base::sync_with_stdio(0); \
@@ -65,13 +64,32 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n, m;
+	cin >> n >> m;
+	vector<vi> a(n, vi(m));
+	FOR(i, n) FOR(j, m) cin >> a[i][j];
+	int k = 0, l = 0, sm = 0;
+	vi v;
+	FOR(i, n) FOR(j, m)
+	{
+		if(a[i][j] <= 0) k++;
+		if(a[i][j] < 0) l++;
+		v.pb(abs(a[i][j]));
+		sm += abs(a[i][j]);
+	}
+	sort(v.begin(), v.end());
+	if(k%2 && l%2)
+	{
+		sm -= 2*v[0];
+	}
+	cout << sm << endl;	
 }
 
 signed main()
 {
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

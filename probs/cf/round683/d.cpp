@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 5005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -63,8 +63,28 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, m, dp[MAXN][MAXN];
+string a, b;
+int f(int i, int j)
+{
+	if(i >= n || j >= m) return 0;
+	if(dp[i][j] != -1) return dp[i][j];
+	if(a[i] == b[j]) return dp[i][j] = 2+f(i+1, j+1);
+	MAX(dp[i][j], 0);
+	MAX(dp[i][j], f(i+1, j)-1);
+	MAX(dp[i][j], f(i, j+1)-1);
+	return dp[i][j];
+}
 void solve()
 {
+	cin >> n >> m >> a >> b;
+	FOR(i, n) FOR(j, m) dp[i][j] = -1;
+	int ans = 0;
+	FOR(i, n) FOR(j, m)
+	{
+		MAX(ans, f(i,j));
+	}
+	cout << ans << endl;
 }
 
 signed main()

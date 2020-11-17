@@ -29,6 +29,7 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
+#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -63,8 +64,46 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n;
+ll A[2*MAXN], C[2*MAXN], B[MAXN];
 void solve()
 {
+	cin >> n;
+	vii ev;
+	si k;
+	mii m;
+	FOR(i, n)
+	{
+		ll l, r;
+		cin >> l >> r;
+		k.ins(l);
+		k.ins(r+1);
+		ev.pb(mp(l,1)); // insert at l
+		ev.pb(mp(r+1,-1)); // remove at r
+	}
+	int ct = 0;
+	for(int x : k)
+	{
+		if(k.upper_bound(x) != k.end())
+		{
+			C[ct] = *k.upper_bound(x)-x;
+		}
+		m[x] = ct++;
+	}
+	--ct;
+	sort(ev.begin(), ev.end());
+	for(pii p : ev)
+	{
+		A[m[p.f]] += p.s;
+	}
+	F1R(i, 2*n) A[i] += A[i-1];
+	FOR(i, 2*n)
+	{
+		// cerr << C[i] << ' ' << A[i] << endl;
+		B[A[i]] += C[i];
+	}
+	F1R(i, n) cout << B[i] << ' ';
+	cout << endl;
 }
 
 signed main()

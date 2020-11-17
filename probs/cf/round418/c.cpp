@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 205
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -17,7 +17,6 @@ using namespace std;
 #define F1RD(i, n) for (int i = n; i >= 1; i--)
 #define pb push_back
 #define mp make_pair
-#define ins insert
 #define endl '\n'
 #define DUEHOANG                  \
 	ios_base::sync_with_stdio(0); \
@@ -63,8 +62,40 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, q;
+string s;
+int c[26][1505]; // number of characters in the string
+int que[1505][26]; // how good is each query?
 void solve()
 {
+	cin >> n >> s >> q;
+	FOR(i, n)
+	{
+		c[s[i]-'a'][i]++;
+		if(i) FOR(j, 26) c[j][i] += c[j][i-1];
+	}
+	FOR(l, n)
+	{
+		FORR(l, r, n)
+		{
+			FOR(i, 26)
+			{
+				int c_i = c[i][r] - (l ? c[i][l-1] : 0); // number w/ character i
+				que[max(r-l+1-c_i, 0)][i] = max(que[max(0, r-l+1-c_i)][i], r-l+1);
+			}
+		}
+	}
+	FOR(i, 26) F1R(j, n)
+	{
+		que[j][i] = max(que[j-1][i], que[j][i]);
+	}
+	FOR(x,q)
+	{
+		int ct; char thing;
+		cin >> ct >> thing;
+		int vl = thing-'a';
+		cout << que[ct][vl] << endl;
+	}
 }
 
 signed main()
