@@ -62,20 +62,12 @@ void s_dfs(int v, int p)
 	for(int x : nds[v])
 	{
 		if(occ[qry[x][3]].empty()) continue;
-		int ls = occ[qry[x][3]].top();
-
-		if(ls == v)
-		{
-			good[x] = 1;
-		} else 
-		{
-			if(qry[x][0] != v && qry[x][1] != v) continue;
-			int lca = qry[x][2];
-			if(dep[ls] < dep[lca]) // not in range
-				continue;
-			else
-				good[x] = 1;
-		}
+		int ls = occ[qry[x][3]].top(); // deepest node in stack
+		int lca = qry[x][2];
+		if(dep[ls] < dep[lca]) // not in range
+			continue;
+		// otherwise, farmer should be :)
+		good[x] = 1;
 	}
 	for(int x : adj[v])
 	{
