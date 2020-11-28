@@ -61,6 +61,17 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n; cin >> n;
+	vi a(n);
+	ll sm = 0, mx = 0;
+	FOR(i, n)
+	{
+		cin >> a[i];
+		sm += a[i];
+		mx = max(mx, (ll)a[i]);
+	}
+	mx = max(mx, (ll)ceil((double)sm/(double)(n-1)));
+	cout << max(0ll, mx*(n-1)-sm) << endl;
 }
 
 signed main()
@@ -68,7 +79,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

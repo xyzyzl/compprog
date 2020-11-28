@@ -61,6 +61,14 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int x, y; cin >> x >> y;
+	if(x == y)
+	{
+		cout << 2*x << endl;
+	} else
+	{
+		cout << 2*max(x,y)-1 << endl;
+	}
 }
 
 signed main()
@@ -68,7 +76,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

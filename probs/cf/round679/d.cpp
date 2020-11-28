@@ -23,7 +23,11 @@ using namespace std;
 	ios_base::sync_with_stdio(0); \
 	cin.tie(NULL);                \
 	cout.tie(NULL)
-#define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
+
+#define fileio(in, out)      \
+	freopen(in, "r", stdin); \
+	freopen(out, "w", stdout);
+
 #define ll long long
 #define MOD (1e9*1)+7
 #define MOD2 998244353
@@ -61,11 +65,48 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n; cin >> n;
+	vi ad, a(2*n+1), m(2*n+1);
+	FOR(i, 2*n)
+	{
+		char c; cin >> c;
+		if(c == '+') ad.pb(i);
+		else 
+		{
+			int x; cin >> x;
+			a[i] = x;
+			if(ad.empty())
+			{
+				cout << "NO" << endl; return;
+			}
+			int y = ad.back();
+			ad.pop_back();
+			m[y] = x;
+		}
+	}
+	si tms;
+	FOR(i, 2*n)
+	{
+		if(!a[i]) tms.insert(m[i]);
+		else
+		{
+			if(*tms.begin() != a[i])
+			{
+				cout << "NO" << endl; return;
+			}
+			tms.erase(a[i]);
+		}
+	}
+	cout << "YES" << endl;
+	FOR(i, 2*n)
+	{
+		if(!a[i]) cout << m[i] << " ";
+	}
+	cout << endl;
 }
 
 signed main()
 {
-	// fileio("");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

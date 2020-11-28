@@ -61,6 +61,19 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	string s; cin >> s;
+	int n = s.size();
+
+	int sq=0, ci=0;
+	int ans = 0;
+	FOR(i, n)
+	{
+		if(s[i] == '(') ci++;
+		else if(s[i] == ')') { if(ci > 0) { ci--; ans++; } }
+		else if(s[i] == '[') sq++;
+		else { if(sq > 0) { sq--; ans++; } }
+	}
+	cout << ans << endl;
 }
 
 signed main()
@@ -68,7 +81,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

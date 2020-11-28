@@ -23,7 +23,7 @@ using namespace std;
 	ios_base::sync_with_stdio(0); \
 	cin.tie(NULL);                \
 	cout.tie(NULL)
-#define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
+#define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout);
 #define ll long long
 #define MOD (1e9*1)+7
 #define MOD2 998244353
@@ -59,13 +59,41 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, a[MAXN][5];
+
+struct lazyhash { int operator()(const vi &v) const { int h = 0; for(int y : v) h += y; return h; } };
+unordered_map<vi, int, lazyhash> M;
 void solve()
 {
+	cin >> n;
+	FOR(i, n)
+	{
+		FOR(j, 5) cin >> a[i][j];
+		sort(a[i],a[i]+5);
+		F1R(msk, (1 << 5)-1)
+		{
+			vi v;
+			FOR(j, 5)
+			{
+				if(msk & (1 << j)) v.pb(a[i][j]);
+			}
+			M[v]++;
+		}
+	}
+	ll ans = (ll)n*(n-1)/2;
+	for(auto it : M)
+	{
+		vi v = it.f;
+		ll x = it.s;
+		ll y = pow(-1, v.size()%2);
+		ans += y*(x*(x-1)/2);
+	}
+	cout << ans << endl;
 }
 
 signed main()
 {
-	// fileio("");
+	fileio("cowpatibility");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

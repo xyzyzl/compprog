@@ -25,8 +25,7 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define MOD (1e9*1)+7
-#define MOD2 998244353
+#define MOD 998244353
 #define INF (1e9*1)+5
 
 typedef set<int> si;
@@ -59,8 +58,43 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+// due to Benjamin Qi
+
+namespace modOp
+{
+    int ad(int a, int b, int mod = MOD) { return (a+b)%mod; }
+    int sub(int a, int b, int mod = MOD) { return (a-b+mod)%mod; }
+    int mul(int a, int b, int mod = MOD) { return (ll)a*b%mod; }
+ 
+    int AD(int& a, int b, int mod = MOD) { return a = ad(a,b,mod); }
+    int SUB(int& a, int b, int mod = MOD) { return a = sub(a,b,mod); }
+    int MUL(int& a, int b, int mod = MOD) { return a = mul(a,b,mod); }
+ 
+    int po (int b, int p, int mod = MOD) { return !p?1:mul(po(mul(b,b,mod),p/2,mod),p&1?b:1,mod); }
+    int inv (int b, int mod = MOD) { return po(b,mod-2,mod); }
+ 
+    int invGeneral(int a, int b) { // 0 < a < b, gcd(a,b) = 1
+        if (a == 0) return b == 1 ? 0 : -1;
+        int x = invGeneral(b%a,a);
+        return x == -1 ? -1 : ((1-(ll)b*x)/a+b)%b;
+    }
+}
+ 
+using namespace modOp;
+
+// ill prove that this works later because fuck me kajdsflkajsdlkfjkl
 void solve()
 {
+	int n; cin >> n;
+	vi fib(n+5);
+	fib[1] = 1;
+	fib[2] = 1;
+	FORR(3, i, n+5) 
+	{
+		AD(fib[i], fib[i-1]);
+		AD(fib[i], fib[i-2]);
+	}
+	cout << mul(fib[n], inv(po(2, n))) << endl;
 }
 
 signed main()

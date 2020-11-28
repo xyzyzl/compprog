@@ -23,8 +23,13 @@ using namespace std;
 	ios_base::sync_with_stdio(0); \
 	cin.tie(NULL);                \
 	cout.tie(NULL)
-#define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
+
+#define fileio(in, out)      \
+	freopen(in, "r", stdin); \
+	freopen(out, "w", stdout);
+
 #define ll long long
+#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -59,13 +64,48 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int a[6], b[MAXN];
+pii dp[MAXN][6][6];
+int n;
 void solve()
 {
+	FOR(i, 6) cin >> a[i];
+	sort(a, a+6);
+	cin >> n;
+	FOR(i, n) cin >> b[i];
+	sort(b, b+n);
+	FOR(i, n) FOR(j, 6) FOR(k, 6) dp[i][j][k] = mp(0, 1e15);
+	FOR(i, 6) FOR(j, i+1) dp[0][i][j] = mp(b[0]-a[i], b[0]-a[i]);
+	F1R(i, n-1) 
+	{
+		FOR(j, 6) FOR(k, j+1)
+		{
+			vii v;
+			FOR(l, k+1) v.pb(mp(min(dp[i-1][k][l].f, b[i]-a[j]), max(dp[i-1][k][l].s, b[i]-a[j])));
+			int mn = LLONG_MAX;
+			int ind = 0;
+			FOR(l, k+1) 
+			{
+				int m = v[l].s-v[l].f;
+				if(m < mn)
+				{
+					ind = l;
+				}
+				MIN(mn, m);
+			}
+			dp[i][j][k] = mp(min(dp[i-1][k][ind].f, b[i]-a[j]), max(dp[i-1][k][ind].s, b[i]-a[j]));
+		}
+	}
+	int df = INT_MAX;
+	FOR(i, 6) FOR(j, 6) 
+	{
+		df = min(df, dp[n-1][i][j].s - dp[n-1][i][j].f);
+	}
+	cout << df << endl;
 }
 
 signed main()
 {
-	// fileio("");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
