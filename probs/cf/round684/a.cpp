@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 200005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -63,28 +63,36 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
 void solve()
 {
-	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	int n, c0, c1, h; cin >> n >> c0 >> c1 >> h;
+	int n0=0, n1=0;
+	string s; cin >> s;
+	FOR(i, n)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		if(s[i] == '0') n0++;
+		else n1++;
 	}
-	cout << dp[n-1][n-1] << endl;
+	int ans = n0*c0+n1*c1;
+	int _01 = c1+h, _10 = c0+h;
+	if(c0-_01 > 0)
+	{
+		ans -= n0*c0;
+		ans += n0*_01;
+	}
+	if(c1-_10 > 0)
+	{
+		ans -= n1*c1;
+		ans += n1*_10;
+	}
+	cout << ans << endl;
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

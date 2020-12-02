@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 200005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -63,25 +63,86 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
+int ans[25][25];
 void solve()
 {
-	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	int n; cin >> n;
+	mii frq;
+	FOR(i, n*n)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		int x; cin >> x;
+		frq[x]++;
 	}
-	cout << dp[n-1][n-1] << endl;
+	int x=0;
+	if(n%2)
+	{
+		bool only1 = 0;
+		int only2 = 0;
+		vii vals[5];
+		FOR(i, (n+1)/2) FOR(j, (n+1)/2)
+		{
+			if(n-1-i == i && n-1-j == j)
+			{
+				vals[1].pb(mp(i,j));
+			} else if(n-1-i == i || n-1-j == j)
+			{
+				vals[2].pb(mp(i,j));
+			} else
+			{
+				vals[4].pb(mp(i,j));
+			}
+		}
+		for(int x : {4,2,1})
+		{
+			int lst = 1;
+			for(pii y : vals[x])
+			{
+				int i = y.f;
+				int j = y.s;
+				while(lst < 1005 && frq[lst] < x)
+				{
+					lst++;
+				}
+				if(lst == 1005)
+				{
+					cout << "NO" << endl;
+					return;
+				}
+				ans[i][j] = ans[n-i-1][j] = ans[n-i-1][n-j-1] = ans[i][n-j-1] = lst;
+				frq[lst] -= x;
+			}
+		}
+	}
+	else
+	{
+		F1R(i, 1000)
+		{
+			if(frq[i] % 4)
+			{
+				cout << "NO" << endl;
+				return;
+			}
+			for(int j = 0; j < frq[i]; j += 4)
+			{
+				int A = x/((n+1)/2), B = x%((n+1)/2);
+				ans[A][B] = i;
+				ans[n-1-A][B] = i;
+				ans[n-1-A][n-1-B] = i;
+				ans[A][n-1-B] = i;
+				x++;
+			}
+		}
+	}
+	cout << "YES" << endl;
+	FOR(i, n)
+	{
+		FOR(j, n) cout << ans[i][j] << ' ';
+		cout << endl;
+	}
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

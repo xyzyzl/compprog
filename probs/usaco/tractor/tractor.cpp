@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 505
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -63,25 +63,70 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
+int n, gd[MAXN][MAXN], vs[MAXN][MAXN];
+int dx[4] = { 1, 0, -1, 0 };
+int dy[4] = { 0, 1, 0, -1 };
+
+bool out(int i, int j)
+{
+	return (i < 0 || j < 0 || i >= n || j >= n);
+}
+
+bool bfs(int sx, int sy, int D)
+{
+	queue<pii> q;
+	q.push(mp(sx,sy));
+	int nv = 0;
+	while(!q.empty())
+	{
+		pii x = q.front(); q.pop();
+		int i = x.f, j = x.s;
+		if(vs[i][j]) continue;
+		vs[i][j] = 1;
+		nv++;
+		FOR(k, 4)
+		{
+			int ni = i+dx[k];
+			int nj = j+dy[k];
+			if(vs[ni][nj]) continue;
+			if(out(ni,nj)) continue;
+			if(abs(gd[i][j] - gd[ni][nj]) <= D)
+			{
+				q.push(mp(ni,nj));
+			}
+		}
+	}
+	return (nv >= n*n/2);
+}
+
+bool work(int D)
+{
+	memset(vs, 0, sizeof vs);
+	FOR(i, n) FOR(j, n) if(!vs[i][j])
+	{
+		bool ok = bfs(i, j, D);
+		if(ok) return true;
+	}
+	return false;
+}
+
 void solve()
 {
 	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	FOR(i, n) FOR(j, n) cin >> gd[i][j];
+	int lo = 1, hi = 1e9+1;
+	while(lo + 1 < hi)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		int mid = (lo+hi)/2;
+		if(work(mid)) hi = mid;
+		else lo = mid;
 	}
-	cout << dp[n-1][n-1] << endl;
+	cout << hi << endl;
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
+	fileio("tractor.in", "tractor.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

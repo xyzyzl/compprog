@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 200005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -29,6 +29,7 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
+#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -63,28 +64,58 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
 void solve()
 {
-	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	ll n; cin >> n;
+	int o = n;
+	vi p;
+	mii divs;
+	if(n%2 == 0) p.pb(2);
+	while(n%2 == 0)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		n /= 2;
+		divs[2]++;
 	}
-	cout << dp[n-1][n-1] << endl;
+	for(int i = 3; i*i <= o; i+=2)
+	{
+		if(n%i==0) p.pb(i);
+		while(n % i == 0)
+		{
+			n /= i;
+			divs[i]++;
+		}
+	}
+	if(n > 2)
+	{
+		p.pb(n);
+		divs[n]++;
+	}
+	int mx = 0;
+	vector<ll> v(ceil(sqrt(o)), 1);
+	for(int x : p)
+	{
+		FOR(i, divs[x])
+		{
+			v[i] *= x;
+		}
+	}
+	vector<ll> k;
+	FOR(i, ceil(sqrt(o)))
+	{
+		if(v[i] == 1) continue;
+		k.pb(v[i]);
+	}
+	reverse(k.begin(), k.end());
+	cout << k.size() << endl;
+	for(int x : k) cout << x << ' ';
+	cout << endl;
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

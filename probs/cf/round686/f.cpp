@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 200005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -29,6 +29,7 @@ using namespace std;
 	freopen(out, "w", stdout);
 
 #define ll long long
+#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -63,28 +64,61 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
+int n;
 void solve()
 {
-	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	cin >> n; vi v(n);
+	FOR(i, n) cin >> v[i];
+	vi p = v;
+	vi s = v;
+	F1R(i, n-1) p[i] = max(p[i], p[i-1]);
+	FORD(i, n-1) s[i] = max(s[i], s[i+1]);
+
+	int mx = *max_element(v.begin(), v.end());
+	vi ms;
+	FOR(i, n) if(v[i] == mx) ms.pb(i);
+	if(ms.size() >= 3)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
-	}
-	cout << dp[n-1][n-1] << endl;
+		cout << "YES" << endl;
+		cout << ms[1] << " " << 1 << " " << n-ms[1]-1 << endl;
+		return;
+	} else
+	{
+		int lo = ms[0];
+		int hi = lo+1;
+		while(true)
+		{
+			if(lo == 0 || hi == n)
+			{
+				cout << "NO" << endl;
+				return;
+			}
+			if(p[lo-1] == mx && s[hi] == mx)
+			{
+				cout << "YES" << endl;
+				cout << lo << " " << hi-lo << " " << n-hi << endl;
+				return;
+			}
+			int lf = (lo-1==0) ? INT_MIN : min(p[lo-2], v[lo-1]);
+			int rg = (hi+1>=n) ? INT_MIN : min(s[hi+1], v[hi]);
+			if(lf > rg)
+			{
+				mx = min(mx, v[lo-1]);
+				--lo;
+			} else
+			{
+				mx = min(mx, v[hi]);
+				++hi;
+			}
+		}
+	}	
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 505
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -63,25 +63,73 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
+int m,n,elv[MAXN][MAXN];
+int dx[4] = {0,1,0,-1};
+int dy[4] = {1,0,-1,0};
+bool v[MAXN][MAXN],w[MAXN][MAXN];
+
+bool out(int i, int j)
+{
+	if(i < 0 || j < 0 || i >= m || j >= n) return 1;
+	return 0;
+}
+
+void bfs(ll D)
+{
+	queue<pii> q;
+	int si = 0, sj = 0;
+	FOR(i, m) FOR(j, n) if(w[i][j]) { si=i; sj=j; }
+	q.push(mp(si,sj));
+	while(!q.empty())
+	{
+		pii x = q.front();
+		q.pop();
+		int i=x.f;
+		int j=x.s;
+		if(out(i,j)) continue;
+		FOR(a, 4)
+		{
+			int ni = i+dx[a], nj = j+dy[a];
+			if(out(ni,nj)) continue;
+			if(!v[ni][nj] && abs(elv[i][j]-elv[ni][nj]) <= D)
+			{
+				q.push(mp(ni,nj));
+				v[ni][nj] = 1;
+			}
+		}
+	}
+}
+
+bool ok(ll D)
+{
+	memset(v, 0, sizeof v);
+	bfs(D);
+	FOR(i, m) FOR(j, n) if(w[i][j] && !v[i][j]) return 0;
+	return 1;
+}
+
 void solve()
 {
-	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	cin >> m >> n;
+	FOR(i, m) FOR(j, n)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		cin >> elv[i][j];
 	}
-	cout << dp[n-1][n-1] << endl;
+	FOR(i, m) FOR(j, n) cin >> w[i][j];
+	ll lo = 0, hi = 1e9+1;
+	while(lo+1 < hi)
+	{
+		int mid = (lo+hi)/2;
+		if(ok(mid)) hi=mid;
+		else lo = mid;
+	}
+	if(ok(0)) cout << 0 << endl;
+	else cout << hi << endl;
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
+	fileio("ccski.in", "ccski.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

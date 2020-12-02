@@ -63,25 +63,36 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
+int n;
+bool is_p[2*MAXN], vis[2*MAXN];
+vii edges;
 void solve()
 {
 	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	FOR(i, n) edges.pb({i+1, (i+1)%n+1});
+	FORR(2, i, 2*n)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		if(!vis[i])
+		{
+			is_p[i] = 1;
+			for(int j = i; j < 2*n; j+=i) vis[j]=1;
+		}
 	}
-	cout << dp[n-1][n-1] << endl;
+	FORR(n, i, 3*n/2)
+	{
+		if(is_p[i])
+		{
+			break;
+		}
+		edges.pb({i-n+1, i-n+1+n/2});
+	}
+	cout << edges.size() << endl;
+	sort(edges.begin(), edges.end());
+	for(pii x : edges) cout << x.f << ' ' << x.s << endl;
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

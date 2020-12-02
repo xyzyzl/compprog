@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 405
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -63,25 +63,35 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
+int n,k,gd[MAXN*4][MAXN*4];
 void solve()
 {
-	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	cin >> n >> k;
+	FOR(i, n) FOR(j, n)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		cin >> gd[n+i-j][i+j];
 	}
-	cout << dp[n-1][n-1] << endl;
+	FOR(i, 4*n+3) FOR(j, 4*n+3)
+	{
+		if(i) gd[i][j] += gd[i-1][j];
+		if(j) gd[i][j] += gd[i][j-1];
+		if(i&&j) gd[i][j] -= gd[i-1][j-1];
+	}
+	int mx = 0;
+	FORR(2*k, i, 4*n+3) FORR(2*k, j, 4*n+3)
+	{
+		int ans = gd[i][j];
+		if(i >= 2*k+1) ans -= gd[i-2*k-1][j];
+		if(j >= 2*k+1) ans -= gd[i][j-2*k-1];
+		if(i >= 2*k+1 && j >= 2*k+1) ans += gd[i-2*k-1][j-2*k-1];
+		MAX(mx, ans);
+	}
+	cout << mx << endl;
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
+	fileio("lazy.in", "lazy.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

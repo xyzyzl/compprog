@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 200005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -63,25 +63,61 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
 void solve()
 {
-	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	int n, m; cin >> n >> m;
+	int d_n=0,d_m=0;
+	for(int x = 7; x < n; x*=7)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		d_n++;
 	}
-	cout << dp[n-1][n-1] << endl;
+	for(int x = 7; x < m; x*=7)
+	{
+		d_m++;
+	}
+	d_n++; d_m++;
+	ll ans = 0;
+	if(d_n + d_m <= 7)
+	{
+		FOR(i, n) FOR(j, m)
+		{
+			vi vis(7);
+			int a = i, k = 0;
+			bool yes = 1;
+			while(k != d_n)
+			{
+				if(vis[a%7])
+				{
+					yes= 0;
+					break;
+				}
+				vis[a%7] = 1;
+				a /= 7;
+				k++;
+			}
+			int b = j; k = 0;
+			while(k != d_m)
+			{
+				if(vis[b%7])
+				{
+					yes= 0;
+					break;
+				}
+				vis[b%7] = 1;
+				b /= 7;
+				k++;
+			}
+			if(yes) ans++;
+		}
+		cout << ans << endl;
+	} else
+	{
+		cout << 0 << endl;
+	}
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest

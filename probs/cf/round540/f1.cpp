@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 1005
+#define MAXN 300005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -63,25 +63,49 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-int n, a[MAXN], b[MAXN], dp[MAXN][MAXN];
+int n, ans, col[MAXN], c_red[MAXN], c_blu[MAXN];
+int tr, tb;
+vi adj[MAXN];
+
+void dfs(int v, int p)
+{
+	c_red[v] = col[v]==1;
+	c_blu[v] = col[v]==2;
+	for(int x : adj[v])
+	{
+		if(x == p) continue;
+		dfs(x, v);
+		c_red[v] += c_red[x];
+		c_blu[v] += c_blu[x];
+		if((c_red[x] == tr&&!c_blu[x]) || (c_blu[x] == tb&&!c_red[x]))
+		{
+			ans++;
+		}
+	}
+}
+
 void solve()
 {
 	cin >> n;
-	FOR(i, n) cin >> a[i];
-	FOR(i, n) cin >> b[i];
-	dp[0][0] = abs(a[0]-b[0]) <= 4;
-	F1R(i, n-1) MAX(dp[i][0], (dp[i-1][0] | (abs(a[i]-b[0]) <= 4)));
-	F1R(i, n-1) MAX(dp[0][i], (dp[0][i-1] | (abs(a[0]-b[i]) <= 4)));
-	F1R(i, n-1) F1R(j, n-1)
+	FOR(i, n)
 	{
-		MAX(dp[i][j], max(max(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1] + (abs(a[i]-b[j]) <= 4)));
+		cin >> col[i];
+		if(col[i] == 1) tr++;
+		else if(col[i] == 2) tb++;
 	}
-	cout << dp[n-1][n-1] << endl;
+	FOR(i, n-1)
+	{
+		int u,v; cin >> u >> v;
+		--u; --v;
+		adj[u].pb(v);
+		adj[v].pb(u);
+	}
+	dfs(0,-1);
+	cout << ans << endl;
 }
 
 signed main()
 {
-	fileio("nocross.in", "nocross.out");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
