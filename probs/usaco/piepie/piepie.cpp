@@ -8,16 +8,6 @@ typedef pair<int, int> pii;
 #define s second
 pii a[200005];
 
-bool cmpB(int x, int y)
-{
-	return a[x].s < a[y].s;
-}
-
-bool cmpE(int x, int y)
-{
-	return a[x].f < a[y].f;
-}
-
 multiset<pii> mB, mE;
 int main()
 {
