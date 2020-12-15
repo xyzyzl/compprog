@@ -59,35 +59,157 @@ const int MIN(int &a, int b)
 }
 
 int n, m;
-int R[MAXN][MAXN], S[MAXN][MAXN];
-int dr[MAXN][MAXN], ds[MAXN][MAXN];
+int R[MAXN][MAXN], S[MAXN][MAXN], R2[MAXN][MAXN], S2[MAXN][MAXN];
+int psR[MAXN][MAXN], psS[MAXN][MAXN], vis[MAXN][MAXN];
 
 bool ck(int B)
 {
+	memset(vis, 0, sizeof vis);
 	FOR(i, m) FOR(j, n)
 	{
+		R2[i][j] = R[i][j];
+		S2[i][j] = S[i][j];
 	}
+	while(true)
+	{
+		bool found = 0;
+		FORD(i, m-B+1) FORD(j, n-B+1)
+		{
+			if(vis[i][j]) continue;
+			int rx = psR[i+B-1][j+B-1];
+			if(i) rx -= psR[i-1][j+B-1];
+			if(j) rx -= psR[i+B-1][j-1];
+			if(i && j) rx += psR[i-1][j-1];
+			int sx = psS[i+B-1][j+B-1];
+			if(i) sx -= psS[i-1][j+B-1];
+			if(j) sx -= psS[i+B-1][j-1];
+			if(i && j) sx += psS[i-1][j-1];
+			if(rx == B*B || sx == B*B)
+			{
+				vis[i][j] = 1;
+				found = 1;
+				FOR(i1, B) FOR(j1, B)
+				{
+					R[i+i1][j+j1] = 1;
+					S[i+i1][j+j1] = 1;
+				}
+				psR[0][0] = R[0][0];
+				psS[0][0] = S[0][0];
+				FOR(i, m) FOR(j, n)
+				{
+					psR[i][j] = R[i][j];
+					psS[i][j] = S[i][j];
+					if(i)
+					{
+						psR[i][j] += psR[i-1][j];
+						psS[i][j] += psS[i-1][j];
+					}
+					if(j)
+					{
+						psR[i][j] += psR[i][j-1];
+						psS[i][j] += psS[i][j-1];
+					}
+					if(i && j)
+					{
+						psR[i][j] -= psR[i-1][j-1];
+						psS[i][j] -= psS[i-1][j-1];
+					}
+				}
+				goto here;
+			}
+		}
+here:
+		if(!found) break;
+	}
+	int rx = 0, sx = 0;
+	FOR(i, m) FOR(j, n)
+	{
+		rx += R[i][j];
+		sx += S[i][j];
+	}
+	FOR(i, m) FOR(j, n)
+	{
+		R[i][j] = R2[i][j];
+		S[i][j] = S2[i][j];
+	}
+	psR[0][0] = R[0][0];
+	psS[0][0] = S[0][0];
+	FOR(i, m) FOR(j, n)
+	{
+		psR[i][j] = R[i][j];
+		psS[i][j] = S[i][j];
+		if(i)
+		{
+			psR[i][j] += psR[i-1][j];
+			psS[i][j] += psS[i-1][j];
+		}
+		if(j)
+		{
+			psR[i][j] += psR[i][j-1];
+			psS[i][j] += psS[i][j-1];
+		}
+		if(i && j)
+		{
+			psR[i][j] -= psR[i-1][j-1];
+			psS[i][j] -= psS[i-1][j-1];
+		}
+	}
+	if(rx == m*n && sx == m*n)
+	{
+		return 1;
+	}
+	return 0;
 }
 
 void solve()
 {
-	cin >> n >> m;
-	FOR(i, n) FOR(j, m)
+	cin >> m >> n;
+	FOR(i, m) FOR(j, n)
 	{
 		char c; cin >> c;
 		R[i][j] = c == 'R';
 		S[i][j] = c == 'S'; 
 	}
-	int lo = 0, hi = min(m,n);
+	psR[0][0] = R[0][0];
+	psS[0][0] = S[0][0];
+	FOR(i, m) FOR(j, n)
+	{
+		psR[i][j] = R[i][j];
+		psS[i][j] = S[i][j];
+		if(i)
+		{
+			psR[i][j] += psR[i-1][j];
+			psS[i][j] += psS[i-1][j];
+		}
+		if(j)
+		{
+			psR[i][j] += psR[i][j-1];
+			psS[i][j] += psS[i][j-1];
+		}
+		if(i && j)
+		{
+			psR[i][j] -= psR[i-1][j-1];
+			psS[i][j] -= psS[i-1][j-1];
+		}
+	}
+	int lo = 1, hi = 1+min(m,n);
 	while(lo < hi-1)
 	{
 		int mid = (lo+hi)/2;
+		if(ck(mid))
+		{
+			lo = mid;
+		} else
+		{
+			hi = mid;
+		}
 	}
+	cout << lo << endl;
 }
 
 signed main()
 {
-	// fileio("");
+	fileio("skicourse");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
