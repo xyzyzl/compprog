@@ -50,11 +50,11 @@ int main()
 	int cur = 0, ans = 0;
 	for(int i = 0; i <= 2*n; i++)
 	{
+		cur += p[i];
 		if(p[i]>0) 
 		{
-			AD(ans, po(2, n-1-cur));
+			AD(ans, po(2, n-cur));
 		}
-		cur += p[i];
 	}
 	cout << ans << endl;
 }

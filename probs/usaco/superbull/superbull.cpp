@@ -1,142 +1,67 @@
-// Time:
-// Algorithms: 
-
 #include <bits/stdc++.h>
-
-#pragma GCC optimize("O3")
 
 using namespace std;
 
-#define MAXN 2005
-
-#define FOR(i, n) for (int i = 0; i < n; i++)
-#define FORR(j, i, n) for (int i = j; i < n; i++)
-#define FORD(i, n) for (int i = n - 1; i >= 0; i--)
-#define F1R(i, n) for (int i = 1; i <= n; i++)
-#define F1RD(i, n) for (int i = n; i >= 1; i--)
-#define pb push_back
-#define mp make_pair
-#define endl '\n'
-#define DUEHOANG                  \
-	ios_base::sync_with_stdio(0); \
-	cin.tie(NULL);                \
-	cout.tie(NULL)
-
-#define fileio(in, out)      \
-	freopen(in, "r", stdin); \
-	freopen(out, "w", stdout);
-
-#define ll long long
-#define MOD (1e9*1)+7
-#define MOD2 998244353
-#define INF (1e9*1)+5
-
-typedef set<int> si;
 typedef vector<int> vi;
-typedef pair<int, int> pii;
-typedef pair<int, pii> iii;
-typedef vector<pii> vii;
-typedef vector<iii> viii;
-typedef priority_queue<int> pqi;
-typedef stack<int> sti;
-typedef queue<int> qi;
-typedef deque<int> di;
-typedef map<int, int> mii;
-#define f first
-#define s second
+#define pb push_back
+#define int long long
 
-#define LEFT(x) 2 * x
-#define RIGHT(x) 2 * x + 1
+int n, mat[2005][2005], vis[2005], wt[2005];
+vi a;
 
-#define bitinc(x) x&-x
-
-const int MAX(int &a, int b)
-{
-	return a = max(a, b); 
-}
-const int MIN(int &a, int b)
-{
-	return a = min(a, b); 
-}
-
-int n;
-vi pts;
-ll adj_mat[MAXN][MAXN];
-
-int par[MAXN];
-ll wt[MAXN];
 void prim()
 {
-	// just let the root be 0!!
-	vi vis(n, 0);
-	FOR(i, n) wt[i] = 5;
-	wt[0] = 0;
-	par[0] = -1;
-	FOR(ct, n-1)
+	for(int i = 0; i < n; i++)
 	{
-		ll mn = 5;
-		int ind = -1;
-		FOR(i, n)
+		wt[i] = 1; 
+		vis[i] = 0;
+	}
+	wt[0] = 0;
+	// make n-1 edges
+	for(int ct = 0; ct < n-1; ct++)
+	{
+		// for all vertices
+		int mn = 1, v = -1;
+		for(int i = 0; i < n; i++)
 		{
 			if(!vis[i] && wt[i] < mn)
 			{
+				v = i;
 				mn = wt[i];
-				ind = i;
 			}
 		}
-
-		vis[ind] = 1;
-		FOR(i, n)
+		// should be sped up with a priority queue
+		// for all children
+		vis[v] = 1;
+		for(int x = 0; x < n; x++)
 		{
-			if(!vis[i] && adj_mat[ind][i] < wt[i])
+			if(!vis[x] && mat[v][x] < wt[x])
 			{
-				par[i] = ind;
-				wt[i] = adj_mat[ind][i];
+				wt[x] = mat[v][x];
 			}
 		}
 	}
-	ll sum = 0;
+	int ans = 0;
 	for(int i = 1; i < n; i++)
 	{
-		sum -= wt[i];
+		ans -= wt[i];
 	}
-	cout << sum << endl;
+	cout << ans << endl;
 }
 
-void read()
+signed main()
 {
+	freopen("superbull.in", "r", stdin);
+	freopen("superbull.out", "w", stdout);
 	cin >> n;
-	FOR(i, n)
+	for(int i = 0; i < n; i++)
 	{
-		int x;
-		cin >> x;
-		pts.pb(x);
+		int x; cin >> x; a.pb(x);
 	}
-	FOR(i, n)
+	for(int i = 0; i < n; i++) for(int j = 0; j < n; j++)
 	{
-		FOR(j, n)
-		{
-			adj_mat[i][j]=-(pts[i]^pts[j]);
-		}
+		mat[i][j] = -(a[i]^a[j]);
 	}
-	
-}
-
-void solve()
-{
+	// do prim
 	prim();
-}
-
-int main()
-{
-	fileio("superbull.in", "superbull.out");
-	DUEHOANG;
-	int t = 1;
-	// cin >> t; // uncomment if it's multitest
-	while(t--)
-	{
-		read();
-		solve();
-	}
-	
 }
