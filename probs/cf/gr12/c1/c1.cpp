@@ -59,119 +59,69 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-<<<<<<< HEAD
-int n;
-int arr[400005], frq[400005];
-
-void solve()
-{
-	cin >> n;
-	vi ans(n+1);
-	FOR(i, n)
-	{
-		cin >> arr[i]; 
-		frq[arr[i]]++;
-	}
-	bool pm = 1;
-	F1R(i, n)
-	{
-		if(!frq[i])
-			pm = 0;
-	}
-	// k=1 means that there must be a permutation.
-	// k=n means that there must be a 1 in the list
-	if(pm) ans[1] = 1;
-	if(frq[1]) ans[n] = 1;
-	// otherwise, needs a permutation of [2, n-k+1].
-	int l = 0, r = n-1;
-	F1RD(i, n)
-	{
-		if(!ans[n]) break;
-		ans[i] = 1;
-		int nx = n-i+1;
-		if(--frq[nx] == 0 && (arr[l] == nx || arr[r] == nx) && frq[nx+1])
-		{
-			if(arr[l] == nx) l++;
-			if(arr[r] == nx) r--;
-			continue;
-		}
-		// none
-		break;
-	}
-	F1R(i, n) cout << ans[i];
-	cout << endl;
-	FOR(i, n+1)
-	{
-		arr[i] = 0;
-		frq[i] = 0;
-	}
-=======
 void solve()
 {
 	int n; cin >> n;
-	vi a(n), f(n+1), ans(n+1), a2(n+1);
+	vector<vector<char> > a(n, vector<char>(n));
+	vector<vector<char> > b(n, vector<char>(n));
+	vector<vector<char> > c(n, vector<char>(n));
+	int k = 0;
+	FOR(i, n) FOR(j, n)
+	{
+		cin >> a[i][j];
+		if(a[i][j] == 'X' || a[i][j] == 'O') k++;
+		c[i][j] = b[i][j] = a[i][j];
+	}
+	int ca=0,cb=0,cc=0;
 	FOR(i, n)
 	{
-		cin >> a[i];
-		f[a[i]]++;
+		int off = i%3;
+		FOR(j, n)
+		{
+			if(a[i][j] == 'X' && j%3 == off)
+			{
+				a[i][j] = 'O';
+				ca++;
+			}
+		}
 	}
-	if(f[1] > 0) ans[n] = 1;
-	ans[1] = 1;
-	F1R(i, n)
+	FOR(i, n)
 	{
-		if(f[i] > 1) ans[1] = 0;
+		int off = (i+1)%3;
+		FOR(j, n)
+		{
+			if(b[i][j] == 'X' && j%3 == off)
+			{
+				b[i][j] = 'O';
+				cb++;
+			}
+		}
 	}
-	bool oops = 0;
-	F1R(i, n-2)
+	FOR(i, n)
 	{
-		if(a[i] == 1) oops = 1;
+		int off = (i+2)%3;
+		FOR(j, n)
+		{
+			if(c[i][j] == 'X' && j%3 == off)
+			{
+				c[i][j] = 'O';
+				cc++;
+			}
+		}
 	}
-	if(f[1] > 1 || f[1] == 0 || oops)
+	if(ca <= k/3) FOR(i, n)
 	{
-		F1R(i, n) cout << ans[i];
+		FOR(j, n) cout << a[i][j];
 		cout << endl;
-		return;
+	} else if(cb <= k/3) FOR(i, n)
+	{
+		FOR(j, n) cout << b[i][j];
+		cout << endl;
+	} else if(cc <= k/3) FOR(i, n)
+	{
+		FOR(j, n) cout << c[i][j];
+		cout << endl;
 	}
-	if(a[n-1] == 1) reverse(a.begin(), a.end());
-	F1R(i, n-2)
-	{
-		if(a[i] <= a[i-1] && a[i] <= a[i+1])
-		{
-			a2[i] = 1;
-		}
-	}
-	int id = n+5;
-	FORD(i, n) if(a2[i])
-	{
-		id = i;	
-	}
-	int mn = INT_MAX;
-	F1R(i, id)
-	{
-		MIN(mn, a[i]);
-	}
-	if(mn > 3) 
-	{
-		if(a[n-1] == 2) ans[n-1] = 1;
-	} else if(mn == 2)
-	{
-		ans[n-1] = 1;
-	} else if(mn == 0)
-	{
-		if(ans[1])
-		{
-			F1R(i,n) ans[i] = 1;
-		} else
-		{
-			FORR(3, i, n+1) ans[i] = 1;
-		}
-	} else
-	{
-		ans[n-1] = ans[n-2] = 1;
-	}
-	F1R(i, n) cout << ans[i];
-	cout << endl;
->>>>>>> 292c208fd0f3cae3127f4c86a86359aee1fe25e7
 }
 
 signed main()

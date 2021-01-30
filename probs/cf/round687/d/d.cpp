@@ -59,119 +59,44 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-<<<<<<< HEAD
-int n;
-int arr[400005], frq[400005];
-
-void solve()
-{
-	cin >> n;
-	vi ans(n+1);
-	FOR(i, n)
-	{
-		cin >> arr[i]; 
-		frq[arr[i]]++;
-	}
-	bool pm = 1;
-	F1R(i, n)
-	{
-		if(!frq[i])
-			pm = 0;
-	}
-	// k=1 means that there must be a permutation.
-	// k=n means that there must be a 1 in the list
-	if(pm) ans[1] = 1;
-	if(frq[1]) ans[n] = 1;
-	// otherwise, needs a permutation of [2, n-k+1].
-	int l = 0, r = n-1;
-	F1RD(i, n)
-	{
-		if(!ans[n]) break;
-		ans[i] = 1;
-		int nx = n-i+1;
-		if(--frq[nx] == 0 && (arr[l] == nx || arr[r] == nx) && frq[nx+1])
-		{
-			if(arr[l] == nx) l++;
-			if(arr[r] == nx) r--;
-			continue;
-		}
-		// none
-		break;
-	}
-	F1R(i, n) cout << ans[i];
-	cout << endl;
-	FOR(i, n+1)
-	{
-		arr[i] = 0;
-		frq[i] = 0;
-	}
-=======
 void solve()
 {
 	int n; cin >> n;
-	vi a(n), f(n+1), ans(n+1), a2(n+1);
+	vi a(n), b(n); // b[i] = most significant bit
 	FOR(i, n)
 	{
 		cin >> a[i];
-		f[a[i]]++;
+		b[i] = floor(log2(a[i]));
 	}
-	if(f[1] > 0) ans[n] = 1;
-	ans[1] = 1;
-	F1R(i, n)
+	F1R(i, n-2) if(a[i] == a[i+1])
 	{
-		if(f[i] > 1) ans[1] = 0;
-	}
-	bool oops = 0;
-	F1R(i, n-2)
-	{
-		if(a[i] == 1) oops = 1;
-	}
-	if(f[1] > 1 || f[1] == 0 || oops)
-	{
-		F1R(i, n) cout << ans[i];
-		cout << endl;
+		cout << 1 << endl;
 		return;
 	}
-	if(a[n-1] == 1) reverse(a.begin(), a.end());
-	F1R(i, n-2)
+	F1R(i, n-2) if(b[i-1]==b[i] && b[i]==b[i+1])
 	{
-		if(a[i] <= a[i-1] && a[i] <= a[i+1])
+		cout << 1 << endl;
+		return;
+	}
+	// now we know that n is very small, and we can do up to O(N^4).
+	// fck it we're brute forcing
+	int ans = INT_MAX;
+	FOR(i, n) FORR(i, j, n) FORR(i, k, j+1)
+	{
+		int cij = 0, cjk = 0;
+		FORR(i, l, k) cij ^= a[l]; 
+		FORR(k, l, j+1) cjk ^= a[l];
+		if(cij > cjk)
 		{
-			a2[i] = 1;
+			MIN(ans, j-i-1);
 		}
 	}
-	int id = n+5;
-	FORD(i, n) if(a2[i])
+	if(ans==INT_MAX)
 	{
-		id = i;	
+		cout << -1 << endl;
+		return;
 	}
-	int mn = INT_MAX;
-	F1R(i, id)
-	{
-		MIN(mn, a[i]);
-	}
-	if(mn > 3) 
-	{
-		if(a[n-1] == 2) ans[n-1] = 1;
-	} else if(mn == 2)
-	{
-		ans[n-1] = 1;
-	} else if(mn == 0)
-	{
-		if(ans[1])
-		{
-			F1R(i,n) ans[i] = 1;
-		} else
-		{
-			FORR(3, i, n+1) ans[i] = 1;
-		}
-	} else
-	{
-		ans[n-1] = ans[n-2] = 1;
-	}
-	F1R(i, n) cout << ans[i];
-	cout << endl;
->>>>>>> 292c208fd0f3cae3127f4c86a86359aee1fe25e7
+	cout << ans << endl;
 }
 
 signed main()
@@ -179,7 +104,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	cin >> t; // uncomment if it's multitest
+	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

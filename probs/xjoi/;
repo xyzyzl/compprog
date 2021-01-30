@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, m, q, dp[25][60000];
+using pii=pair<int, int>;
+using qii=pair<pii, pii>;
+#define f first
+#define s second
+#define mp make_pair
+#define pb push_back
+vector<pii> adj[25];
+qii qs[15];
+int main()
+{
+	cin >> n >> m >> q;
+	for(int i = 0; i < m; i++)
+	{
+		int u, v, c; cin >> u >> v >> c;
+		--u; --v;
+		adj[u].pb(mp(c, v));
+	}
+	memset(dp, -1, sizeof dp);
+	dp[0][0] = 0;
+	for(int i = 0; i < q; i++)
+	{
+		cin >> qs[i].f.f >> qs[i].f.s >> qs[i].s.f >> qs[i].s.s;
+	}
+	vector<int> e3(q+1);
+	for(int i = 0; i <= q; i++) e3[i] = pow(3, i);
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < e3[q]; j++)
+		{
+			for(int k = 0; k < q; k++)
+			{
+				int cur = (j / e3[k])%3;
+				for(pii x : adj[i]) if(x == qs[k].f.s || x == qs[k].f.f)
+				{
+					if(cur == 1) 
+					{
+						dp[i][j] + x < qs[k].s.s;
+					}
+				}
+			}
+		}
+	}
+}

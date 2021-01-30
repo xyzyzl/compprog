@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4cb9327c-0232-4e73-99db-aac1d0cdf66f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../2set/bob.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../rmgame/rmgame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../rmgame/rmgame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../usaco/cowjump/cowjump.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../usaco/fenceplan/fenceplan.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../usaco/msched/msched.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../usaco/visitfj/uwu.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../cf/gr12/b/:w" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +31,7 @@
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
@@ -73,6 +67,8 @@
       <workItem from="1607823051194" duration="2646000" />
       <workItem from="1609289158052" duration="1000" />
       <workItem from="1609346910058" duration="1000" />
+      <workItem from="1610160545353" duration="628000" />
+      <workItem from="1610253481201" duration="97000" />
     </task>
     <servers />
   </component>
@@ -80,6 +76,10 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="739" y="262" key="FileChooserDialogImpl" timestamp="1610253576366">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="739" y="262" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1610253576366" />
     <state width="1879" height="275" key="GridCell.Tab.0.bottom" timestamp="1607826785035">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -96,5 +96,13 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1879" height="275" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1607826785035" />
+    <state x="491" y="165" key="SettingsEditor" timestamp="1610179692256">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="491" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1610179692256" />
+    <state x="239" y="96" key="new project wizard" timestamp="1610253577119">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="239" y="96" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1610253577119" />
   </component>
 </project>

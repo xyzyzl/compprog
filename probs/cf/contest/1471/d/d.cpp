@@ -9,6 +9,7 @@ using namespace __gnu_pbds;
 using namespace std;
 
 #define MAXN 200005
+#define int long long
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -59,123 +60,84 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-<<<<<<< HEAD
-int n;
-int arr[400005], frq[400005];
+int ndivs[1000005], divs[1000005][7];
+vi primes;
 
 void solve()
 {
-	cin >> n;
-	vi ans(n+1);
-	FOR(i, n)
-	{
-		cin >> arr[i]; 
-		frq[arr[i]]++;
-	}
-	bool pm = 1;
-	F1R(i, n)
-	{
-		if(!frq[i])
-			pm = 0;
-	}
-	// k=1 means that there must be a permutation.
-	// k=n means that there must be a 1 in the list
-	if(pm) ans[1] = 1;
-	if(frq[1]) ans[n] = 1;
-	// otherwise, needs a permutation of [2, n-k+1].
-	int l = 0, r = n-1;
-	F1RD(i, n)
-	{
-		if(!ans[n]) break;
-		ans[i] = 1;
-		int nx = n-i+1;
-		if(--frq[nx] == 0 && (arr[l] == nx || arr[r] == nx) && frq[nx+1])
-		{
-			if(arr[l] == nx) l++;
-			if(arr[r] == nx) r--;
-			continue;
-		}
-		// none
-		break;
-	}
-	F1R(i, n) cout << ans[i];
-	cout << endl;
-	FOR(i, n+1)
-	{
-		arr[i] = 0;
-		frq[i] = 0;
-	}
-=======
-void solve()
-{
 	int n; cin >> n;
-	vi a(n), f(n+1), ans(n+1), a2(n+1);
+	vector<vi> po(n, vi(7));
+	map<vi, int> nodd;
+	vector<vi> odds(n);
+	vi a(n); FOR(i, n) cin >> a[i];
+	int nsq = 0;
 	FOR(i, n)
 	{
-		cin >> a[i];
-		f[a[i]]++;
-	}
-	if(f[1] > 0) ans[n] = 1;
-	ans[1] = 1;
-	F1R(i, n)
-	{
-		if(f[i] > 1) ans[1] = 0;
-	}
-	bool oops = 0;
-	F1R(i, n-2)
-	{
-		if(a[i] == 1) oops = 1;
-	}
-	if(f[1] > 1 || f[1] == 0 || oops)
-	{
-		F1R(i, n) cout << ans[i];
-		cout << endl;
-		return;
-	}
-	if(a[n-1] == 1) reverse(a.begin(), a.end());
-	F1R(i, n-2)
-	{
-		if(a[i] <= a[i-1] && a[i] <= a[i+1])
+		vi od;
+		FOR(j, ndivs[a[i]])
 		{
-			a2[i] = 1;
+			int x = divs[a[i]][j];
+			int y = a[i];
+			while(y%x==0)
+			{
+				y /= x;
+				po[i][j]++;
+			}
+			if(po[i][j] % 2) od.pb(x);
 		}
+		// for(int x : od) cerr << x << ' ';
+		// cerr << endl;
+		odds[i] = od;
+		if(od.empty()) nsq++;
+		nodd[od]++;
 	}
-	int id = n+5;
-	FORD(i, n) if(a2[i])
+	int sq1 = nsq, sq2 = nsq;
+	FOR(i, n)
 	{
-		id = i;	
-	}
-	int mn = INT_MAX;
-	F1R(i, id)
-	{
-		MIN(mn, a[i]);
-	}
-	if(mn > 3) 
-	{
-		if(a[n-1] == 2) ans[n-1] = 1;
-	} else if(mn == 2)
-	{
-		ans[n-1] = 1;
-	} else if(mn == 0)
-	{
-		if(ans[1])
+		int same = nodd[odds[i]];
+		if(odds[i].empty() || same == 1) continue; // this is impossible.
+		if(same % 2)
 		{
-			F1R(i,n) ans[i] = 1;
+			sq2++;
 		} else
 		{
-			FORR(3, i, n+1) ans[i] = 1;
+			sq1++;
+			sq2++;
 		}
-	} else
-	{
-		ans[n-1] = ans[n-2] = 1;
 	}
-	F1R(i, n) cout << ans[i];
-	cout << endl;
->>>>>>> 292c208fd0f3cae3127f4c86a86359aee1fe25e7
+	// cerr << nsq << " " << sq1 << " " << sq2 << endl;
+	int q; cin >> q;
+	while(q--)
+	{
+		ll w; cin >> w;
+		// how to find after w seconds?
+		if(w == 0)
+		{
+			cout << max(nsq, sq1-nsq) << endl;
+		} else if(w == 1)
+		{
+			cout << max(sq1, sq2-sq1) << endl;
+		} else
+		{
+			cout << sq2 << endl;
+		}
+	}
 }
 
 signed main()
 {
+	memset(ndivs, 0, sizeof ndivs);
+	for(int i = 2; i <= 1000000; i++)
+	{
+		if(!ndivs[i])
+		{
+			primes.pb(i);
+			for(int j = i; j <= 1000000; j+=i)
+			{
+				divs[j][ndivs[j]++] = i;
+			}
+		}
+	}
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
