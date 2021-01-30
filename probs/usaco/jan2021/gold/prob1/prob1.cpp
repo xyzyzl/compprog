@@ -2,37 +2,42 @@
 
 using namespace std;
 
-int N;
-string S;
-vector<char> V = {'b', 'd', 'e', 'i', 'l', 'm', 'r', 's'};
-map<char, int> id;
-int dp[100005][520];
-void onetofive()
-{
-	memset(dp, 0x7f, sizeof dp);
-	// test cases 1..5
-	for(int i = 0; i < 9; i++)
-	{
-		id[V[i]]=i;
-	}
-	dp[0][(1 << id[S[0]])] = 1;
-	for(int i = 0; i < N; i++)
-	{
-		// start new one
-		for(int j = 0; j < (1 << 9); j++)
-		{
-			dp[i][(1 << id[S[i]])]=min(dp[i][(1 << id[S[i]])], dp[i][j]+1);
-			if(j & (1 << id[S[i]])) continue;
-		}
-	}
-	int ans = INT_MAX;
-	for(int j = 0; j < (1 << 9); j++) ans = min(ans, dp[N-1][j]);
-	cout << ans << endl;
-}
+int m;
+int ct[25][25], fq[25];
+set<int> k;
+map<int, int> M;
+
+int dp[(1 << 21)];
 
 int main()
 {
-	cin >> S;
-	N = S.length();
-	onetofive();
+	string s; cin >> s;
+	for(int i = 0; i < s.length(); i++)
+	{
+		s[i] -= 'a';
+		k.insert(s[i]);
+	}
+	for(int x : k) M[x] = m++;
+	for(int i = 1; i < s.length(); i++)
+	{
+		ct[M[s[i]]][M[s[i-1]]]++;
+	}
+	memset(dp, 0x7f, sizeof dp);
+	dp[0] = 1;
+	for(int msk = 0; msk < (1 << m); msk++)
+	{
+		for(int i = 0; i < m; i++) if(!(msk & (1 << i))) 
+		{
+			int c = 0;
+			for(int j = 0; j < m; j++)
+			{
+				if(!(msk & (1 << j)))
+				{
+					c += ct[j][i];
+				}
+			}
+			dp[msk | (1 << i)] = min(dp[msk | (1 << i)], c+dp[msk]);
+		}
+	}
+	cout << dp[(1 << m) - 1] << endl;
 }
