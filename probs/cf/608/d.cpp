@@ -61,7 +61,6 @@ const int MIN(int &a, int b)
 
 int n, a[MAXN], dp[MAXN][MAXN];
 
-
 void solve()
 {
 	cin >> n;

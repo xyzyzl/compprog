@@ -2,14 +2,14 @@
 #include <ext/pb_ds/assoc_container.hpp> // pbds
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/detail/standard_policies.hpp>
- 
+
 #pragma GCC optimize("O3")
- 
+
 using namespace __gnu_pbds;
 using namespace std;
- 
-#define MAXN 505
- 
+
+#define MAXN 200005
+
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
 #define FORD(i, n) for (int i = n - 1; i >= 0; i--)
@@ -25,10 +25,10 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-const int MOD = (1e9*1)+7;
+#define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
- 
+
 typedef set<int> si;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
@@ -44,12 +44,12 @@ typedef map<int, int> mii;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
 #define f first
 #define s second
- 
+
 #define LEFT(x) 2 * x
 #define RIGHT(x) 2 * x + 1
- 
+
 #define bitinc(x) x&-x
- 
+
 const int MAX(int &a, int b)
 {
 	return a = max(a, b); 
@@ -58,52 +58,60 @@ const int MIN(int &a, int b)
 {
 	return a = min(a, b); 
 }
- 
-int n, dp[MAXN][MAXN], frq[MAXN][MAXN]; // number of ways to erase S[i;j] and a choose b
-string S;
- 
-int rec(int i, int j)
-{
-	if((j-i+1)%2) return 0;
-	int ans = 0;
-	for(int k = i+1; k <= j; k += 2)
-	{
-		if(S[i] != S[k]) continue;
-		int x = ((ll)dp[i+1][k-1] * (ll)dp[k+1][j])%MOD;
-		x = ((ll)x * (frq[(j-i+1)/2][(k-i+1)/2]))%MOD; // number of possible orderings.
-		ans = (ans+x)%MOD;
-	}
-	ans %= MOD;
-	return dp[i][j] = ans;
-}
- 
+
+int n;
+int arr[400005], frq[400005];
+
 void solve()
 {
-	cin >> S;
-	n=S.length();
-	// a choose b = frq[a][b]
+	cin >> n;
+	vi ans(n+1);
+	FOR(i, n)
+	{
+		cin >> arr[i]; 
+		frq[arr[i]]++;
+	}
+	bool pm = 1;
+	F1R(i, n)
+	{
+		if(!frq[i])
+			pm = 0;
+	}
+	// k=1 means that there must be a permutation.
+	// k=n means that there must be a 1 in the list
+	if(pm) ans[1] = 1;
+	if(frq[1]) ans[n] = 1;
+	// otherwise, needs a permutation of [2, n-k+1].
+	int l = 0, r = n-1;
+	F1RD(i, n)
+	{
+		if(!ans[n]) break;
+		ans[i] = 1;
+		int nx = n-i+1;
+		if(--frq[nx] == 0 && (arr[l] == nx || arr[r] == nx) && frq[nx+1])
+		{
+			if(arr[l] == nx) l++;
+			if(arr[r] == nx) r--;
+			continue;
+		}
+		// none
+		break;
+	}
+	F1R(i, n) cout << ans[i];
+	cout << endl;
 	FOR(i, n+1)
 	{
-		frq[i][0] = 1;
-		FORR(1, j, i+1)
-		{
-			frq[i][j] = (frq[i-1][j]+frq[i-1][j-1])%MOD;
-		}
+		arr[i] = 0;
+		frq[i] = 0;
 	}
-	FORR(1, i, n+1) dp[i][i-1] = 1;
-	FORD(i, n) FORR(i, j, n)
-	{
-		rec(i, j);
-	}
-	cout << dp[0][n-1] << endl;
 }
- 
+
 signed main()
 {
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

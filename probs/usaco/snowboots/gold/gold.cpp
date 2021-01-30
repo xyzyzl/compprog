@@ -2,14 +2,14 @@
 #include <ext/pb_ds/assoc_container.hpp> // pbds
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/detail/standard_policies.hpp>
- 
+
 #pragma GCC optimize("O3")
- 
+
 using namespace __gnu_pbds;
 using namespace std;
- 
-#define MAXN 505
- 
+
+#define MAXN 200005
+
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
 #define FORD(i, n) for (int i = n - 1; i >= 0; i--)
@@ -25,14 +25,14 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-const int MOD = (1e9*1)+7;
+#define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
- 
+
 typedef set<int> si;
 typedef vector<int> vi;
 typedef pair<int, int> pii;
-typedef pair<int, pii> iii;
+typedef pair<pii, int> iii;
 typedef vector<pii> vii;
 typedef vector<iii> viii;
 typedef priority_queue<int> pqi;
@@ -42,14 +42,15 @@ typedef deque<int> di;
 typedef map<int, int> mii;
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
+typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
 #define f first
 #define s second
- 
+
 #define LEFT(x) 2 * x
 #define RIGHT(x) 2 * x + 1
- 
+
 #define bitinc(x) x&-x
- 
+
 const int MAX(int &a, int b)
 {
 	return a = max(a, b); 
@@ -58,49 +59,54 @@ const int MIN(int &a, int b)
 {
 	return a = min(a, b); 
 }
- 
-int n, dp[MAXN][MAXN], frq[MAXN][MAXN]; // number of ways to erase S[i;j] and a choose b
-string S;
- 
-int rec(int i, int j)
-{
-	if((j-i+1)%2) return 0;
-	int ans = 0;
-	for(int k = i+1; k <= j; k += 2)
-	{
-		if(S[i] != S[k]) continue;
-		int x = ((ll)dp[i+1][k-1] * (ll)dp[k+1][j])%MOD;
-		x = ((ll)x * (frq[(j-i+1)/2][(k-i+1)/2]))%MOD; // number of possible orderings.
-		ans = (ans+x)%MOD;
-	}
-	ans %= MOD;
-	return dp[i][j] = ans;
-}
- 
+
 void solve()
 {
-	cin >> S;
-	n=S.length();
-	// a choose b = frq[a][b]
-	FOR(i, n+1)
+	int n, b;
+	cin >> n >> b;
+	vi a(n), c(n), e(b);
+	vii d(b);
+	FOR(i, n)
 	{
-		frq[i][0] = 1;
-		FORR(1, j, i+1)
+		cin >> a[i];
+		c[i] = i;
+	}
+	// may also be able to use pbds OST instead of a two-pointer? will look into later
+	// but this works for now
+	sort(c.begin(), c.end(), [&a](const int& p, const int& q) { return a[p] < a[q]; });
+	FOR(i, b)
+	{
+		cin >> d[i].f >> d[i].s;
+		e[i] = i;
+	}
+	sort(e.begin(), e.end(), [&d](const int& p, const int& q) { return d[p] < d[q]; });
+	vi pr(n), nx(n);
+	FOR(i, n) 
+	{
+		pr[i] = i-1;
+		nx[i] = i+1;
+	}
+	int k = n-1, mx = 1;
+	vi ans(b);
+	FORD(i, b)
+	{
+		while(a[c[k]] > d[e[i]].f)
 		{
-			frq[i][j] = (frq[i-1][j]+frq[i-1][j-1])%MOD;
+			// erase current index
+			int pt = c[k];
+			if(pr[pt] >= 0) nx[pr[pt]] = nx[pt];
+			if(nx[pt] <  n) pr[nx[pt]] = pr[pt];
+			MAX(mx, nx[pt] - pr[pt]);
+			k--;
 		}
+		ans[e[i]] = mx <= d[e[i]].s;
 	}
-	FORR(1, i, n+1) dp[i][i-1] = 1;
-	FORD(i, n) FORR(i, j, n)
-	{
-		rec(i, j);
-	}
-	cout << dp[0][n-1] << endl;
+	FOR(i, b) cout << ans[i] << endl;
 }
- 
+
 signed main()
 {
-	// fileio("");
+	fileio("snowboots");
 	DUEHOANG;
 	int t = 1;
 	// cin >> t; // uncomment if it's multitest
