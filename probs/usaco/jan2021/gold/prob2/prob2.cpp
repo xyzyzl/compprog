@@ -5,7 +5,7 @@ using namespace std;
 #define mp make_pair
 
 int n, k, b[50005], wt[50005];
-vector<pair<int, int> > adj[50005];
+set<pair<int, int> > adj[50005];
 vector<int> col[55];
 bool W[55][55];
 
@@ -52,24 +52,22 @@ int main()
 	}
 	for(int i = 0; i < n; i++)
 	{
-		for(int j = 0; j < k; j++) if(W[b[i]][j])
+		for(int j = 0; j < k; j++) if(W[b[i]][j] && col[j].size())
 		{
-			adj[i].push_back(mp(abs(i-col[j][0]), col[j][0]));
-			adj[i].push_back(mp(abs(i-col[j].back()), col[j].back()));
+			adj[i].insert(mp(abs(i-col[j][0]), col[j][0]));
+			adj[i].insert(mp(abs(i-col[j].back()), col[j].back()));
 			if(lower_bound(col[j].begin(), col[j].end(), i) != col[j].begin())
 			{
-				int l = prev(lower_bound(col[j].begin(), col[j].end(), i))-col[j].begin();
-				adj[i].push_back(mp(abs(i-col[j][l]), col[j][l]));
+				int l = lower_bound(col[j].begin(), col[j].end(), i)-col[j].begin()-1;
+				if(l >= 0) adj[i].insert(mp(abs(i-col[j][l]), col[j][l]));
 			}
 			if(lower_bound(col[j].begin(), col[j].end(), i) != col[j].end())
 			{
 				int r = lower_bound(col[j].begin(), col[j].end(), i)-col[j].begin(); if(col[j][r] == i) r++;
-				if(col[j][r] < n) adj[i].push_back(mp(abs(i-col[j][r]), col[j][r]));
+				if(r >= col[j].size()) continue;
+				if(col[j][r] < n) adj[i].insert(mp(abs(i-col[j][r]), col[j][r]));
 			}
 		}
-		sort(adj[i].begin(), adj[i].end());
-		auto l = unique(adj[i].begin(), adj[i].end());
-		adj[i].resize(distance(adj[i].begin(), l));
 	}
 	dijk(0);
 	if(wt[n-1] >= 1e9) cout << -1 << endl;

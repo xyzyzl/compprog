@@ -10,18 +10,25 @@ using vi = vector<int>;
 #define pb push_back
 #define ins insert
 
-int N, K;
-ll M;
+int N, K, vis[MAXN];
+ll M, X, R;
 pii ab[MAXN];
-vi V[MAXN], Vm[MAXN];
-set<int> Vt[MAXN];
+vi V[MAXN], cy;
 int swp[MAXN], swp2[MAXN];
+
+void dfs(int v)
+{
+	vis[v] = 1;
+	cy.pb(v);
+	if(!vis[v]) dfs(swp[v]);
+}
+
 int main()
 {
 	cin >> N >> K >> M;
 	for(int i = 0; i < N; i++)
 	{
-		Vt[i].ins(i);
+		V[i].pb(i);
 		swp[i] = i;
 	}
 	for(int i = 0; i < K; i++)
@@ -35,36 +42,10 @@ int main()
 		V[swp[ab[i].s]].pb(ab[i].f);
 		swap(swp[ab[i].f], swp[ab[i].s]);
 	}
-	for(int i = 0; i < N; i++) swp2[i] = i;
-	int L = M%K;
-	for(int i = 0; i < L; i++)
+	// swp[i] contains all the needed values
+	X = M/K, R = M%K;
+	for(int i = 0; i < N; i++) if(!vis[i])
 	{
-		Vm[swp2[ab[i].f]].pb(swp2[ab[i].s]);
-		Vm[swp2[ab[i].s]].pb(swp2[ab[i].f]);
-		swap(swp2[ab[i].f], swp2[ab[i].s]);
-	}
-	for(int i = 0; i < N; i++) swp2[i] = i;
-	ll X = M/K;
-	for(int i = 0; i < X; i++)
-	{
-		for(int i = 0; i < N; i++)
-		{
-			for(int j : V[i])
-			{
-				Vt[swp2[i]].ins(j);
-			}
-		}
-		for(int i = 0; i < N; i++)
-		{
-			swp2[i] = swp[swp2[i]];
-		}
-	}
-	for(int i = 0; i < N; i++)
-	{
-		for(int j : Vm[i]) Vt[swp2[i]].ins(j);
-	}
-	for(int i = 0; i < N; i++)
-	{
-		cout << Vt[i].size() << endl;
+		dfs(i);
 	}
 }
