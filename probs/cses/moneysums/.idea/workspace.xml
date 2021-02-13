@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="4cb9327c-0232-4e73-99db-aac1d0cdf66f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../../cf/gr12/b/:w" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../usaco/open2020/gold/haircut/haircut" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../usaco/open2020/gold/haircut/haircut.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../usaco/open2020/gold/haircut/haircut.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +71,7 @@
       <workItem from="1609346910058" duration="1000" />
       <workItem from="1610160545353" duration="628000" />
       <workItem from="1610253481201" duration="97000" />
+      <workItem from="1611422178159" duration="599000" />
     </task>
     <servers />
   </component>

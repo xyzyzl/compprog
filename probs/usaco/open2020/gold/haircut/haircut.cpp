@@ -1,73 +1,65 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 
-#define ll long long
-
+using ll=long long;
 using namespace std;
 
-int n, a[100005];
-ll bit[200005];
+int N, A[100005];
+ll BIT[200005];
+ll inv_gt[100005]; // all inversions with both sides >= i
 
-ll sum(int x)
+void upd(int ind, int val)
+{
+	while(ind <= N+1) 
+	{
+		BIT[ind] += val;
+		ind += ind&-ind;
+	}
+}
+
+ll sum(int ind)
 {
 	ll ret = 0;
-	while(x > 0)
+	while(ind > 0)
 	{
-		ret += bit[x];
-		x -= (x & -x);
+		ret += BIT[ind];
+		ind -= ind&-ind;
 	}
 	return ret;
 }
 
-void upd(int x, int v)
-{
-	while(x <= n+1)
-	{
-		bit[x] += v;
-		x += (x & -x);
-	}
-}
-
-ll inv_count[100005];
 ll find_inv()
 {
 	ll ret = 0;
-	for(int i = 0; i < n; i++)
+	for(int i = 0; i < N; i++)
 	{
-		bit[i] = 0;
-	}
-	for(int i = 0; i < n; i++)
-	{
-		inv_count[i] = sum(n+1) - sum(a[i]+1);
-		ret += inv_count[i];
-		upd(a[i]+1, 1);
+		//A[i] != 0
+		inv_gt[i] = sum(N+1)-sum(A[i]+1);
+		ret += inv_gt[i];
+		upd(A[i]+1, 1);
 	}
 	return ret;
 }
 
-vector<int> cur[100005];
-ll fin[100005];
 int main()
 {
 	freopen("haircut.in", "r", stdin);
 	freopen("haircut.out", "w", stdout);
-	cin >> n;
-	for(int i = 0; i < n; i++)
+	cin >> N;
+	vector<vector<ll> > V(N+1);
+	for(int i = 0; i < N; i++)
 	{
-		cin >> a[i];
-		cur[a[i]].push_back(i);
+		cin >> A[i];
+		V[A[i]].push_back(i);
 	}
-	ll init = find_inv();
-	for(int i = n-1; i >= 0; i--)
+	ll tot = find_inv();
+	vector<ll> k(N);
+	for(int i = N-1; i >= 0; i--)
 	{
-		for(int j : cur[i])
+		for(int x : V[i])
 		{
-			init -= inv_count[j];
+			tot -= inv_gt[x];
 		}
-		fin[i] = init;
+		k[i] = tot;
 	}
-	for(int i = 0; i < n; i++)
-	{
-		cout << fin[i] << endl;
-	}
+	for(int i = 0; i < N; i++) cout << k[i] << endl;
 }
