@@ -27,7 +27,7 @@ using namespace std;
 #define ll long long
 #define MOD (1e9*1)+7
 #define MOD2 998244353
-#define INF (1e9*1)+5
+#define INF (1e15*1ll)+5
 
 typedef set<int> si;
 typedef vector<int> vi;
@@ -62,11 +62,9 @@ const int MIN(int &a, int b)
 ll sx, sy, fx, fy, wt[5000005];
 pair<pii, pii> rt[MAXN];
 int n, nds;
-vector<node> adj[5000005];
 si lx, ly;
 vi xx, yy;
 mii coco;
-
 struct node
 {
 	// this makes it less confusing to do (x, y)
@@ -81,6 +79,8 @@ struct node
 		x=a; y=b;
 	}
 };
+vector<node> adj[5000005];
+
 
 int get(int x, vi v)
 {
@@ -89,7 +89,7 @@ int get(int x, vi v)
 
 ll dist(node i, node j) 
 {
-	return abs(i.x-j.x)+abs(i.y-j.y);
+	return abs(xx[i.x]-xx[j.x])+abs(yy[i.y]-yy[j.y]);
 }
 
 /// Set-based Dijkstra implementation.
@@ -99,8 +99,8 @@ void dijk(node src)
 
 	set<pair<ll, node> > pq;
 	pq.insert(mp(0, src));
-
-	int ct = 0;
+	
+	wt[src] = 0;
 	while (!pq.empty())
 	{
 		pair<ll, node> tp = *pq.begin();
@@ -139,8 +139,8 @@ void solve()
 	FOR(i, n)
 	{
 		cin >> rt[i].f.f >> rt[i].f.s >> rt[i].s.f >> rt[i].s.s;
-		if(rt[i].f.f < rt[i].s.f) swap(rt[i].f.f, rt[i].s.f);
-		if(rt[i].f.s < rt[i].s.s) swap(rt[i].f.s, rt[i].s.s);
+		if(rt[i].f.f > rt[i].s.f) swap(rt[i].f.f, rt[i].s.f);
+		if(rt[i].f.s > rt[i].s.s) swap(rt[i].f.s, rt[i].s.s);
 	}
 	rt[n] = mp(mp(sx, sy), mp(sx, sy));
 	rt[n+1] = mp(mp(fx, fy), mp(fx, fy));
@@ -156,6 +156,8 @@ void solve()
 		ly.ins(rt[i].f.s);
 		ly.ins(rt[i].s.s);
 	}
+	xx.clear();
+	yy.clear();
 	for(int x : lx) xx.pb(x);
 	for(int y : ly) yy.pb(y);
 	for(int i = 0; i < n; i++)
@@ -169,7 +171,7 @@ void solve()
 	sy = get(sy, yy);
 	fx = get(fx, xx);
 	fy = get(fy, yy);
-	int nds = xx.size()*yy.size();
+	nds = xx.size()*yy.size();
 	FOR(i, nds)
 	{
 		adj[i].clear();
@@ -187,26 +189,54 @@ void solve()
 			adj[node(x,y+1)].pb(node(x,y));
 		}
 	}
+	// finding horizontal/vertical lines between hives
 	vector<pair<node, int> > xs;
 	FOR(i,n)
 	{
 		FORR(rt[i].f.s, y, rt[i].s.s+1)
 		{
-			xs.pb({node(rt[i].f.s, y), 1});
-			xs.pb({node(rt[i].s.s, y), -1});
+			xs.pb({node(rt[i].f.f, y), 1});
+			xs.pb({node(rt[i].s.f, y), -1});
 		}
 	}
 	sort(xs.begin(), xs.end(), by_x);
+	{
+		int c = 0;
+		FOR(i, xs.size())
+		{
+			if(!c && i && xs[i].f.y == xs[i-1].f.y)
+			{
+				adj[xs[i].f].pb(xs[i-1].f);
+				adj[xs[i-1].f].pb(xs[i].f);
+			}
+			c += xs[i].s;
+		}
+	}
 	vector<pair<node, int> > ys;
 	FOR(i,n)
 	{
 		FORR(rt[i].f.f, x, rt[i].s.f+1)
 		{
-			ys.pb({node(rt[i].f.f, x), 1});
-			ys.pb({node(rt[i].s.f, x), -1});
+			ys.pb({node(x, rt[i].f.s), 1});
+			ys.pb({node(x, rt[i].s.s), -1});
 		}
 	}
 	sort(ys.begin(), ys.end(), by_y);
+	{
+		int c = 0;
+		FOR(i, ys.size())
+		{
+			if(!c && i && ys[i].f.x == ys[i-1].f.x)
+			{
+				adj[ys[i].f].pb(ys[i-1].f);
+				adj[ys[i-1].f].pb(ys[i].f);
+			}
+			c += ys[i].s;
+		}
+	}
+	dijk(node(sx, sy));
+	if(wt[node(fx, fy)] < 1e15) cout << wt[node(fx, fy)] << endl;
+	else cout << "No Path" << endl;
 }
 
 signed main()
