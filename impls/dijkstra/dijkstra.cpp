@@ -72,23 +72,27 @@ namespace modOp
 using namespace modOp;
 
 int n, m, wt[MAXN];
+bool vis[MAXN];
 vii adj[MAXN];
 
 /// Set-based Dijkstra implementation.
 void dijk(int src)
 {
-	fill(wt, wt + n, INF);
+	fill(wt, wt + n, 1e15+7);
+	fill(vis, vis+n, 0);
 
-	set<pii> pq;
-	pq.insert(mp(0, src));
+	priority_queue<pii, vector<pii>, greater<pii> > pq;
+	pq.push(mp(0, src));
 
 	wt[src] = 0;
 
 	int ct = 0;
 	while (!pq.empty())
 	{
-		pii tp = *pq.begin();
-		pq.erase(pq.begin());
+		pii tp = pq.top();
+		pq.pop();
+		if(vis[tp.s]) continue;
+		vis[tp.s] = 1;
 
 		for (pii gu : adj[tp.s])
 		{
@@ -96,10 +100,8 @@ void dijk(int src)
 			int ind = gu.s;
 			if (wt[tp.s] + w < wt[ind])
 			{
-				pq.erase(mp(wt[ind], ind)); /// you can't efficiently erase with a priority queue
-				/// and you're processing way too many indices
 				wt[ind] = wt[tp.s] + w;
-				pq.insert(mp(wt[ind], ind));
+				pq.push(mp(wt[ind], ind));
 			}
 		}
 	}
@@ -116,4 +118,5 @@ int main()
 		adj[a].pb(mp(w, b));
 		adj[b].pb(mp(w, a));
 	}
+	dijk(0);
 }

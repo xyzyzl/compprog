@@ -3,6 +3,7 @@
 
 using namespace std;
 using ll=long long;
+#define int ll
 const int MAXN = 3005;
 using pii = pair<ll, int>;
 using iii = pair<ll, pii>;
@@ -13,7 +14,8 @@ using vii = vector<pii>;
 using viii = vector<iii>;
 #define pb push_back
 
-int n, m, k, ds[MAXN];
+int n, m, k;
+bool vis[MAXN];
 ll wt[MAXN];
 vii adj[MAXN];
 viii eg;
@@ -22,29 +24,28 @@ viii eg;
 void dijk(int src)
 {
 	fill(wt, wt + n, 1e15+7);
-	fill(ds, ds + n, 1e9+7);
+	fill(vis, vis+n, 0);
 
-	priority_queue<pii> pq;
+	priority_queue<pii, vector<pii>, greater<pii> > pq;
 	pq.push(mp(0, src));
 
 	wt[src] = 0;
-	// number of edges between the source and each node.
-	ds[src] = 0;
 
 	int ct = 0;
 	while (!pq.empty())
 	{
 		pii tp = pq.top();
 		pq.pop();
+		if(vis[tp.s]) continue;
+		vis[tp.s] = 1;
 
 		for (pii gu : adj[tp.s])
 		{
 			int w = gu.f;
 			int ind = gu.s;
-			if (wt[tp.s] + w < wt[ind] || (wt[tp.s] + w == wt[ind] && ds[tp.s] + 1 < ds[ind]))
+			if (wt[tp.s] + w < wt[ind])
 			{
 				wt[ind] = wt[tp.s] + w;
-				ds[ind] = ds[tp.s] + 1;
 				pq.push(mp(wt[ind], ind));
 			}
 		}
@@ -62,20 +63,21 @@ signed main()
 		int a,b,w; cin >> a >> b >> w;
 		--a; --b;
 		eg.pb(mp(w, mp(a, b)));
-		eg.pb(mp(w, mp(b, a)));
+		adj[a].pb(mp(w, b));
+		adj[b].pb(mp(w, a));
 	}
-	ll ans = LLONG_MAX;
-	for(int i = 0; i < 2*m; i++)
+	dijk(0);
+	ll ans = wt[n-1]; // need to consider < k
+	for(int i = 0; i < m; i++)
 	{
 		for(int i = 0; i < n; i++) adj[i].clear();
-		int bn0 = eg[i].s.f;
-		int bn1 = eg[i].s.s;
 		for(auto x : eg)
 		{
 			adj[x.s.f].pb(mp(max(0ll,x.f-eg[i].f), x.s.s));
+			adj[x.s.s].pb(mp(max(0ll,x.f-eg[i].f), x.s.f));
 		}
 		dijk(0);
-		ans = min(ans, wt[n-1]+min(ds[n-1],k)*eg[i].f);
+		ans = min(ans, wt[n-1]+k*eg[i].f);
 	}
 	cout << ans << endl;
 }
