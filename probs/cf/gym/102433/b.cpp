@@ -25,7 +25,6 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -60,56 +59,51 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, k, a[MAXN], fs[MAXN], vs[MAXN];
 void solve()
 {
-	int n; cin >> n;
-	vector<ll> A(n);
+	cin >> n >> k;
+	stack<int> stk;
+	memset(fs, -1, sizeof fs);
 	FOR(i, n)
 	{
-		int k; cin >> k; A[i] = k/100;
+		cin >> a[i];
 	}
-	sort(A.begin(), A.end());
-	reverse(A.begin(), A.end());
-	int x, a, y, b; cin >> x >> a >> y >> b;
-	if(x<y)
+	FORD(i, n)
 	{
-		swap(x, y);
-		swap(a, b);
+		if(fs[a[i]] == -1) fs[a[i]] = i;
 	}
-	int w = lcm(a, b);
-	ll K; cin >> K; // total contribution
-	int lo = 0, hi = n+1;
-	while(lo < hi - 1)
+	FOR(i, n)
 	{
-		int mid = (lo+hi)/2;
-		// cerr << mid << endl;
-		int id = 0;
-		ll cont = 0;
-		for(int i = w-1; i < mid; i += w)
+		if(a[i] > k || vs[a[i]]) continue;
+		if(stk.empty())
 		{
-			cont += A[id++]*(x+y);
-		}
-		for(int i = a-1; i < mid; i += a)
-		{
-			if(!((i+1)%w)) continue;
-			cont += A[id++]*x;
-		}
-		for(int i = b-1; i < mid; i += b)
-		{
-			if(!((i+1)%w)) continue;
-			cont += A[id++]*y;
-		}
-		cerr << cont << " " << K << endl;
-		if(cont >= K)
-		{
-			hi = mid;
+			stk.push(a[i]);
+			vs[a[i]] = 1;
 		} else
 		{
-			lo = mid;
+			while(!stk.empty())
+			{
+				if(a[i] <= stk.top() && i < fs[stk.top()])
+				{
+					vs[stk.top()] = 0;
+					stk.pop();
+				}
+				else break;
+			}
+			vs[a[i]] = 1;
+			stk.push(a[i]);
 		}
 	}
-	if(hi > n) cout << -1 << endl;
-	else cout << hi << endl;
+	vi x;
+	while(!stk.empty())
+	{
+		x.pb(stk.top());
+		stk.pop();
+	}
+	reverse(x.begin(), x.end());
+	for(int u : x) cout << u << " ";
+	cout << endl;
 }
 
 signed main()
@@ -117,7 +111,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	cin >> t; // uncomment if it's multitest
+	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

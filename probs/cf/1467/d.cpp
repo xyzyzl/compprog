@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 5005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -26,7 +26,7 @@ using namespace std;
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
 #define int ll
-#define MOD (1e9*1)+7
+#define MOD (int)((1e9*1)+7)
 #define MOD2 998244353
 #define INF (1e9*1)+5
 
@@ -60,56 +60,47 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, k, q, dp[MAXN][MAXN];
+ll a[MAXN], ct[MAXN];
+ll ans = 0;
 void solve()
 {
-	int n; cin >> n;
-	vector<ll> A(n);
+	cin >> n >> k >> q;
+	FOR(i, n) cin >> a[i];
 	FOR(i, n)
 	{
-		int k; cin >> k; A[i] = k/100;
+		dp[i][0] = 1;
 	}
-	sort(A.begin(), A.end());
-	reverse(A.begin(), A.end());
-	int x, a, y, b; cin >> x >> a >> y >> b;
-	if(x<y)
+	F1R(i, MAXN-1)
 	{
-		swap(x, y);
-		swap(a, b);
+		dp[0][i] = dp[1][i-1];
+		FORR(1, j, n-1)
+		{
+			dp[j][i] = (dp[j-1][i-1] + dp[j+1][i-1]) % MOD;
+		}
+		dp[n-1][i] = dp[n-2][i-1];
 	}
-	int w = lcm(a, b);
-	ll K; cin >> K; // total contribution
-	int lo = 0, hi = n+1;
-	while(lo < hi - 1)
+	FOR(i, n)
 	{
-		int mid = (lo+hi)/2;
-		// cerr << mid << endl;
-		int id = 0;
-		ll cont = 0;
-		for(int i = w-1; i < mid; i += w)
+		FOR(j, k+1)
 		{
-			cont += A[id++]*(x+y);
-		}
-		for(int i = a-1; i < mid; i += a)
-		{
-			if(!((i+1)%w)) continue;
-			cont += A[id++]*x;
-		}
-		for(int i = b-1; i < mid; i += b)
-		{
-			if(!((i+1)%w)) continue;
-			cont += A[id++]*y;
-		}
-		cerr << cont << " " << K << endl;
-		if(cont >= K)
-		{
-			hi = mid;
-		} else
-		{
-			lo = mid;
+			ct[i] += dp[i][j]*dp[i][k-j];
+			ct[i] %= MOD;
 		}
 	}
-	if(hi > n) cout << -1 << endl;
-	else cout << hi << endl;
+	FOR(i, n)
+	{
+		ans = (ans + a[i]*ct[i])%MOD;
+	}
+	// now need to make dynamic updates
+	while(q--)
+	{
+		int i, x; cin >> i >> x; --i;
+		ans = (ans + MOD - a[i]*ct[i]) % MOD;
+		a[i] = x;
+		ans = (ans + a[i]*ct[i]) % MOD;
+		cout << (ans+MOD)%MOD << endl;
+	}
 }
 
 signed main()
@@ -117,7 +108,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	cin >> t; // uncomment if it's multitest
+	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

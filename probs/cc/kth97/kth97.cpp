@@ -11,7 +11,7 @@ int inv(int b, int mod = MOD) { return po(b, mod - 2, mod); }
 
 using namespace std;
 
-int n, fact[MAXN], A[MAXN];
+int n, fact[MAXN], A[MAXN], p2[MAXN];
 void solve()
 {
 	cin >> n;
@@ -20,7 +20,7 @@ void solve()
 	vector<int> sum(n);
 	for (int i = 0; i < n; i++)
 	{
-		for(int k = 0; k <= i; k++) sum[k] = ad(sum[k], mul(A[i], mul(po(2, n-i-1), mul(fact[i], inv(mul(fact[k], fact[i-k]))))));
+		for(int k = 0; k <= i; k++) sum[k] = ad(sum[k], mul(A[i], mul(p2[n-i-1], mul(fact[i], inv(mul(fact[k], fact[i-k]))))));
 	}
 	for(int i = 0; i < n; i++) cout << sum[i] << " ";
 	cout << endl;
@@ -28,12 +28,20 @@ void solve()
 
 int main()
 {
+	ios_base::sync_with_stdio(0);
+	cin.tie(NULL);
+	cout.tie(NULL);
 	int t;
 	cin >> t;
 	fact[0] = 1;
 	for (int i = 1; i < 100005; i++)
 	{
 		fact[i] = mul(fact[i-1], i);
+	}
+	p2[0] = 1;
+	for (int i = 1; i < 100005; i++)
+	{
+		p2[i] = mul(p2[i-1],2);
 	}
 	while (t--)
 	{

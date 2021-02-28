@@ -25,7 +25,6 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define int ll
 #define MOD (1e9*1)+7
 #define MOD2 998244353
 #define INF (1e9*1)+5
@@ -60,56 +59,80 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int n, m, par[MAXN][22], dep[MAXN];
+vi adj[MAXN];
+
+void root(int v, int p, int d=0)
+{
+	par[v][0] = p;
+	dep[v] = 0;
+	for(auto x : adj[v])
+	{
+		if(x != p)
+		{
+			root(x, v, d+1);
+		}
+	}
+}
+
+int lca(int u, int v)
+{
+	if(dep[u] > dep[v])
+	{
+		swap(u, v);
+	}
+	int d = dep[v]-dep[u];
+	FOR(i, 22)
+	{
+		if(d >> i&1)
+		{
+			v = par[d][i];
+		}
+	}
+	if(u==v) return u;
+	for(int i = 21; i >= 0; i--)
+	{
+		if(par[u][i] != par[v][i])
+		{
+			u = par[u][i];
+			v = par[v][i];
+		}
+	}
+	return par[u][0];
+}
+
+pii path[MAXN];
+void precomp()
+{
+
+}
+
 void solve()
 {
-	int n; cin >> n;
-	vector<ll> A(n);
-	FOR(i, n)
+	cin >> n;
+	FOR(i, n-1)
 	{
-		int k; cin >> k; A[i] = k/100;
+		int u, v; cin >> u >> v; --u; --v;
+		adj[u].pb(v);
+		adj[v].pb(u);
 	}
-	sort(A.begin(), A.end());
-	reverse(A.begin(), A.end());
-	int x, a, y, b; cin >> x >> a >> y >> b;
-	if(x<y)
+	root(0, -1);
+	F1R(j, 21)
 	{
-		swap(x, y);
-		swap(a, b);
-	}
-	int w = lcm(a, b);
-	ll K; cin >> K; // total contribution
-	int lo = 0, hi = n+1;
-	while(lo < hi - 1)
-	{
-		int mid = (lo+hi)/2;
-		// cerr << mid << endl;
-		int id = 0;
-		ll cont = 0;
-		for(int i = w-1; i < mid; i += w)
+		FOR(i, n)
 		{
-			cont += A[id++]*(x+y);
-		}
-		for(int i = a-1; i < mid; i += a)
-		{
-			if(!((i+1)%w)) continue;
-			cont += A[id++]*x;
-		}
-		for(int i = b-1; i < mid; i += b)
-		{
-			if(!((i+1)%w)) continue;
-			cont += A[id++]*y;
-		}
-		cerr << cont << " " << K << endl;
-		if(cont >= K)
-		{
-			hi = mid;
-		} else
-		{
-			lo = mid;
+			par[i][j] = par[par[i][j-1]][j-1];
 		}
 	}
-	if(hi > n) cout << -1 << endl;
-	else cout << hi << endl;
+	// so we root the tree at 0
+	cin >> m;
+	FOR(i, m)
+	{
+		int u, v; cin >> u >> v;
+		--u; --v;
+		path[i]={u,v};
+		int l = lca(u,v);
+	}
 }
 
 signed main()
@@ -117,7 +140,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	cin >> t; // uncomment if it's multitest
+	// cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();
