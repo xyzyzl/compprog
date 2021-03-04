@@ -8,36 +8,66 @@ using pii = pair<int, int>;
 #define s second
 
 int n, m, ans[MAXN];
-vector<pii> adj[MAXN]; // tree edges only
-set<pii> ext[MAXN]; // extra edges
+vector<pii> adj[MAXN], a[MAXN], b[MAXN]; // tree edges only
+multiset<pii> ext[MAXN];				 // extra edges (add and delete)
 
-set<pii> ret;
-set<pii> mrg(int i, int j)
+int tin[MAXN], tout[MAXN], t, par[MAXN][19];
+
+bool anc(int a, int b)
 {
-	if(ext[i].size() < ext[j].size()) swap(i,j);
-	ret = ext[i];
-	for(pii x : ext[j])
-	{
-		if(ret.count(x))
+	return tin[a] <= tin[b] && tout[b] <= tout[a];
+}
+
+void prelca(int v, int p)
+{
+	tin[v] = t++;
+	par[v][0] = p;
+	for (auto x : adj[v])
+		if (x.f != p)
 		{
-			ret.erase(x);
-			continue;
+			prelca(x.f, v);
 		}
-		ret.insert(x);
+	tout[v] = t++;
+}
+
+int lca(int u, int v)
+{
+	if (anc(u, v))
+		return u;
+	if (anc(v, u))
+		return v;
+	for (int i = 18; i >= 0; i--)
+	{
+		// as a verifier make sure par[u][i] >= 0 s.t. no array out of bounds
+		if (par[u][i] >= 0 && !anc(par[u][i], v))
+			u = par[u][i];
 	}
-	return ret;
+	return par[u][0];
 }
 
 void dfs(int v, int p)
 {
-	for(auto x : adj[v]) if(x.f != p)
+	for (pii x : a[v])
 	{
-		dfs(x.f, v);
-		// merge somehow
-		ext[v] = mrg(v, x.f);
-		// need to update ans for edge
-		ans[x.s] = ext[x.f].begin()->f;
+		ext[v].insert(x);
 	}
+	for (auto x : adj[v])
+		if (x.f != p)
+		{
+			dfs(x.f, v);
+			// merge somehow
+			if (ext[x.f].size() > ext[v].size())
+				swap(ext[x.f], ext[v]);
+			for (pii y : ext[x.f])
+				ext[v].insert(y);
+			ext[x.f].clear();
+		}
+	// update ans
+	for (pii x : b[v])
+	{
+		ext[v].erase(x);
+	}
+	ans[v] = (ext[v].empty() ? -1 : ext[v].begin()->f);
 }
 
 int main()
@@ -45,28 +75,60 @@ int main()
 	ios_base::sync_with_stdio(0);
 	cin.tie(NULL);
 	cout.tie(NULL);
-	freopen("disrupt.in","r",stdin);
-	freopen("disrupt.out","w",stdout);
+	freopen("disrupt.in", "r", stdin);
+	freopen("disrupt.out", "w", stdout);
 	memset(ans, -1, sizeof ans);
 	cin >> n >> m;
-	for(int i = 1; i < n; i++)
+	vector<pii> eg;
+	for (int i = 1; i < n; i++)
 	{
-		int u, v; cin >> u >> v;
-		--u; --v;
+		int u, v;
+		cin >> u >> v;
+		--u;
+		--v;
 		adj[u].push_back({v, i});
 		adj[v].push_back({u, i});
+		eg.push_back({u, v});
 	}
-	for(int i = 0; i < m; i++)
+	prelca(0, 0);
+	for (int i = 1; i < 19; i++)
 	{
-		int u, v, w; cin >> u >> v >> w;
-		--u; --v;
-		ext[u].insert({w, i});
-		ext[v].insert({w, i});
+		for (int v = 0; v < n; v++)
+		{
+			par[v][i] = par[par[v][i - 1]][i - 1];
+		}
 	}
-	dfs(0, -1);
-	for(int i = 1; i < n; i++)
+	for (int i = 0; i < m; i++)
 	{
-		if(!ans[i]) cout << -1 << endl;
-		else cout << ans[i] << endl;
+		int u, v, w;
+		cin >> u >> v >> w;
+		--u;
+		--v;
+		// deeper one will be add, less deep one will be rem.
+		if (anc(u, v))
+		{
+			a[v].push_back({w, i});
+			b[u].push_back({w, i});
+		}
+		else if (anc(v, u))
+		{
+			a[u].push_back({w, i});
+			b[v].push_back({w, i});
+		}
+		else
+		{
+			int p = lca(u, v);
+			a[u].push_back({w, i});
+			a[v].push_back({w, i});
+			b[p].push_back({w, i});
+			b[p].push_back({w, i});
+		}
+	}
+	dfs(0, 0);
+	for (int i = 0; i < n - 1; i++)
+	{
+		if (anc(eg[i].s, eg[i].f))
+			swap(eg[i].f, eg[i].s);
+		cout << ans[eg[i].s] << endl;
 	}
 }

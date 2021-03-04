@@ -11,7 +11,9 @@
 		"deque": "cpp",
 		"string": "cpp",
 		"vector": "cpp",
-		"rope": "cpp"
+		"rope": "cpp",
+		"chrono": "cpp",
+		"algorithm": "cpp"
 	},
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
