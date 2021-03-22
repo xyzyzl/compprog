@@ -75,7 +75,6 @@ int n, m, wt[MAXN];
 bool vis[MAXN];
 vii adj[MAXN];
 
-/// Set-based Dijkstra implementation.
 void dijk(int src)
 {
 	fill(wt, wt + n, 1e15+7);
