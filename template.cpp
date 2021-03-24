@@ -25,7 +25,7 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define MOD (1e9*1)+7
+#define MOD ((1e9*1)+7)
 #define MOD2 998244353
 #define INF (1e9*1)+5
 
