@@ -14,18 +14,23 @@ int main()
 {
 	cin >> n;
 	for(int i = 0; i < n; i++) cin >> a[i];
+	memset(dp, 0x7f, sizeof dp);
+	for(int i = 0; i < n; i++) dp[i][i] = 1;
+	for(int i = 0; i < n; i++) for(int j = i+1; j < n; j++) dp[j][i] = 0;
 	for(int i = n-1; i >= 0; i--)
 	{
 		for(int j = i+1; j < n; j++)
 		{
-			int w = 0, x = 0;
-			if(a[i] == a[j]) w = 1+dp[i+1][j-1];
-			for(int k = i+1; k < j; k++)
+			dp[i][j] = dp[i][j-1] + 1;
+			for(int k = i; k <= j; k++)
 			{
-				x = max(x, dp[i][k] + dp[k][j]);
+				// paint [i, k] then [k+1, j]
+				if(a[j] == a[k])
+				{
+					dp[i][j] = min(dp[i][j], dp[i][k] + dp[k+1][j-1]);
+				}
 			}
-			dp[i][j] = max(w, x);
 		}
 	}
-	cout << n-dp[0][n-1] << endl;
+	cout << dp[0][n-1] << endl;
 }
