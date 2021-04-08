@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 
+#pragma GCC optimize("O3")
+
 using namespace std;
 
 #define MAXN 100005
@@ -31,6 +33,7 @@ typedef vector<pair<int, int>> vii;
 int n, m, maxl[MAXN], par[MAXN];
 vi adj[MAXN];
 
+// can be very inefficient. maybe topo?
 void dfs(int x, int w = 1, int p = -1)
 {
 	if (maxl[x] < w)

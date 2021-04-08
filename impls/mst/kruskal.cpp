@@ -74,5 +74,5 @@ int main()
 			uf.unionSet(fr.s.f, fr.s.s);
 		}
 	}
-	cout << cost << endl; // does this work? better than communism lol
+	cout << cost << endl;
 }
