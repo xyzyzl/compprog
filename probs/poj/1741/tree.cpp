@@ -13,7 +13,7 @@
 
 using namespace std;
 
-#define MAXN 100005
+#define MAXN 10005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -66,6 +66,7 @@ const int MIN(int &a, int b)
 int n, k, mn, sz[MAXN], vs[MAXN];
 vii adj[MAXN];
 
+// find subtree size
 int sub_size(int v, int p)
 {
 	sz[v] = 1;
@@ -78,6 +79,7 @@ int sub_size(int v, int p)
 	return sz[v];
 }
 
+// get the centroid
 void get_c(int v, int p, int m, int& ret)
 {
 	int mx = m - sz[v];
@@ -107,6 +109,7 @@ void get_d(int v, int p, int w)
 	}
 }
 
+// find the number of paths for the current list
 int calc(vi& A)
 {
 	sort(A.begin(), A.end());
@@ -124,28 +127,35 @@ int calc(vi& A)
 int get(int v)
 {
 	mn = INT_MAX;
+	// root tree at v
 	int m = sub_size(v, -1);
+	// gets the centroid
 	int cen; get_c(v, -1, m, cen);
 	// cerr << vs[cen] << endl;
 	vs[cen] = 1;
 	int ret = 0;
+	// find thing adjacent to the centroid
 	FOR(i, adj[cen].size())
 	{
 		pii x = adj[cen][i];
 		if(vs[x.f]) continue;
+		// try to find the number of paths going through this subtree
 		ret += get(x.f);
 	}
 	a.clear();
 	FOR(i, adj[cen].size())
 	{
+		// find the edge from each centroid
 		pii x = adj[cen][i];
 		b.clear();
 		if(vs[x.f]) continue;
+		// want to find the length to each
 		get_d(x.f, cen, x.s);
 		ret -= calc(b);
 		FOR(i, b.size()) a.pb(b[i]);
 	}
 	ret += calc(a);
+	// if any paths are less than length k increment ret
 	FOR(i, a.size()) if(a[i] <= k) ret++;
 	vs[cen] = 0;
 	// cerr << ret << " " << cen << " " << v << endl;

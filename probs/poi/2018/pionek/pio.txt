@@ -1,0 +1,10 @@
+simple sweepline problem, but i still have no clue what was wrong with the impl
+the algorithm itself was simple enough, just sort by angles
+and then do a sweepline based on the sorted angles; you should always pick consec. region of each
+make sure to only do a 180deg window, other wise it will become suboptimal
+
+--- why the fuck is this wrong ---
+if i keep the vec and val arrays separate, they don't work
+if i integrate both of them into one struct array, the code passes.
+this is only true for some test cases.
+wtf??????
