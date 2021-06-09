@@ -25,7 +25,7 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define MOD ((1e9*1)+7)
+#define MOD (int)((1e9*1)+7)
 #define MOD2 998244353
 #define INF (1e9*1)+5
 
@@ -40,23 +40,8 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-
-typedef set<ll> sl;
-typedef vector<ll> vl;
-typedef pair<ll, ll> pll;
-typedef pair<ll, pll> lll;
-typedef vector<pll> vll;
-typedef vector<lll> vlll;
-typedef priority_queue<ll> pql;
-typedef stack<ll> stl;
-typedef queue<ll> ql;
-typedef deque<ll> dl;
-typedef map<ll, ll> mll;
-
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
-typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> osll;
 #define f first
 #define s second
 
@@ -74,16 +59,61 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+ll fact[MAXN];
 void solve()
 {
+	ll ans = 0;
+	int n; cin >> n;
+	vi a(n);
+	mii f;
+	FOR(i, n)
+	{
+		cin >> a[i];
+		f[a[i]]++;
+	}
+	sort(a.begin(), a.end());
+	if(f[a[0]] < 2)
+	{
+		cout << 0 << endl;
+		return;
+	} else 
+	{
+		swap(a[1], a[n-1]);
+		int pre = a[0];
+		F1R(i, n-1)
+		{
+			pre = pre & a[i];
+			if(pre != a[0])
+			{
+				cout << 0 << endl;
+				return;
+			}
+		}
+		int suf = a[n-1];
+		FORD(i, n-1)
+		{
+			suf = suf & a[i];
+			if(suf != a[n-1])
+			{
+				cout << 0 << endl;
+				return;
+			}
+		}
+
+		ll ct = f[a[0]];
+		ll x = ct*(ct-1)%MOD;
+		cout << ((x*fact[n-2])%MOD) << endl;
+	}
 }
 
 signed main()
 {
+	fact[0] = 1;
+	F1R(i, MAXN-1) fact[i] = (fact[i-1]*i)%MOD;
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

@@ -9,6 +9,7 @@ using namespace __gnu_pbds;
 using namespace std;
 
 #define MAXN 200005
+#define int long long
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -40,23 +41,8 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-
-typedef set<ll> sl;
-typedef vector<ll> vl;
-typedef pair<ll, ll> pll;
-typedef pair<ll, pll> lll;
-typedef vector<pll> vll;
-typedef vector<lll> vlll;
-typedef priority_queue<ll> pql;
-typedef stack<ll> stl;
-typedef queue<ll> ql;
-typedef deque<ll> dl;
-typedef map<ll, ll> mll;
-
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
-typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> osll;
 #define f first
 #define s second
 
@@ -74,16 +60,66 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+map<char, int> ma;
+char iv[4] = {'N', 'A', 'T', 'O'};
 void solve()
 {
+	string S; cin >> S;
+	int n = S.length();
+	// rearrange the permutation + try for each
+	vi ct(4);
+	FOR(i, n)
+	{
+		ct[ma[S[i]]]++;
+	}
+	vector<vi> inv(4, vi(4, 0));
+	FOR(i, 4)
+	{
+		int cur = 0;
+		FOR(j, n)
+		{
+			inv[i][ma[S[j]]] += cur;
+			if(ma[S[j]] == i) ++cur;
+		}
+	}
+	vi perm = {0, 1, 2, 3};
+	vi ord = {0, 1, 2, 3};
+	ll val = -1;
+	do 
+	{
+		// how many swaps do we need to get back to the original string?
+		ll curr = 0;
+		FOR(i, 4)
+		{
+			FORR(i+1, j, 4)
+			{
+				curr += inv[perm[j]][perm[i]]; // need to re-overcome all inversions
+			}
+		}
+		if(curr < 0) cout << "this is a problem" << endl;
+		if(curr > val)
+		{
+			val = curr;
+			ord = perm;
+		}
+	} while(next_permutation(perm.begin(), perm.end()));
+	FOR(i, 4)
+	{
+		FOR(j, ct[ord[i]]) cout << (iv[ord[i]]);
+	}
+	cout << endl;
 }
 
 signed main()
 {
 	// fileio("");
 	DUEHOANG;
+	ma['N'] = 0;
+	ma['A'] = 1;
+	ma['T'] = 2;
+	ma['O'] = 3;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

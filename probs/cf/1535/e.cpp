@@ -8,7 +8,8 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 200005
+#define MAXN 300005
+#define MAXA 21
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -40,23 +41,8 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-
-typedef set<ll> sl;
-typedef vector<ll> vl;
-typedef pair<ll, ll> pll;
-typedef pair<ll, pll> lll;
-typedef vector<pll> vll;
-typedef vector<lll> vlll;
-typedef priority_queue<ll> pql;
-typedef stack<ll> stl;
-typedef queue<ll> ql;
-typedef deque<ll> dl;
-typedef map<ll, ll> mll;
-
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
-typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> osll;
 #define f first
 #define s second
 
@@ -74,8 +60,53 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int q, a0, c0, a[MAXN], c[MAXN], pa[MAXA][MAXN];
 void solve()
 {
+	cin >> q >> a0 >> c0;
+	a[0] = a0;
+	c[0] = c0;
+	int v = 0;
+	while(q--)
+	{
+		int ty; cin >> ty;
+		v++;
+		if(ty == 1)
+		{
+			// add vertex i as a son to vertex p[i]
+			int p, _a, _c; cin >> p >> _a >> _c;
+			a[v] = _a;
+			c[v] = _c;
+
+			pa[0][v] = p;
+			F1R(i, MAXA-1)
+			{
+				pa[i][v] = pa[i-1][pa[i-1][v]];
+			}
+		} else 
+		{
+			int vv, w; cin >> vv >> w;
+			int fwt = 0;
+			ll fcs = 0;
+
+			// search for closest nonzero
+			while(w > 0 && a[vv] > 0)
+			{
+				int x = vv;
+				FORD(i, MAXA)
+				{
+					if(a[pa[i][x]] > 0) x = pa[i][x];
+				}
+				int mn = min(a[x], w);
+				a[x] -= mn; w -= mn;
+
+				fwt += mn;
+				fcs += (ll)mn*c[x];
+			}
+			cout << fwt << " " << fcs << endl;
+			cout.flush();
+		}
+	}
 }
 
 signed main()

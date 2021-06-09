@@ -40,23 +40,8 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-
-typedef set<ll> sl;
-typedef vector<ll> vl;
-typedef pair<ll, ll> pll;
-typedef pair<ll, pll> lll;
-typedef vector<pll> vll;
-typedef vector<lll> vlll;
-typedef priority_queue<ll> pql;
-typedef stack<ll> stl;
-typedef queue<ll> ql;
-typedef deque<ll> dl;
-typedef map<ll, ll> mll;
-
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
-typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> osll;
 #define f first
 #define s second
 
@@ -76,6 +61,37 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n; cin >> n;
+	vi a(n); FOR(i, n) cin >> a[i];
+	// just need to separate odd and even values
+	vi b, c;
+	FOR(i, n)
+	{
+		if(a[i]%2) b.pb(a[i]);
+		else c.pb(a[i]);
+	}
+	vi fin;
+	for(int x : c)
+	{
+		fin.pb(x);
+	}
+	for(int x : b)
+	{
+		fin.pb(x);
+	}
+	// now we can find # of such pairs
+	int p = 0;
+	FOR(i, n)
+	{
+		FORR(i+1, j, n)
+		{
+			if(__gcd(fin[i], 2*fin[j]) > 1)
+			{
+				p++;
+			}
+		}
+	}
+	cout << p << endl;
 }
 
 signed main()
@@ -83,7 +99,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

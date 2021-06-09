@@ -25,7 +25,7 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define MOD ((1e9*1)+7)
+#define MOD (int)((1e9*1)+7)
 #define MOD2 998244353
 #define INF (1e9*1)+5
 
@@ -40,23 +40,8 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-
-typedef set<ll> sl;
-typedef vector<ll> vl;
-typedef pair<ll, ll> pll;
-typedef pair<ll, pll> lll;
-typedef vector<pll> vll;
-typedef vector<lll> vlll;
-typedef priority_queue<ll> pql;
-typedef stack<ll> stl;
-typedef queue<ll> ql;
-typedef deque<ll> dl;
-typedef map<ll, ll> mll;
-
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
-typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> osll;
 #define f first
 #define s second
 
@@ -74,8 +59,19 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int dp[MAXN];
 void solve()
 {
+	string S;
+	int m;
+	cin >> S >> m;
+	ll ans = 0;
+	for(char c : S)
+	{
+		int dig = c - '0';
+		ans = (ans + ((m+dig < 10) ? 1 : dp[m-10+dig]))%MOD;
+	}
+	cout << ans << endl;
 }
 
 signed main()
@@ -83,7 +79,14 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+
+	FOR(i, 9) dp[i] = 2;
+	dp[9] = 3;
+	FORR(10, i, MAXN)
+	{
+		dp[i] = (dp[i-9]+dp[i-10])%MOD;
+	}
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

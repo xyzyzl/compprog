@@ -40,23 +40,8 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-
-typedef set<ll> sl;
-typedef vector<ll> vl;
-typedef pair<ll, ll> pll;
-typedef pair<ll, pll> lll;
-typedef vector<pll> vll;
-typedef vector<lll> vlll;
-typedef priority_queue<ll> pql;
-typedef stack<ll> stl;
-typedef queue<ll> ql;
-typedef deque<ll> dl;
-typedef map<ll, ll> mll;
-
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
-typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> osll;
 #define f first
 #define s second
 
@@ -74,8 +59,37 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
+int k, N, ct[(1 << 20)];
+string S;
+
+void upd(int i)
+{
+	ct[i] = (S[i] != '0') * (ct[2*i+1]) + (S[i] != '1') * (ct[2*i+2]);
+}
+
 void solve()
 {
+	cin >> k;
+	cin >> S;
+	reverse(S.begin(), S.end());
+	N = (1 << k);
+	fill(ct, ct+2*N, 1);
+	FORD(i, N-1) upd(i);
+	int q; cin >> q;
+	while(q--)
+	{
+		int p; char c; cin >> p >> c;
+		p = ((1 << k)-p);
+		S[--p] = c;
+		// have to check everything else now
+		while(p)
+		{
+			upd(p);
+			p = (p-1)/2;
+		}
+		upd(0);
+		cout << ct[0] << endl;
+	}
 }
 
 signed main()

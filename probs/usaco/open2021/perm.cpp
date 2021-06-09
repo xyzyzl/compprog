@@ -6,9 +6,38 @@ const int MAXN = 45;
 const int MOD = 1e9+7;
 
 int N, fact[MAXN];
+using pii = pair<int, int>;
+using ll = long long;
 pair<int, int> P[MAXN];
 #define f first
 #define s second
+
+int cross(pii a, pii b, pii c)
+{
+	b.f -= a.f;
+	b.s -= a.s;
+	c.f -= a.f;
+	c.s -= a.s;
+	return b.f*c.s - b.s*c.f;
+}
+
+int area(array<int, 3> a)
+{
+	return abs(cross(P[a[0]], P[a[1]], P[a[2]]));
+}
+
+bool in(array<int, 3> a, int b)
+{
+	int sum = 0;
+	for(int i = 0; i < 3; i++)
+	{
+		swap(a[i], b);
+		sum += area(a);
+		swap(a[i], b);
+	}
+	sum -= area(a);
+	return sum == 0;
+}
 
 bool on(pair<int, int> p, pair<int, int> q, pair<int, int> r)
 {
@@ -43,98 +72,66 @@ bool inter(pair<pair<int, int>, pair<int, int> > l1, pair<pair<int, int>, pair<i
 	return 0;
 }
 
+vector<array<int, 3> > t;
+vector<ll> dp[50][50][50];
+
 int main()
 {
 	cin >> N;
-	for(int i = 0; i < N; i++)
+	for(int i = 0; i < N; i++) cin >> P[i].f >> P[i].s;
+	for(int i = 0; i < N; i++) for(int j = i+1; j < N; j++) for(int k = j+1; k < N; k++) t.push_back({i,j,k});
+	sort(t.begin(), t.end(), [&](array<int, 3> P, array<int, 3> Q)
 	{
-		cin >> P[i].first >> P[i].second;
-	}
-	sort(P, P+N);
-	if(N <= 8)
+		return area(P) < area(Q);
+	});
+
+	// cerr << in({0, 1, 2}, 3) << endl;
+
+	ll ans = 0;
+	for(auto& x : t)
 	{
-		int V = 0;
-		do 
+		int tot_in = 0;
+		vector<array<int, 3> > nxt;
+		for(int i = 0; i < N; i++)
 		{
-			vector<pair<pair<int, int>, pair<int, int> > > lines;
-			for(int i = 0; i < 3; i++)
+			if(in(x, i)) ++tot_in;
+			else
 			{
-				lines.push_back({P[i], P[(i+1)%3]});
-			}
-			int a = 0;
-			for(int i = 3; i < N; i++)
-			{
-				int ints = 0;
-				for(int j = 0; j < i; j++)
+				for(int j = 0; j < 3; j++) 
 				{
-					int val = 1;
-					for(auto x : lines)
+					array<int, 3> nx = x;
+					nx[j] = i;
+					sort(nx.begin(), nx.end());
+					if(in(nx, x[j]))
 					{
-						if(inter({P[i], P[j]}, x))
-						{
-							val = 0;
-						} 
-					}
-					if(val)
-					{
-						ints++;
-					}
-				}
-				if(ints != 3)
-				{
-					a = 1;
-					break;
-				} else 
-				{
-					for(int j = 0; j < i; j++)
-					{
-						int val = 1;
-						vector<pair<pair<int, int>, pair<int, int> > > w;
-						for(auto x : lines)
-						{
-							if(inter({P[i], P[j]}, x))
-							{
-								val = 0;
-							}
-						}
-						if(val) lines.push_back({P[i], P[j]});
+						nxt.push_back(nx);
+						cerr << nx[0] << " " << nx[1] << " " << nx[2] << endl;
 					}
 				}
 			}
-			if(!a) V++;
-		} while(next_permutation(P, P+N));
-		cout << V << endl;
-	} else 
-	{
-		fact[0] = 1;
-		for(int i = 1; i <= 44; i++)
-		{
-			fact[i] = (long long)(fact[i-1])*i % MOD;
 		}
-		int ans = fact[N];
-		for(int i = 0; i < N; i++) for(int j = i+1; j < N; j++) for(int k = j+1; k < N; k++)
+		// cerr << tot_in << endl;
+		tot_in -= 3;
+		dp[x[0]][x[1]][x[2]].resize(1+tot_in);
+		dp[x[0]][x[1]][x[2]][0] = 1;
+		for(int i = 0; i <= tot_in; i++)
 		{
-			// loop over all points that aren't i, j, or k
-			// check if they (i, j, p) is in a different orientation as (i, j, k) for each.
-			int num = 0;
-			for(int p = 0; p < N; p++)
+			if(i < tot_in)
 			{
-				if(p == i || p == j || p == k) continue;
-				if(ort(P[i], P[j], P[p]) == ort(P[i], P[j], P[k]))
-				{
-					num++;
-				}
-				else if(ort(P[j], P[k], P[p]) == ort(P[j], P[k], P[i]))
-				{
-					num++;
-				}
-				else if(ort(P[k], P[i], P[p]) == ort(P[k], P[i], P[j]))
-				{
-					num++;
-				}
+				dp[x[0]][x[1]][x[2]][i+1] += (ll)(tot_in-i)*dp[x[0]][x[1]][x[2]][i];
+				dp[x[0]][x[1]][x[2]][i+1] %= MOD;
 			}
-			ans = (ans - fact[num] + MOD) % MOD;
-			// otherwise, 4! * (N-4)! solutions will be removed.
+			for(auto y : nxt)
+			{
+				dp[x[0]][x[1]][x[2]][i+1] += dp[x[0]][x[1]][x[2]][i];
+				dp[x[0]][x[1]][x[2]][i+1] %= MOD;
+			}
+		}
+		if(tot_in == N-3)
+		{
+			ans += dp[x[0]][x[1]][x[2]][tot_in];
+			ans %= MOD;
 		}
 	}
+	cout << (6ll*ans)%MOD << endl;
 }

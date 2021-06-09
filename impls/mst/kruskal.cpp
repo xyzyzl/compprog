@@ -68,7 +68,7 @@ int main()
 	for(int i = 0; i < E; i++)
 	{
 		pair<int, pii> fr = edges[i];
-		if(!uf.isSameSet(fr.ss.ff, fr.ss.ss))
+		if(!uf.isSameSet(fr.s.f, fr.s.s))
 		{
 			cost += fr.f;
 			uf.unionSet(fr.s.f, fr.s.s);
