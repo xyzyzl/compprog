@@ -8,7 +8,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 300005
+#define MAXN 200005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -25,7 +25,8 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define MOD 998244353
+#define MOD ((1e9*1)+7)
+#define MOD2 998244353
 #define INF (1e9*1)+5
 
 typedef set<int> si;
@@ -58,70 +59,39 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-namespace modOp
-{
-	int ad(int a, int b, int mod = MOD) { return (a + b) % mod; }
-	int sub(int a, int b, int mod = MOD) { return (a - b + mod) % mod; }
-	int mul(int a, int b, int mod = MOD) { return (ll)a * b % mod; }
-
-	int AD(int &a, int b, int mod = MOD) { return a = ad(a, b, mod); }
-	int SUB(int &a, int b, int mod = MOD) { return a = sub(a, b, mod); }
-	int MUL(int &a, int b, int mod = MOD) { return a = mul(a, b, mod); }
-
-	int po(int b, int p, int mod = MOD) { return !p ? 1 : mul(po(mul(b, b, mod), p / 2, mod), p & 1 ? b : 1, mod); }
-	int inv(int b, int mod = MOD) { return po(b, mod - 2, mod); }
-
-	int invGeneral(int a, int b)
-	{ // 0 < a < b, gcd(a,b) = 1
-		if (a == 0)
-			return b == 1 ? 0 : -1;
-		int x = invGeneral(b % a, a);
-		return x == -1 ? -1 : ((1 - (ll)b * x) / a + b) % b;
-	}
-} // namespace modOp
-
-using namespace modOp;
-
-int n, m;
-string S[MAXN];
-
-int p[MAXN];
-
 void solve()
 {
-	cin >> n >> m;
-	FOR(i, n) cin >> S[i];
-	p[0] = inv(2);
-	FORR(1, i, MAXN)
-	{
-		if(i % 2) p[i] = sub(p[i-1], inv(po(2, i)));
-		else      p[i] = ad (p[i-1], inv(po(2, i)));
-	}
-	int ans = 0, w = 0;
-	FOR(i, n) FOR(j, m) if(S[i][j] == 'o') w++;
-	// horizontal lines
+	int n; cin >> n;
+	vi a(n); FOR(i, n) cin >> a[i];
+	// just need to separate odd and even values
+	vi b, c;
 	FOR(i, n)
 	{
-		int streak = 0;
-		FOR(j, m)
-		{
-			if(S[i][j] == 'o') streak++;
-			else streak = 0;
-			if(streak > 0) AD(ans, p[streak]);
-		}
+		if(a[i]%2) b.pb(a[i]);
+		else c.pb(a[i]);
 	}
-	// vertical lines
-	FOR(j, m)
+	vi fin;
+	for(int x : c)
 	{
-		int streak = 0;
-		FOR(i, n)
+		fin.pb(x);
+	}
+	for(int x : b)
+	{
+		fin.pb(x);
+	}
+	// now we can find # of such pairs
+	int p = 0;
+	FOR(i, n)
+	{
+		FORR(i+1, j, n)
 		{
-			if(S[i][j] == 'o') streak++;
-			else streak = 0;
-			if(streak > 0) AD(ans, p[streak]);
+			if(__gcd(fin[i], 2*fin[j]) > 1)
+			{
+				p++;
+			}
 		}
 	}
-	cout << mul(ans, po(2, w)) << endl;
+	cout << p << endl;
 }
 
 signed main()
@@ -129,7 +99,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

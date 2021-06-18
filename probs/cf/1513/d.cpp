@@ -8,13 +8,14 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 300005
+#define MAXN 200005
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
 #define FORD(i, n) for (int i = n - 1; i >= 0; i--)
 #define F1R(i, n) for (int i = 1; i <= n; i++)
 #define F1RD(i, n) for (int i = n; i >= 1; i--)
+#define int long long
 #define pb push_back
 #define mp make_pair
 #define ins insert
@@ -25,7 +26,8 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define MOD 998244353
+#define MOD ((1e9*1)+7)
+#define MOD2 998244353
 #define INF (1e9*1)+5
 
 typedef set<int> si;
@@ -58,70 +60,92 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-namespace modOp
+class UnionFind
 {
-	int ad(int a, int b, int mod = MOD) { return (a + b) % mod; }
-	int sub(int a, int b, int mod = MOD) { return (a - b + mod) % mod; }
-	int mul(int a, int b, int mod = MOD) { return (ll)a * b % mod; }
-
-	int AD(int &a, int b, int mod = MOD) { return a = ad(a, b, mod); }
-	int SUB(int &a, int b, int mod = MOD) { return a = sub(a, b, mod); }
-	int MUL(int &a, int b, int mod = MOD) { return a = mul(a, b, mod); }
-
-	int po(int b, int p, int mod = MOD) { return !p ? 1 : mul(po(mul(b, b, mod), p / 2, mod), p & 1 ? b : 1, mod); }
-	int inv(int b, int mod = MOD) { return po(b, mod - 2, mod); }
-
-	int invGeneral(int a, int b)
-	{ // 0 < a < b, gcd(a,b) = 1
-		if (a == 0)
-			return b == 1 ? 0 : -1;
-		int x = invGeneral(b % a, a);
-		return x == -1 ? -1 : ((1 - (ll)b * x) / a + b) % b;
+private:
+	vector<int> p, rank;
+public:
+	UnionFind(int N)
+	{
+		rank.assign(N, 0);
+		p.assign(N, 0);
+		for (int i = 0; i < N; i++)
+			p[i] = i;
 	}
-} // namespace modOp
-
-using namespace modOp;
-
-int n, m;
-string S[MAXN];
-
-int p[MAXN];
+	int findSet(int i)
+	{
+		return (p[i] == i) ? i : (p[i] = findSet(p[i]));
+	}
+	bool isSameSet(int i, int j)
+	{
+		return findSet(i) == findSet(j);
+	}
+	void unionSet(int i, int j)
+	{
+		if (!isSameSet(i, j))
+		{
+			int x = findSet(i), y = findSet(j);
+			if (rank[x] > rank[y])
+				p[y] = x;
+			else
+			{
+				p[x] = y;
+				if (rank[x] == rank[y])
+					rank[y]++;
+			}
+		}
+	}
+};
 
 void solve()
 {
-	cin >> n >> m;
-	FOR(i, n) cin >> S[i];
-	p[0] = inv(2);
-	FORR(1, i, MAXN)
-	{
-		if(i % 2) p[i] = sub(p[i-1], inv(po(2, i)));
-		else      p[i] = ad (p[i-1], inv(po(2, i)));
-	}
-	int ans = 0, w = 0;
-	FOR(i, n) FOR(j, m) if(S[i][j] == 'o') w++;
-	// horizontal lines
+	int n;
+	ll p;
+	cin >> n >> p;
+	UnionFind uf(n);
+	vi b(n);
+	vii a(n);
 	FOR(i, n)
 	{
-		int streak = 0;
-		FOR(j, m)
-		{
-			if(S[i][j] == 'o') streak++;
-			else streak = 0;
-			if(streak > 0) AD(ans, p[streak]);
-		}
+		cin >> a[i].f;
+		b[i] = a[i].f;
+		a[i].s = i;
 	}
-	// vertical lines
-	FOR(j, m)
+	sort(a.begin(), a.end());
+	ll ans = 0;
+	FOR(i, n)
 	{
-		int streak = 0;
-		FOR(i, n)
+		if(a[i].f >= p) break;
+		int v = a[i].f, j = a[i].s;
+		while(j > 0)
 		{
-			if(S[i][j] == 'o') streak++;
-			else streak = 0;
-			if(streak > 0) AD(ans, p[streak]);
+			if(uf.isSameSet(j-1, j)) break;
+			if(b[j-1]%v==0)
+			{
+				ans += v;
+				uf.unionSet(j-1, j);
+				--j;
+			} else break;
+		}
+		j = a[i].s;
+		while(j < n-1)
+		{
+			if(uf.isSameSet(j+1, j)) break;
+			if(b[j+1]%v==0)
+			{
+				ans += v;
+				uf.unionSet(j+1, j);
+				++j;
+			} else break;
 		}
 	}
-	cout << mul(ans, po(2, w)) << endl;
+	set<int> q;
+	FOR(i, n)
+	{
+		q.insert(uf.findSet(i));
+	}
+	ans += p*(q.size()-1);
+	cout << ans << endl;
 }
 
 signed main()
@@ -129,7 +153,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

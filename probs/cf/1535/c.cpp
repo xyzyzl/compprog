@@ -40,23 +40,8 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-
-typedef set<ll> sl;
-typedef vector<ll> vl;
-typedef pair<ll, ll> pll;
-typedef pair<ll, pll> lll;
-typedef vector<pll> vll;
-typedef vector<lll> vlll;
-typedef priority_queue<ll> pql;
-typedef stack<ll> stl;
-typedef queue<ll> ql;
-typedef deque<ll> dl;
-typedef map<ll, ll> mll;
-
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
-typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> osll;
 #define f first
 #define s second
 
@@ -76,6 +61,20 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	string S; cin >> S;
+	int n = S.length();
+	vector<vi> lst(2, vi(2, -1));
+	ll ans = 0;
+	FOR(i, n)
+	{
+		// find latest index j s.t. S[j] != S[i] and (j-i)%2 = 0 OR S[j] = S[j] and (j-i)%2 = 1
+		int j = i-1, mod = i&1;
+		if(S[i] != '1') MIN(j, max(lst[0][!mod], lst[1][mod]));
+		if(S[i] != '0') MIN(j, max(lst[0][mod], lst[1][!mod]));
+		ans += i-j;
+		if(S[i] != '?') lst[S[i]-'0'][mod] = i;
+	}
+	cout << ans << endl;
 }
 
 signed main()
@@ -83,7 +82,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

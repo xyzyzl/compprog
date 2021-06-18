@@ -40,23 +40,8 @@ typedef stack<int> sti;
 typedef queue<int> qi;
 typedef deque<int> di;
 typedef map<int, int> mii;
-
-typedef set<ll> sl;
-typedef vector<ll> vl;
-typedef pair<ll, ll> pll;
-typedef pair<ll, pll> lll;
-typedef vector<pll> vll;
-typedef vector<lll> vlll;
-typedef priority_queue<ll> pql;
-typedef stack<ll> stl;
-typedef queue<ll> ql;
-typedef deque<ll> dl;
-typedef map<ll, ll> mll;
-
 // ordered_set
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> os;
-typedef tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> osii;
-typedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> osll;
 #define f first
 #define s second
 
@@ -76,6 +61,29 @@ const int MIN(int &a, int b)
 
 void solve()
 {
+	int n, k; cin >> n >> k;
+	if(k >= (1+n)/2)
+	{
+		cout << -1 << endl;
+		return;
+	}
+	si sus;
+	FOR(i, n) sus.insert(i+1);
+	vi a(n);
+	for(int i = 0; i < k; i++)
+	{
+		a[2*i] = i+1;
+		a[2*i+1] = n-i;
+		sus.erase(i+1);
+		sus.erase(n-i);
+	}
+	for(int i = 2*k; i < n; i++)
+	{
+		a[i] = *sus.begin();
+		sus.erase(sus.begin());
+	}
+	FOR(i, n) cout << a[i] << " ";
+	cout << endl;
 }
 
 signed main()
@@ -83,7 +91,7 @@ signed main()
 	// fileio("");
 	DUEHOANG;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();

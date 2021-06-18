@@ -8,7 +8,8 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-#define MAXN 300005
+#define MAXN 200005
+#define int long long
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
 #define FORR(j, i, n) for (int i = j; i < n; i++)
@@ -25,7 +26,8 @@ using namespace std;
 	cout.tie(NULL)
 #define fileio(file) freopen(file ".in", "r", stdin); freopen(file ".out", "w", stdout)
 #define ll long long
-#define MOD 998244353
+#define MOD ((1e9*1)+7)
+#define MOD2 998244353
 #define INF (1e9*1)+5
 
 typedef set<int> si;
@@ -58,78 +60,66 @@ const int MIN(int &a, int b)
 	return a = min(a, b); 
 }
 
-namespace modOp
-{
-	int ad(int a, int b, int mod = MOD) { return (a + b) % mod; }
-	int sub(int a, int b, int mod = MOD) { return (a - b + mod) % mod; }
-	int mul(int a, int b, int mod = MOD) { return (ll)a * b % mod; }
-
-	int AD(int &a, int b, int mod = MOD) { return a = ad(a, b, mod); }
-	int SUB(int &a, int b, int mod = MOD) { return a = sub(a, b, mod); }
-	int MUL(int &a, int b, int mod = MOD) { return a = mul(a, b, mod); }
-
-	int po(int b, int p, int mod = MOD) { return !p ? 1 : mul(po(mul(b, b, mod), p / 2, mod), p & 1 ? b : 1, mod); }
-	int inv(int b, int mod = MOD) { return po(b, mod - 2, mod); }
-
-	int invGeneral(int a, int b)
-	{ // 0 < a < b, gcd(a,b) = 1
-		if (a == 0)
-			return b == 1 ? 0 : -1;
-		int x = invGeneral(b % a, a);
-		return x == -1 ? -1 : ((1 - (ll)b * x) / a + b) % b;
-	}
-} // namespace modOp
-
-using namespace modOp;
-
-int n, m;
-string S[MAXN];
-
-int p[MAXN];
-
+map<char, int> ma;
+char iv[4] = {'N', 'A', 'T', 'O'};
 void solve()
 {
-	cin >> n >> m;
-	FOR(i, n) cin >> S[i];
-	p[0] = inv(2);
-	FORR(1, i, MAXN)
-	{
-		if(i % 2) p[i] = sub(p[i-1], inv(po(2, i)));
-		else      p[i] = ad (p[i-1], inv(po(2, i)));
-	}
-	int ans = 0, w = 0;
-	FOR(i, n) FOR(j, m) if(S[i][j] == 'o') w++;
-	// horizontal lines
+	string S; cin >> S;
+	int n = S.length();
+	// rearrange the permutation + try for each
+	vi ct(4);
 	FOR(i, n)
 	{
-		int streak = 0;
-		FOR(j, m)
-		{
-			if(S[i][j] == 'o') streak++;
-			else streak = 0;
-			if(streak > 0) AD(ans, p[streak]);
-		}
+		ct[ma[S[i]]]++;
 	}
-	// vertical lines
-	FOR(j, m)
+	vector<vi> inv(4, vi(4, 0));
+	FOR(i, 4)
 	{
-		int streak = 0;
-		FOR(i, n)
+		int cur = 0;
+		FOR(j, n)
 		{
-			if(S[i][j] == 'o') streak++;
-			else streak = 0;
-			if(streak > 0) AD(ans, p[streak]);
+			inv[i][ma[S[j]]] += cur;
+			if(ma[S[j]] == i) ++cur;
 		}
 	}
-	cout << mul(ans, po(2, w)) << endl;
+	vi perm = {0, 1, 2, 3};
+	vi ord = {0, 1, 2, 3};
+	ll val = -1;
+	do 
+	{
+		// how many swaps do we need to get back to the original string?
+		ll curr = 0;
+		FOR(i, 4)
+		{
+			FORR(i+1, j, 4)
+			{
+				curr += inv[perm[j]][perm[i]]; // need to re-overcome all inversions
+			}
+		}
+		if(curr < 0) cout << "this is a problem" << endl;
+		if(curr > val)
+		{
+			val = curr;
+			ord = perm;
+		}
+	} while(next_permutation(perm.begin(), perm.end()));
+	FOR(i, 4)
+	{
+		FOR(j, ct[ord[i]]) cout << (iv[ord[i]]);
+	}
+	cout << endl;
 }
 
 signed main()
 {
 	// fileio("");
 	DUEHOANG;
+	ma['N'] = 0;
+	ma['A'] = 1;
+	ma['T'] = 2;
+	ma['O'] = 3;
 	int t = 1;
-	// cin >> t; // uncomment if it's multitest
+	cin >> t; // uncomment if it's multitest
 	while(t--)
 	{
 		solve();
