@@ -9,12 +9,15 @@ using ll = long long;
 const int MAXN = 200005;
 int mn;
 int sz[MAXN], vs[MAXN];
+vector<int> V;
 vector<pii> adj[MAXN];
 
 // find subtree size
 int sub_size(int v, int p)
 {
 	sz[v] = 1;
+	if(p == -1) V.clear();
+	V.push_back(v);
 	for(int i = 0; i < adj[v].size(); i++)
 	{
 		pii x = adj[v][i];
@@ -40,6 +43,16 @@ void get_c(int v, int p, int m, int& ret)
 		mn = mx;
 		ret = v;
 	}
+}
+
+ll up[MAXN], dn[MAXN], ht[MAXN];
+ll calc(int cen)
+{
+	for(int i = 0; i < V.size(); i++) 
+	{
+		up[V[i]] = 0, dn[V[i]] = 0, ht[V[i]] = 0;
+	}
+	
 }
 
 ll solve(int v)
