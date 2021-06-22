@@ -44,13 +44,6 @@ typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_
 #define f first
 #define s second
 
-<<<<<<< HEAD
-const int MAXN = 200005;
-int mn;
-int sz[MAXN], vs[MAXN];
-vector<int> V;
-vector<pii> adj[MAXN];
-=======
 #define LEFT(x) 2 * x
 #define RIGHT(x) 2 * x + 1
 
@@ -93,7 +86,6 @@ namespace modOp
 } // namespace modOp
 
 using namespace modOp;
->>>>>>> b0ef26739048239b4ad55afc2b43fb9f4c7957b8
 
 // find subtree size
 int sub_size(int v, int p)
@@ -101,13 +93,7 @@ int sub_size(int v, int p)
 	if(p == -1) rem.clear();
 	rem.pb(v);
 	sz[v] = 1;
-<<<<<<< HEAD
-	if(p == -1) V.clear();
-	V.push_back(v);
-	for(int i = 0; i < adj[v].size(); i++)
-=======
 	FOR(i, adj[v].size())
->>>>>>> b0ef26739048239b4ad55afc2b43fb9f4c7957b8
 	{
 		pii x = adj[v][i];
 		if(x.f==p || vs[x.f]) continue;
@@ -134,24 +120,10 @@ void get_c(int v, int p, int m, int& ret)
 	}
 }
 
-<<<<<<< HEAD
-ll up[MAXN], dn[MAXN], ht[MAXN];
-ll calc(int cen)
-{
-	for(int i = 0; i < V.size(); i++) 
-	{
-		up[V[i]] = 0, dn[V[i]] = 0, ht[V[i]] = 0;
-	}
-	
-}
-
-ll solve(int v)
-=======
 int pts = 0;
 int dp[MAXN];
 // get decomposition of centroid
 void get_d(int v, int p, int c)
->>>>>>> b0ef26739048239b4ad55afc2b43fb9f4c7957b8
 {
 	if(p == c)
 	{
