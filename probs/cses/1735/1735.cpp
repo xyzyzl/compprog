@@ -1,160 +1,154 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+using ll = long long;
 
-#define MAXN 200005
-#define INF 998244353
+const int MAXN = 200005;
+const ll INF = 1e18;
 
-#define ll long long int
-#define MIN(a,b) ((a > b) ? b : a)
+int n, q;
+vector<ll> x;
 
-int n;
-ll a[MAXN];
-ll st[4*MAXN], lz[4*MAXN], lz2[4*MAXN];
-
-void pdown(int nd1, int nd2)
+struct ST
 {
-	if(lz2[nd1])
+	int n;
+	vector<ll> a;
+	vector<ll> st, lz, lz2;
+	vector<int> lz3;
+	ST()
 	{
-		lz2[nd2] = lz2[nd1];
-		lz[nd2] = lz[nd1];
-	} else lz[nd2] += lz[nd1];
-}
-
-void move(int nd, int i, int j)
-{
-	if(lz2[nd]) st[nd] = (j-i+1)*lz2[nd];
-	st[nd] += (j-i+1)*lz[nd];
-	if(i != j)
-	{
-		pdown(nd, 2*nd);
-		pdown(nd, 2*nd+1);
 	}
-	lz[nd] = lz2[nd] = 0;
-}
-
-void build(int nd, int i, int j)
-{
-	if(i == j)
+	ST(int n, vector<ll> a)
 	{
-		st[nd] = a[i];
-		return;
+		this->n = n;
+		this->a = a;
+		st.resize(4 * n);
+		lz.resize(4 * n);
+		lz2.resize(4 * n);
+		lz3.resize(4 * n);
 	}
-	int d = (i+j)/2;
-	build( 2 * nd    , i  , d);
-	build( 2 * nd + 1, d+1, j);
-	lz[nd] = 0;
-	st[nd] = st[2*nd] + st[2*nd+1];
-}
 
-// increment
-void upd(int nd, int i, int j, int l, int r, ll v)
-{
-	if(i > r || j < l) return; // not in range
-	if(i >= l && j <= r) // completely in range
+	void build(int nd, int i, int j)
 	{
-		st[nd] += v*(j-i+1);
-		if(i != j)
+		if (i == j)
 		{
-			lz[ 2 * nd     ] += v; // update children
-			lz[ 2 * nd + 1 ] += v; // of node nd
+			st[nd] = a[i];
+			return;
 		}
-		return;
-	}
-	move(nd, i, j);
-	int d = (i+j)/2;
-	upd( 2 * nd    , i  , d, l, r, v);
-	upd( 2 * nd + 1, d+1, j, l, r, v);
-	st[nd] = st[2 * nd] + st[2 * nd + 1];
-}
-
-// assign
-void upd2(int nd, int i, int j, int l, int r, ll v)
-{
-	if(i > r || j < l) return; // not in range
-	if(i >= l && j <= r) // completely in range
-	{
-		st[nd] = v*(j-i+1);
-		if(i != j)
-		{
-			lz2[ 2 * nd     ] = v; // update children
-			lz2[ 2 * nd + 1 ] = v; // of node nd
-			lz [ 2 * nd     ] = 0;
-			lz [ 2 * nd + 1 ] = 0;
-		}
-		return;
-	}
-	move(nd, i, j);
-	int d = (i+j)/2;
-	upd2( 2 * nd    , i  , d, l, r, v);
-	upd2( 2 * nd + 1, d+1, j, l, r, v);
-	move(2*nd, i, d);
-	move(2*nd+1, d+1, j);
-	st[nd] = st[2 * nd] + st[2 * nd + 1];
-}
-
-ll rmq(int nd, int i, int j, int l, int r)
-{
-	if(i > r || j < l) return 0;
-	// first set
-	if(lz2[nd] != 0)
-	{
-		st[nd] = lz2[nd]*(j-i+1);
-		if(i != j)
-		{
-			lz2[2*nd] = lz2[nd];
-			lz2[2*nd+1] = lz2[nd];
-		}
-		lz2[nd] = 0;
-	}
-	// then increase
-	if(lz[nd] != 0)
-	{
-		st[nd] += lz[nd];
-		if(i != j)
-		{
-			lz[ 2 * nd     ] += lz[nd];
-			lz[ 2 * nd + 1 ] += lz[nd];
-		}
+		int d = (i + j) / 2;
+		build(2 * nd, i, d);
+		build(2 * nd + 1, d + 1, j);
 		lz[nd] = 0;
+		st[nd] = st[2 * nd] + st[2 * nd + 1];
 	}
-	if(i >= l && j <= r) return st[nd];
-	int d = (i+j)/2;
-	ll p = rmq( 2 * nd    , i  , d, l, r);
-	ll q = rmq( 2 * nd + 1, d+1, j, l, r);
-	// cerr << p << " " << q << endl;
-	return p+q;
-}
+
+	void push(int nd, int und)
+	{
+		if(lz3[nd])
+		{
+			lz3[und] = 1;
+			lz2[und] = lz2[nd];
+			lz[und] = lz[nd];
+		}
+		else 
+		{
+			lz[und] += lz[nd];
+		}
+	}
+
+	void prop(int nd, int i, int j)
+	{
+		if(lz3[nd]) st[nd] = (j-i+1)*lz2[nd];
+		st[nd] += (j-i+1)*lz[nd];
+		if (i != j)
+		{
+			int d = (i + j) / 2;
+			push(nd, 2 * nd);
+			push(nd, 2 * nd + 1);
+		}
+		lz[nd] = lz2[nd] = lz3[nd] = 0;
+	}
+
+	// increment
+	void upd(int nd, int i, int j, int l, int r, ll v)
+	{
+		prop(nd, i, j);
+		if (i > r || j < l)
+			return;			  // not in range
+		if (i >= l && j <= r) // completely in range
+		{
+			lz[nd] += v;
+			return;
+		}
+		int d = (i + j) / 2;
+		upd(2 * nd, i, d, l, r, v);
+		upd(2 * nd + 1, d + 1, j, l, r, v);
+		prop(2*nd, i, d);
+		prop(2*nd+1, d+1, j);
+		st[nd] = st[2 * nd] + st[2 * nd + 1];
+	}
+
+	// assign
+	void upd2(int nd, int i, int j, int l, int r, ll v)
+	{
+		prop(nd, i, j);
+		if (i > r || j < l)
+			return;			  // not in range
+		if (i >= l && j <= r) // completely in range
+		{
+			lz[nd] = 0;
+			lz2[nd] = v;
+			lz3[nd] = 1;
+			return;
+		}
+		int d = (i + j) / 2;
+		upd2(2 * nd, i, d, l, r, v);
+		upd2(2 * nd + 1, d + 1, j, l, r, v);
+		prop(2*nd, i, d);
+		prop(2*nd+1, d+1, j);
+		st[nd] = st[2 * nd] + st[2 * nd + 1];
+	}
+
+	ll rmq(int nd, int i, int j, int l, int r)
+	{
+		if (i > r || j < l)
+			return 0;
+		prop(nd, i, j);
+		if (i >= l && j <= r)
+			return st[nd];
+		int d = (i + j) / 2;
+		ll p = rmq(2 * nd, i, d, l, r);
+		ll q = rmq(2 * nd + 1, d + 1, j, l, r);
+		return p + q;
+	}
+} st1;
 
 int main()
 {
-	int n, q; scanf("%d %d", &n, &q);
-	for(int i = 0; i < n; i++)
+	cin >> n >> q;
+	x.resize(n);
+	for (int i = 0; i < n; i++)
 	{
-		scanf("%d", &a[i]);
+		cin >> x[i];
 	}
-	build(1, 0, n-1);
-	while(q--)
+	st1 = ST(n, x);
+	st1.build(1, 0, n - 1);
+	while (q--)
 	{
-		int t; scanf("%d", &t);
+		int t;
+		cin >> t;
 		if(t == 1)
 		{
-			int l, r, v; scanf("%d %d %d", &l, &r, &v);
-			--l; --r;
-			upd(1, 0, n-1, l, r, v);
-		}
-		else if(t == 2)
+			int a, b, c; cin >> a >> b >> c; --a; --b;
+			st1.upd(1, 0, n-1, a, b, c);
+		} else if(t == 2)
 		{
-			int l, r, v; scanf("%d %d %d", &l, &r, &v);
-			--l; --r;
-			upd2(1, 0, n-1, l, r, v);
-		}
-		else
+			int a, b, c; cin >> a >> b >> c; --a; --b;
+			st1.upd2(1, 0, n-1, a, b, c);
+		} else 
 		{
-			int l, r; scanf("%d %d", &l, &r);
-			--l; --r;
-			ll ret = rmq(1, 0, n-1, l, r);
-			printf("%lld\n", ret);
+			int a, b; cin >> a >> b; --a; --b;
+			cout << st1.rmq(1, 0, n-1, a, b) << endl;
 		}
 	}
 }
