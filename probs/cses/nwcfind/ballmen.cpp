@@ -56,11 +56,6 @@ string bf(int src)
 		int v = edges[i].s.s;
 		int w = edges[i].f;
 		// cout << u << endl;
-		if (u == 18 && v == 19)
-		{
-			cout << dist[u] + w << " " << dist[v] << endl;
-			cout << dist[v] - dist[u] - w << endl;
-		}
 		if (dist[u] != INF && dist[u] + w < dist[v])
 		{
 			// cout << pc[v] << endl;
