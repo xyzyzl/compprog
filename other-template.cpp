@@ -9,7 +9,7 @@ using ll = long long;
 #define QwQ(i, j, k, s) for(int i = j; i <= k; i+=s)
 #define iwi(i, j, k, d) for(int i = k; i >= j; i-=s)
 #define uwu(a) sort(a.begin(), a.end())
-#define owo(a,b) sort(a, a+b)
+#define owo pair<int, int>;
 
 int n;
 signed main()
