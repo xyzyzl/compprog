@@ -13,9 +13,12 @@ int timer = 1;
 void dfs(int v=0,int p=-1)
 {
 	in[v] = timer++;
-	par[v][0] = p;
-	for(int i = 1; i < 22; i++)
-		par[v][i] = par[par[v][i-1]][i-1];
+	if(p >= 0)
+	{
+		par[v][0] = p;
+		for(int i = 1; i < 22; i++)
+			par[v][i] = par[par[v][i-1]][i-1];
+	}
 	for(int x : adj[v])
 	{
 		if(x == p) continue;
