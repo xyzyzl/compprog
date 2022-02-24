@@ -13,7 +13,14 @@
 		"vector": "cpp",
 		"rope": "cpp",
 		"chrono": "cpp",
-		"algorithm": "cpp"
+		"algorithm": "cpp",
+		"functional": "cpp",
+		"list": "cpp",
+		"map": "cpp",
+		"set": "cpp",
+		"unordered_map": "cpp",
+		"unordered_set": "cpp",
+		"*.tcc": "cpp"
 	},
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
