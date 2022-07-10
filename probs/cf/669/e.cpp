@@ -12,6 +12,7 @@ que A[100005];
 // instead of keeping an integer in the BIT, we keep a tuple
 map<int, int> bit[200005];
 
+// takes the sum at a specific value T and time ind.
 int sum(int ind, int T)
 {
 	int sm = 0;
@@ -47,6 +48,7 @@ int main()
 	{
 		cc[x] = ++ind;
 	}
+	// standardize the time
 	for(int i = 0; i < n; i++) A[i].f.f = cc[A[i].f.f];
 	// still has to be processed in the right order, cannot sort A
 	for(int i = 0; i < n; i++)
