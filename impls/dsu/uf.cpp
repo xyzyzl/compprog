@@ -11,6 +11,13 @@ bool union_set(int i, int j)
 	int y = find_set(j);
 	if (x == y)
 		return false;
+	if (sz[x] < sz[y])
+	{
+		// small optimization
+		int tmp = x;
+		x = y;
+		y = tmp;
+	}
 	p[x] = p[y] = x;
 	sz[x] += sz[y];
 	return true;
