@@ -1,4 +1,4 @@
-# hard-cp
+# compprog
 CP is so hard
 
 So as of 11/17/19 I have decided to start writing motivations to questions, in part so I actually remember them on USACO.
