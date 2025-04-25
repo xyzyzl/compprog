@@ -1,5 +1,5 @@
 # compprog
-CP is so hard
+Competitive Programming is so hard
 
 So as of 11/17/19 I have decided to start writing motivations to questions, in part so I actually remember them on USACO.
 
@@ -7,4 +7,5 @@ Additionally it would make it harder for me to copy the editorial mindlessly, wh
 
 In div1+div2 rounds, questions are div2 unless otherwise stated.
 
-To-do: 2018 AIME I/14
+# hi from 2025
+this probably won't be updated anymore. feel free to peruse and good luck reading my spaghetti code lmfao
